@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance &amp; Procurement Division Hub</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ─── VARIABLE MATRIX CONFIGURATION ─── */
+:root {
+    --cgc-blue-deep: #002060;     /* Primary Institutional Anchor */
+    --cgc-blue-azure: #005AA9;    /* Core Functional Theme */
+    --cgc-blue-sky: #00A3E0;      /* Accent Interactive State */
+    --brand-slate: #595959;       /* Secondary Corporate Control Tone */
+    
+    --accent-glow: #38BDF8;
+    --gold: #B48418;
+    --mint: #0D9488;
+    --rose: #E11D48;
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── DARK THEME TOKENS ─── */
+[data-theme="dark"] {
+    --ink: #060B16;
+    --ink-mid: #0D1527;
+    --ink-soft: #14203B;
+    --surface-card: rgba(255, 255, 255, 0.03);
+    --surface-hover: rgba(255, 255, 255, 0.06);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-active: rgba(0, 163, 224, 0.5);
+    --text-primary: #EEF2FF;
+    --text-secondary: #94A3C4;
+    --text-muted: #64748B;
+    --topbar-bg: rgba(6, 11, 22, 0.85);
+    --grid-opacity: 0.02;
+    
+    --logo-bg: #FFFFFF;
+    --logo-border: rgba(255, 255, 255, 0.1);
+    --brand-divider: rgba(255, 255, 255, 0.15);
+    --hub-text-color: #00A3E0;
+    --mint: #00D4A0;
+    --welcome-card-bg: linear-gradient(135deg, rgba(0, 32, 96, 0.4) 0%, rgba(0, 90, 169, 0.2) 100%);
+}
+
+/* ─── LIGHT/NORMAL THEME TOKENS ─── */
+[data-theme="light"] {
+    --ink: #F4F7FA;
+    --ink-mid: #FFFFFF;
+    --ink-soft: #E2E8F0;
+    --surface-card: #FFFFFF;
+    --surface-hover: #F8FAFC;
+    --border-subtle: #CBD5E1;
+    --border-active: var(--cgc-blue-azure);
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+    --text-muted: #64748B;
+    --topbar-bg: rgba(255, 255, 255, 0.9);
+    --grid-opacity: 0.05;
+    
+    --logo-bg: #FFFFFF;
+    --logo-border: var(--border-subtle);
+    --brand-divider: #CBD5E1;
+    --hub-text-color: var(--cgc-blue-deep);
+    --mint: #0F766E;
+    --welcome-card-bg: linear-gradient(135deg, rgba(0, 32, 96, 0.06) 0%, rgba(0, 90, 169, 0.03) 100%);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; background-color: var(--ink); transition: background-color 0.3s var(--transition-smooth); }
+
+body { font-family: 'DM Sans', -apple-system, sans-serif; color: var(--text-primary); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.5; transition: color 0.3s var(--transition-smooth); }
+
+.bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 90, 169, var(--grid-opacity)) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 90, 169, var(--grid-opacity)) 1px, transparent 1px); background-size: 40px 40px; }
+
+.app { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ─── CORPORATE TOPBAR ─── */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 80px; background: var(--topbar-bg); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 100; }
+.topbar-brand { display: flex; align-items: center; gap: 20px; }
+.brand-asset-wrapper { display: flex; align-items: center; justify-content: center; background: var(--logo-bg); padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--logo-border); }
+.brand-logo { height: 26px; width: auto; object-fit: contain; }
+.brand-structural-divider { width: 1px; height: 28px; background-color: var(--brand-divider); }
+.brand-corporate-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+.brand-corporate-title span { color: var(--hub-text-color); font-weight: 600; }
+.brand-department-tag { font-size: 9px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; color: var(--text-muted); margin-top: 3px; }
+
+.theme-toggle-btn { background: var(--ink-soft); border: 1px solid var(--border-subtle); color: var(--text-primary); padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: all 0.2s var(--transition-smooth); }
+.theme-toggle-btn:hover { background: var(--surface-hover); border-color: var(--cgc-blue-sky); }
+
+/* ─── SECTION HEADINGS ─── */
+.section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 22px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+    padding-bottom: 8px;
+    display: inline-block;
+}
+/* COOL GRADIENT UNDERLINE EFFECT */
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cgc-blue-azure), transparent);
+    border-radius: 2px;
+}
+
+/* ─── REMAINDER OF COMPONENTS ─── */
+.welcome-hero { background: var(--welcome-card-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 32px; }
+.workspace-container { padding: 40px; display: grid; grid-template-columns: 1fr 380px; gap: 32px; flex: 1; }
+.apps-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.app-card { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; text-decoration: none; color: inherit; transition: all 0.2s var(--transition-smooth); display: flex; flex-direction: column; min-height: 230px; }
+.app-card:hover { border-color: var(--border-active); background: var(--surface-hover); transform: translateY(-2px); }
+.app-visual-anchor { font-size: 36px; margin-bottom: 14px; }
+.app-meta h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.app-meta p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.app-action-tray { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; text-transform: uppercase; padding-top: 20px; }
+.sys-status { display: inline-flex; align-items: center; gap: 6px; color: var(--mint); }
+.sys-status::before { content: '●'; font-size: 6px; }
+.sys-link { color: var(--cgc-blue-azure); }
+[data-theme="dark"] .sys-link { color: var(--cgc-blue-sky); }
+
+.sidebar { display: flex; flex-direction: column; gap: 32px; }
+.quick-actions-panel { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.action-btn { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 12px; color: var(--text-primary); text-decoration: none; font-size: 12px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: all 0.2s var(--transition-smooth); }
+.action-btn:hover { border-color: var(--border-active); background: var(--surface-hover); }
+.file-list { display: flex; flex-direction: column; gap: 8px; }
+.file-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--ink-mid); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-secondary); text-decoration: none; font-size: 13px; }
+.file-item:hover { border-color: var(--border-active); background: var(--surface-hover); color: var(--text-primary); }
+.file-name { font-weight: 600; color: var(--text-primary); }
+.deadline-list { display: flex; flex-direction: column; gap: 10px; }
+.deadline-link-item { display: flex; gap: 14px; align-items: center; padding: 12px; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); text-decoration: none; }
+.date-badge { background: rgba(0, 90, 169, 0.08); border: 1px solid rgba(0, 90, 169, 0.15); padding: 6px; width: 48px; text-align: center; border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--cgc-blue-azure); flex-shrink: 0; }
+.date-badge span { display: block; font-size: 8px; color: var(--text-secondary); text-transform: uppercase; }
+.deadline-text { font-size: 13px; color: var(--text-primary); font-weight: 600; }
+
+.footer { padding: 24px 40px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); background: rgba(6, 11, 22, 0.02); }
+[data-theme="dark"] .footer { background: rgba(6, 11, 22, 0.5); }
+.footer-links { display: flex; gap: 20px; }
+.footer-link { color: var(--text-muted); text-decoration: none; }
+
+@media (max-width: 1200px) { .workspace-container { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .apps-grid { grid-template-columns: 1fr; } .workspace-container { padding: 20px; } }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"><div class="bg-grid"></div></div>
+
+<div class="app">
+    <header class="topbar">
+        <div class="topbar-brand">
+            <div class="brand-asset-wrapper"><img src="https://mymagic-central.s3.amazonaws.com/uploads/organization/logo.263.gif" alt="CGC Logo" class="brand-logo"></div>
+            <div class="brand-structural-divider"></div>
+            <div class="brand-text-matrix">
+                <h1 class="brand-corporate-title">Finance &amp; Procurement <span>Portal</span></h1>
+                <span class="brand-department-tag">Division Gateway Matrix</span>
+            </div>
+        </div>
+        <div class="theme-switch-container">
+            <button class="theme-toggle-btn" id="themeToggle"><span id="themeIcon">☀️</span> <span id="themeText">Normal Mode</span></button>
+        </div>
+    </header>
+
+    <main class="workspace-container">
+        <div class="main-content-stream">
+            <section class="welcome-hero">
+                <h2 id="greetingLabel">Welcome to the Division Hub</h2>
+                <p>This environment coordinates our operational infrastructure parameters. Access core processing tools, track verification lifecycles, and check compliance guidelines.</p>
+            </section>
+            
+            <section class="portal-category">
+                <h2 class="section-title">Operational Functional Infrastructure</h2>
+                <div class="apps-grid">
+                    <a href="#" target="_blank" class="app-card">
+                        <div><div class="app-visual-anchor">📊</div><div class="app-meta"><h3>Budget Management</h3><p>Execute real-time verification parameters, virements, and CAPEX/OPEX tracking thresholds.</p></div></div>
+                        <div class="app-action-tray"><span class="sys-status">Controls Synced</span> <span class="sys-link">Open Ledger →</span></div>
+                    </a>
+                    <a href="#" target="_blank" class="app-card">
+                        <div><div class="app-visual-anchor">🛒</div><div class="app-meta"><h3>Procurement Lifecycle</h3><p>Manage business case preparations, Purchase Requisitions, and vendor performance registries.</p></div></div>
+                        <div class="app-action-tray"><span class="sys-status">Lifecycle Active</span> <span class="sys-link">Access Supply →</span></div>
+                    </a>
+                    <a href="#" target="_blank" class="app-card">
+                        <div><div class="app-visual-anchor">💰</div><div class="app-meta"><h3>Accounts Payable</h3><p>Enforce automated three-way matching matrices and payment request routing.</p></div></div>
+                        <div class="app-action-tray"><span class="sys-status">SLA Monitor Live</span> <span class="sys-link">Execute Payments →</span></div>
+                    </a>
+                    <a href="#" target="_blank" class="app-card">
+                        <div><div class="app-visual-anchor">🏛️</div><div class="app-meta"><h3>Reporting &amp; Treasury</h3><p>Run EOM financial reconciliations, cash flow forecasting, and ALCO preparations.</p></div></div>
+                        <div class="app-action-tray"><span class="sys-status">Analytics Calibrated</span> <span class="sys-link">Compile Reports →</span></div>
+                    </a>
+                    <a href="#" target="_blank" class="app-card">
+                        <div><div class="app-visual-anchor">⚖️</div><div class="app-meta"><h3>Compliance &amp; Tax</h3><p>Integration gateway for e-Invoice validation and local tax guideline processing.</p></div></div>
+                        <div class="app-action-tray"><span class="sys-status">Audit Ready</span> <span class="sys-link">Review Compliance →</span></div>
+                    </a>
+                    <a href="#" target="_blank" class="app-card">
+                        <div><div class="app-visual-anchor">📁</div><div class="app-meta"><h3>Document Vault</h3><p>Centralized repository for policy guidelines and procurement documentation.</p></div></div>
+                        <div class="app-action-tray"><span class="sys-status">Encrypted Node</span> <span class="sys-link">Enter Vault →</span></div>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <aside class="sidebar">
+            <section>
+                <h2 class="section-title">Roles &amp; Approvals Guardrail</h2>
+                <div style="background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; font-size: 12.5px; color: var(--text-secondary);">
+                    <p>Approval actions and transaction thresholds are governed by the <strong>Approving Authority Matrix</strong>.</p>
+                </div>
+            </section>
+            <div>
+                <h2 class="section-title">Division Utilities</h2>
+                <div class="quick-actions-panel">
+                    <a href="#" class="action-btn"><span>📋</span>Submit Request</a><a href="#" class="action-btn"><span>🏢</span>Non-Resident Check</a>
+                    <a href="#" class="action-btn"><span>📊</span>Virement Form</a><a href="#" class="action-btn"><span>⚙️</span>Authority Limits</a>
+                </div>
+            </div>
+            <section>
+                <h2 class="section-title">Division Forms Library</h2>
+                <div class="file-list">
+                    <a href="#" class="file-item"><span class="file-name">CAPEX_OPEX_Template.xlsx</span> <span>⬇️</span></a>
+                    <a href="#" class="file-item"><span class="file-name">3-Way_Matching_Log.pdf</span> <span>⬇️</span></a>
+                    <a href="#" class="file-item"><span class="file-name">IRBM_e-Invoice_Fields.xlsx</span> <span>⬇️</span></a>
+                </div>
+            </section>
+            <section>
+                <h2 class="section-title">Division Milestones</h2>
+                <div class="deadline-list">
+                    <a href="#" class="deadline-link-item"><div class="date-badge">12<span>Jun</span></div><span class="deadline-text">GL Mapping Run</span></a>
+                    <a href="#" class="deadline-link-item"><div class="date-badge">18<span>Jun</span></div><span class="deadline-text">Risk Review Cycle</span></a>
+                    <a href="#" class="deadline-link-item"><div class="date-badge">25<span>Jun</span></div><span class="deadline-text">ALCO Presentation</span></a>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    <footer class="footer">
+        <p>Finance &amp; Procurement Division Internal Gateway.</p>
+        <div class="footer-links"><a href="#" class="footer-link">Division Policies</a> <a href="#" class="footer-link">Audit Desk Logs</a></div>
+    </footer>
+</div>
+
+<script>
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    const htmlElement = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        themeText.textContent = newTheme === 'dark' ? 'Normal Mode' : 'Dark Mode';
+        htmlElement.setAttribute('data-theme', newTheme);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const greetingLabel = document.getElementById('greetingLabel');
+        const hour = new Date().getHours();
+        let greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+        greetingLabel.textContent = `${greeting}, welcome to the Division Hub`;
+    });
+</script>
+</body>
+</html>
