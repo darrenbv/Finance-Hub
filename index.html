@@ -10,25 +10,19 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
-/* ─── VARIABLE MATRIX CONFIGURATION ─── */
 :root {
-    --cgc-blue-deep: #002060;     /* Primary Institutional Anchor */
-    --cgc-blue-azure: #005AA9;    /* Core Functional Theme */
-    --cgc-blue-sky: #00A3E0;      /* Accent Interactive State */
-    --brand-slate: #595959;       /* Secondary Corporate Control Tone */
-    
+    --cgc-blue-deep: #002060;
+    --cgc-blue-azure: #005AA9;
+    --cgc-blue-sky: #00A3E0;
+    --brand-slate: #595959;
     --accent-glow: #38BDF8;
-    --gold: #B48418;
     --mint: #0D9488;
-    --rose: #E11D48;
-
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
     --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ─── DARK THEME TOKENS ─── */
 [data-theme="dark"] {
     --ink: #060B16;
     --ink-mid: #0D1527;
@@ -42,16 +36,11 @@
     --text-muted: #64748B;
     --topbar-bg: rgba(6, 11, 22, 0.85);
     --grid-opacity: 0.02;
-    
-    --logo-bg: #FFFFFF;
-    --logo-border: rgba(255, 255, 255, 0.1);
-    --brand-divider: rgba(255, 255, 255, 0.15);
     --hub-text-color: #00A3E0;
     --mint: #00D4A0;
     --welcome-card-bg: linear-gradient(135deg, rgba(0, 32, 96, 0.4) 0%, rgba(0, 90, 169, 0.2) 100%);
 }
 
-/* ─── LIGHT/NORMAL THEME TOKENS ─── */
 [data-theme="light"] {
     --ink: #F4F7FA;
     --ink-mid: #FFFFFF;
@@ -65,67 +54,41 @@
     --text-muted: #64748B;
     --topbar-bg: rgba(255, 255, 255, 0.9);
     --grid-opacity: 0.05;
-    
-    --logo-bg: #FFFFFF;
-    --logo-border: var(--border-subtle);
-    --brand-divider: #CBD5E1;
     --hub-text-color: var(--cgc-blue-deep);
     --mint: #0F766E;
     --welcome-card-bg: linear-gradient(135deg, rgba(0, 32, 96, 0.06) 0%, rgba(0, 90, 169, 0.03) 100%);
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { scroll-behavior: smooth; background-color: var(--ink); transition: background-color 0.3s var(--transition-smooth); }
-
-body { font-family: 'DM Sans', -apple-system, sans-serif; color: var(--text-primary); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.5; transition: color 0.3s var(--transition-smooth); }
+html { scroll-behavior: smooth; background-color: var(--ink); }
+body { 
+    font-family: 'DM Sans', -apple-system, sans-serif; 
+    color: var(--text-primary); 
+    min-height: auto; 
+    overflow-x: hidden; 
+    line-height: 1.5; 
+}
 
 .bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 .bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 90, 169, var(--grid-opacity)) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 90, 169, var(--grid-opacity)) 1px, transparent 1px); background-size: 40px 40px; }
+.app { position: relative; z-index: 1; display: flex; flex-direction: column; }
 
-.app { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
-
-/* ─── CORPORATE TOPBAR ─── */
-.topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 80px; background: var(--topbar-bg); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 100; }
-.topbar-brand { display: flex; align-items: center; gap: 20px; }
-.brand-asset-wrapper { display: flex; align-items: center; justify-content: center; background: var(--logo-bg); padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--logo-border); }
-.brand-logo { height: 26px; width: auto; object-fit: contain; }
-.brand-structural-divider { width: 1px; height: 28px; background-color: var(--brand-divider); }
+/* ─── REVISED TOPBAR (LOGO REMOVED) ─── */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: var(--topbar-bg); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 100; }
+.topbar-brand { display: flex; align-items: center; }
 .brand-corporate-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
 .brand-corporate-title span { color: var(--hub-text-color); font-weight: 600; }
-.brand-department-tag { font-size: 9px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; color: var(--text-muted); margin-top: 3px; }
+.brand-department-tag { font-size: 9px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; color: var(--text-muted); display: block; margin-top: 2px; }
 
-.theme-toggle-btn { background: var(--ink-soft); border: 1px solid var(--border-subtle); color: var(--text-primary); padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: all 0.2s var(--transition-smooth); }
+.theme-toggle-btn { background: var(--ink-soft); border: 1px solid var(--border-subtle); color: var(--text-primary); padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .theme-toggle-btn:hover { background: var(--surface-hover); border-color: var(--cgc-blue-sky); }
 
 /* ─── SECTION HEADINGS ─── */
-.section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 22px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    position: relative;
-    padding-bottom: 8px;
-    display: inline-block;
-}
-/* COOL GRADIENT UNDERLINE EFFECT */
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, var(--cgc-blue-azure), transparent);
-    border-radius: 2px;
-}
+.section-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 22px; text-transform: uppercase; letter-spacing: 1.5px; position: relative; padding-bottom: 8px; display: inline-block; }
+.section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, var(--cgc-blue-azure), transparent); border-radius: 2px; }
 
-/* ─── REMAINDER OF COMPONENTS ─── */
 .welcome-hero { background: var(--welcome-card-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 32px; }
-.workspace-container { padding: 40px; display: grid; grid-template-columns: 1fr 380px; gap: 32px; flex: 1; }
+.workspace-container { padding: 40px; display: grid; grid-template-columns: 1fr 380px; gap: 32px; }
 .apps-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .app-card { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; text-decoration: none; color: inherit; transition: all 0.2s var(--transition-smooth); display: flex; flex-direction: column; min-height: 230px; }
 .app-card:hover { border-color: var(--border-active); background: var(--surface-hover); transform: translateY(-2px); }
@@ -168,8 +131,6 @@ body { font-family: 'DM Sans', -apple-system, sans-serif; color: var(--text-prim
 <div class="app">
     <header class="topbar">
         <div class="topbar-brand">
-            <div class="brand-asset-wrapper"><img src="https://mymagic-central.s3.amazonaws.com/uploads/organization/logo.263.gif" alt="CGC Logo" class="brand-logo"></div>
-            <div class="brand-structural-divider"></div>
             <div class="brand-text-matrix">
                 <h1 class="brand-corporate-title">Finance &amp; Procurement <span>Portal</span></h1>
                 <span class="brand-department-tag">Division Gateway Matrix</span>
@@ -186,7 +147,6 @@ body { font-family: 'DM Sans', -apple-system, sans-serif; color: var(--text-prim
                 <h2 id="greetingLabel">Welcome to the Division Hub</h2>
                 <p>This environment coordinates our operational infrastructure parameters. Access core processing tools, track verification lifecycles, and check compliance guidelines.</p>
             </section>
-            
             <section class="portal-category">
                 <h2 class="section-title">Operational Functional Infrastructure</h2>
                 <div class="apps-grid">
