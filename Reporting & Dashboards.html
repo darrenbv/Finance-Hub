@@ -1,0 +1,34 @@
+<div class="sec">Reporting & Dashboards</div>
+<div class="reports-list">
+  <a href="#" class="report-link">
+    <div class="rl-icon">📈</div>
+    <div class="rl-body">
+      <div class="rl-name">Budget Utilisation Dashboard</div>
+      <div class="rl-sub">Live CAPEX/OPEX spend vs. approved budget</div>
+    </div>
+  </a>
+  <a href="#" class="report-link">
+    <div class="rl-icon">🧾</div>
+    <div class="rl-body">
+      <div class="rl-name">Accounts Payable Tracker</div>
+      <div class="rl-sub">Outstanding invoices and payment status</div>
+    </div>
+  </a>
+</div>
+
+<style>
+.reports-list { display:flex; flex-direction:column; gap:7px; margin-bottom:28px; }
+.report-link {
+  display:flex; align-items:center; gap:14px; padding:13px 16px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; text-decoration:none; color:inherit; transition:all 0.2s;
+}
+.report-link:hover { background:var(--surface-hi); border-color:var(--border-hi); transform:translateX(3px); }
+.rl-icon {
+  width:34px; height:34px; border-radius:9px;
+  background:var(--cgc-blue-pale); border:1px solid rgba(27,61,109,0.15);
+  display:flex; align-items:center; justify-content:center; font-size:15px;
+}
+.rl-name { font-size:12.5px; font-weight:600; color:var(--txt-1); }
+.rl-sub { font-size:10px; color:var(--txt-3); margin-top:2px; }
+</style>
