@@ -11,21 +11,21 @@
   --cgc-blue:       #1B3D6D;
   --cgc-blue-pale:  rgba(27,61,109,0.08);
   --cgc-blue-glow:  rgba(27,61,109,0.15);
-  --font-serif:    'Instrument Serif', Georgia, serif;
-  --font-sans:     'Geist', -apple-system, sans-serif;
-  --font-mono:     'Geist Mono', monospace;
-  --ease:          cubic-bezier(0.22, 1, 0.36, 1);
+  --font-serif:     'Instrument Serif', Georgia, serif;
+  --font-sans:      'Geist', -apple-system, sans-serif;
+  --font-mono:      'Geist Mono', monospace;
+  --ease:           cubic-bezier(0.22, 1, 0.36, 1);
   
-  --bg:            #FFFFFF;
-  --surface:       rgba(0,0,0,0.03);
-  --surface-hi:    rgba(0,0,0,0.06);
-  --border:        rgba(0,0,0,0.1);
-  --border-hi:     rgba(27,61,109,0.4);
-  --txt-1:         #0F172A;
-  --txt-2:         #3A4A6A;
-  --txt-3:         #7A8AAA;
-  --topbar-bg:     rgba(255,255,255,0.95);
-  --shadow:        0 2px 16px rgba(0,0,0,0.06);
+  --bg:             #FFFFFF;
+  --surface:        rgba(0,0,0,0.03);
+  --surface-hi:     rgba(0,0,0,0.06);
+  --border:         rgba(0,0,0,0.1);
+  --border-hi:      rgba(27,61,109,0.4);
+  --txt-1:          #0F172A;
+  --txt-2:          #3A4A6A;
+  --txt-3:          #7A8AAA;
+  --topbar-bg:      rgba(255,255,255,0.95);
+  --shadow:         0 2px 16px rgba(0,0,0,0.06);
 }
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -71,23 +71,18 @@ body {
   padding:48px 36px 36px;
   border-bottom:1px solid var(--border);
   background:linear-gradient(160deg, var(--cgc-blue-pale) 0%, transparent 60%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
-.masthead-tag {
-  display:inline-flex; align-items:center; gap:7px;
-  background:var(--cgc-blue-pale);
-  border:1px solid rgba(27,61,109,0.2);
-  border-radius:30px; padding:4px 13px;
-  font-size:10px; font-weight:600;
-  letter-spacing:0.1em; text-transform:uppercase;
-  color:var(--cgc-blue); margin-bottom:16px;
-}
-.tag-dot { width:5px; height:5px; border-radius:50%; background:var(--cgc-blue); animation:pulse 2s infinite; }
 
 .masthead-title { font-family:var(--font-serif); font-size:46px; font-weight:400; line-height:1.06; letter-spacing:-0.5px; color:var(--txt-1); margin-bottom:12px; }
 .masthead-title strong { font-style:italic; color:var(--cgc-blue); }
 
-.masthead-meta { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; align-items:center; }
+.masthead-greeting { max-width:600px; color:var(--txt-2); margin-bottom:20px; }
+
+.masthead-meta { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center; align-items:center; }
 .meta-chip {
   display:inline-flex; align-items:center; gap:7px;
   padding:5px 13px; border-radius:8px;
@@ -122,10 +117,9 @@ body {
 @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 .sys-card { animation:fadeUp 0.45s var(--ease) both; }
 
-.footer { padding:14px 36px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.footer { padding:14px 36px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
 .sys-ok { display:inline-flex; align-items:center; gap:5px; font-size:10px; color:#107C10; font-weight:600; }
 .sys-ok::before { content:''; width:5px; height:5px; border-radius:50%; background:#107C10; animation:pulse 1.5s infinite; }
-.fl:hover { color:var(--cgc-blue); }
 
 @media(max-width:1100px) { .systems-grid{grid-template-columns:repeat(2,1fr)} }
 @media(max-width:640px) { .systems-grid{grid-template-columns:1fr} }
@@ -142,13 +136,12 @@ body {
   <div class="topbar-right"><div class="live-pill"><div class="live-dot"></div><span id="topbar-clock">—</span></div></div>
 </header>
 <section class="masthead">
-  <div class="masthead-tag"><span class="tag-dot"></span>Finance &amp; Procurement Division — Internal Portal</div>
   <h1 class="masthead-title"><span id="greeting">Good morning</span>,<br><strong>welcome back.</strong></h1>
   <p class="masthead-greeting">Your central access point for all finance and procurement systems, policy documents, and division resources.</p>
   <div class="masthead-meta">
-    <div class="meta-chip"><span class="label">Date</span><span class="val" id="meta-date">—</span></div>
-    <div class="meta-chip"><span class="label">Fiscal Period</span><span class="val blue">Q2 FY2026</span></div>
-    <div class="meta-chip"><span class="label">Division</span><span class="val">Finance &amp; Procurement</span></div>
+    <div class="meta-chip"><span class="label">Date</span>&nbsp;<span class="val" id="meta-date">—</span></div>
+    <div class="meta-chip"><span class="label">Fiscal Period</span>&nbsp;<span class="val blue">Q2 FY2026</span></div>
+    <div class="meta-chip"><span class="label">Division</span>&nbsp;<span class="val">Finance &amp; Procurement</span></div>
   </div>
 </section>
 <main class="workspace">
@@ -164,7 +157,6 @@ body {
 </main>
 <footer class="footer">
   <div class="footer-l"><span>© 2026 Credit Guarantee Corporation Malaysia Berhad</span><span>·</span><span class="sys-ok">Portal Active</span></div>
-  <div class="footer-r"><a class="fl" href="#">Policies</a><a class="fl" href="#">Helpdesk</a></div>
 </footer>
 </div>
 <script>
