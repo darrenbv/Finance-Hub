@@ -1,0 +1,22 @@
+<div class="sec">Quick Links</div>
+<div class="quicklinks">
+  <a href="#" class="ql"><div class="ql-ico">📝</div><span class="ql-label">Submit Budget Request</span></a>
+  <a href="#" class="ql"><div class="ql-ico">🛍️</div><span class="ql-label">Raise Purchase Requisition</span></a>
+  <a href="#" class="ql"><div class="ql-ico">💸</div><span class="ql-label">Submit Payment Request</span></a>
+</div>
+
+<style>
+.quicklinks { display:flex; flex-direction:column; gap:6px; }
+.ql {
+  display:flex; align-items:center; gap:11px; padding:11px 13px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:9px; text-decoration:none; color:inherit; transition:all 0.2s;
+}
+.ql:hover { background:var(--surface-hi); border-color:var(--border-hi); }
+.ql-ico {
+  width:30px; height:30px; border-radius:8px;
+  background:var(--cgc-blue-pale);
+  display:flex; align-items:center; justify-content:center; font-size:14px;
+}
+.ql-label { font-size:12px; font-weight:600; color:var(--txt-1); }
+</style>
