@@ -1,22 +1,65 @@
-<div class="sec">Quick Links</div>
-<div class="quicklinks">
-  <a href="#" class="ql"><div class="ql-ico">📝</div><span class="ql-label">Submit Budget Request</span></a>
-  <a href="#" class="ql"><div class="ql-ico">🛍️</div><span class="ql-label">Raise Purchase Requisition</span></a>
-  <a href="#" class="ql"><div class="ql-ico">💸</div><span class="ql-label">Submit Payment Request</span></a>
+<div class="quicklinks-section">
+  <h3 class="section-title">QUICK LINKS</h3>
+  
+  <div class="quicklinks">
+    <a href="#" class="ql">
+      <div class="ql-ico">📝</div>
+      <span class="ql-label">Submit Budget Request</span>
+    </a>
+    
+    <a href="#" class="ql">
+      <div class="ql-ico">🛍️</div>
+      <span class="ql-label">Raise Purchase Requisition</span>
+    </a>
+    
+    <a href="#" class="ql">
+      <div class="ql-ico">💸</div>
+      <span class="ql-label">Submit Payment Request</span>
+    </a>
+    
+    <a href="#" class="ql">
+      <div class="ql-ico">📤</div>
+      <span class="ql-label">Upload Invoice</span>
+    </a>
+    
+    <a href="#" class="ql">
+      <div class="ql-ico">📄</div>
+      <span class="ql-label">New Contract Request</span>
+    </a>
+    
+    <a href="#" class="ql">
+      <div class="ql-ico">🔍</div>
+      <span class="ql-label">Vendor Registry</span>
+    </a>
+    
+    <a href="#" class="ql">
+      <div class="ql-ico">📱</div>
+      <span class="ql-label">Approving Authority Matrix</span>
+    </a>
+  </div>
 </div>
 
 <style>
-.quicklinks { display:flex; flex-direction:column; gap:6px; }
-.ql {
-  display:flex; align-items:center; gap:11px; padding:11px 13px;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:9px; text-decoration:none; color:inherit; transition:all 0.2s;
-}
-.ql:hover { background:var(--surface-hi); border-color:var(--border-hi); }
-.ql-ico {
-  width:30px; height:30px; border-radius:8px;
-  background:var(--cgc-blue-pale);
-  display:flex; align-items:center; justify-content:center; font-size:14px;
-}
-.ql-label { font-size:12px; font-weight:600; color:var(--txt-1); }
+  .quicklinks-section { background: #ffffff; padding: 20px; font-family: sans-serif; }
+  .section-title { font-size: 13px; color: #888; letter-spacing: 0.5px; margin-bottom: 15px; }
+  .quicklinks { display: flex; flex-direction: column; gap: 12px; }
+
+  .ql {
+    display: flex; align-items: center; gap: 16px; 
+    padding: 16px 20px;
+    background: #ffffff; 
+    border: 1px solid #e0e0e0; 
+    border-radius: 12px; 
+    text-decoration: none; color: inherit;
+    transition: box-shadow 0.2s;
+  }
+  .ql:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+  .ql-ico {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #f8f9fa; border: 1px solid #eee;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+
+  .ql-label { font-size: 14px; font-weight: 600; color: #1a1a1a; }
 </style>
