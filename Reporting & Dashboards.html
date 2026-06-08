@@ -1,34 +1,86 @@
-<div class="sec">Reporting & Dashboards</div>
-<div class="reports-list">
-  <a href="#" class="report-link">
-    <div class="rl-icon">📈</div>
-    <div class="rl-body">
-      <div class="rl-name">Budget Utilisation Dashboard</div>
-      <div class="rl-sub">Live CAPEX/OPEX spend vs. approved budget</div>
-    </div>
-  </a>
-  <a href="#" class="report-link">
-    <div class="rl-icon">🧾</div>
-    <div class="rl-body">
-      <div class="rl-name">Accounts Payable Tracker</div>
-      <div class="rl-sub">Outstanding invoices and payment status</div>
-    </div>
-  </a>
+<div class="reporting-section">
+  <h3 class="section-title">REPORTING & DASHBOARDS</h3>
+  
+  <div class="reports-list">
+    <a href="#" class="report-link">
+      <div class="rl-icon">📈</div>
+      <div class="rl-content">
+        <div class="rl-name">Budget Utilisation Dashboard</div>
+        <div class="rl-sub">Live CAPEX/OPEX spend vs. approved budget — updated monthly</div>
+      </div>
+      <div class="rl-tag tag-pbi">POWER BI</div>
+    </a>
+
+    <a href="#" class="report-link">
+      <div class="rl-icon">📄</div>
+      <div class="rl-content">
+        <div class="rl-name">Accounts Payable Tracker</div>
+        <div class="rl-sub">Outstanding invoices, payment status, and SLA monitoring</div>
+      </div>
+      <div class="rl-tag tag-sp">SHAREPOINT</div>
+    </a>
+
+    <a href="#" class="report-link">
+      <div class="rl-icon">🏦</div>
+      <div class="rl-content">
+        <div class="rl-name">Treasury Monthly Report</div>
+        <div class="rl-sub">Cash flow forecast, investment income, and GL reconciliation summary</div>
+      </div>
+      <div class="rl-tag tag-ex">EXCEL</div>
+    </a>
+
+    <a href="#" class="report-link">
+      <div class="rl-icon">📋</div>
+      <div class="rl-content">
+        <div class="rl-name">Procurement Activity Log</div>
+        <div class="rl-sub">PO register, vendor performance, and contract expiry tracking</div>
+      </div>
+      <div class="rl-tag tag-sp">SHAREPOINT</div>
+    </a>
+
+    <a href="#" class="report-link">
+      <div class="rl-icon">⚖️</div>
+      <div class="rl-content">
+        <div class="rl-name">Compliance & Tax Register</div>
+        <div class="rl-sub">e-Invoice status, IRBM submissions, and audit readiness checklist</div>
+      </div>
+      <div class="rl-tag tag-sp">SHAREPOINT</div>
+    </a>
+  </div>
 </div>
 
 <style>
-.reports-list { display:flex; flex-direction:column; gap:7px; margin-bottom:28px; }
-.report-link {
-  display:flex; align-items:center; gap:14px; padding:13px 16px;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:10px; text-decoration:none; color:inherit; transition:all 0.2s;
-}
-.report-link:hover { background:var(--surface-hi); border-color:var(--border-hi); transform:translateX(3px); }
-.rl-icon {
-  width:34px; height:34px; border-radius:9px;
-  background:var(--cgc-blue-pale); border:1px solid rgba(27,61,109,0.15);
-  display:flex; align-items:center; justify-content:center; font-size:15px;
-}
-.rl-name { font-size:12.5px; font-weight:600; color:var(--txt-1); }
-.rl-sub { font-size:10px; color:var(--txt-3); margin-top:2px; }
+  .reporting-section { background: #ffffff; padding: 20px; font-family: sans-serif; }
+  .section-title { font-size: 13px; color: #888; letter-spacing: 0.5px; margin-bottom: 15px; }
+  .reports-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .report-link {
+    display: flex; align-items: center; gap: 16px; 
+    padding: 16px 20px;
+    background: #ffffff; 
+    border: 1px solid #e0e0e0; 
+    border-radius: 12px; 
+    text-decoration: none; color: inherit;
+  }
+
+  .rl-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #f8f9fa; border: 1px solid #eee;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+
+  .rl-content { flex-grow: 1; }
+  .rl-name { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .rl-sub { font-size: 11px; color: #777; margin-top: 3px; }
+
+  /* Tag Color Logic */
+  .rl-tag {
+    font-size: 9px; font-weight: 800; padding: 4px 8px;
+    border-radius: 5px; border: 1px solid rgba(0,0,0,0.1);
+    letter-spacing: 0.2px;
+  }
+
+  .tag-pbi { background: #fff8e1; color: #b8860b; border-color: #f7e6b0; }
+  .tag-sp  { background: #e3f2fd; color: #1976d2; border-color: #bbdefb; }
+  .tag-ex  { background: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
 </style>
