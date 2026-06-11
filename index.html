@@ -1,658 +1,1287 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finance & Procurement Division Hub</title>
+<!DOCTYPE html><!DOCTYPE htmlmeta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance &amp; Procurement Division Hub</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
 
   <style>
     :root {
-      --cgc-blue:       #1B3D6D;
-      --cgc-blue-pale:  rgba(27,61,109,0.08);
-      --cgc-blue-glow:  rgba(27,61,109,0.15);
-      --font-serif:     'Instrument Serif', Georgia, serif;
-      --font-sans:      'Geist', -apple-system, sans-serif;
-      --font-mono:      'Geist Mono', monospace;
-      --ease:           cubic-bezier(0.22, 1, 0.36, 1);
+      --cgc-blue: #173d7a;
+      --cgc-blue-2: #214e97;
+      --cgc-blue-soft: rgba(23, 61, 122, 0.08);
+      --cgc-line: #d9e2f0;
+      --text-1: #13233f;
+      --text-2: #4b5d7a;
+      --text-3: #7f91ad;
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --shadow: 0 2px 14px rgba(16, 40, 84, 0.06);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-      --bg:             #FFFFFF;
-      --surface:        rgba(0,0,0,0.03);
-      --surface-hi:     rgba(0,0,0,0.06);
-      --border:         rgba(0,0,0,0.1);
-      --border-hi:      rgba(27,61,109,0.4);
-      --txt-1:          #0F172A;
-      --txt-2:          #3A4A6A;
-      --txt-3:          #7A8AAA;
-      --topbar-bg:      rgba(255,255,255,0.95);
-      --shadow:         0 2px 16px rgba(0,0,0,0.06);
+      --tag-blue-bg: rgba(30, 87, 183, 0.10);
+      --tag-blue-txt: #1f57b8;
 
-      --tag-pbi-bg:     #fff8e1;
-      --tag-pbi-txt:    #b8860b;
-      --tag-pbi-brd:    #f7e6b0;
+      --tag-green-bg: rgba(28, 138, 79, 0.10);
+      --tag-green-txt: #1c8a4f;
 
-      --tag-sp-bg:      #e3f2fd;
-      --tag-sp-txt:     #1976d2;
-      --tag-sp-brd:     #bbdefb;
+      --tag-gold-bg: rgba(205, 140, 20, 0.12);
+      --tag-gold-txt: #b37400;
 
-      --tag-ex-bg:      #e8f5e9;
-      --tag-ex-txt:     #2e7d32;
-      --tag-ex-brd:     #c8e6c9;
+      --tag-purple-bg: rgba(109, 73, 196, 0.10);
+      --tag-purple-txt: #6d49c4;
     }
 
-    *, *::before, *::after {
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
     }
 
     html {
-      background: var(--bg);
       scroll-behavior: smooth;
+      background: var(--bg);
     }
 
     body {
-      font-family: var(--font-sans);
-      color: var(--txt-1);
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, sans-serif;
       background: var(--bg);
-      min-height: 100vh;
+      color: var(--text-1);
+      line-height: 1.45;
       overflow-x: hidden;
-      overflow-y: hidden; /* only change to remove right-side scrollbar */
-      -webkit-font-smoothing: antialiased;
     }
 
-    .ambient {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    .ambient-grid {
-      position: absolute;
-      inset: 0;
+    .page {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 18px 20px 24px;
     }
 
-    .shell {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    .topbar {
+    /* =========================
+       TOP HEADER
+    ========================= */
+    .top-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 36px;
-      height: 60px;
-      background: var(--topbar-bg);
-      backdrop-filter: blur(24px) saturate(160%);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 200;
-    }
-
-    .brand-title {
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      color: var(--txt-1);
-    }
-
-    .brand-title em {
-      font-style: normal;
-      color: var(--cgc-blue);
-    }
-
-    .brand-sub {
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--txt-3);
-      margin-top: 2px;
-    }
-
-    .live-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 11px;
-      border-radius: 20px;
-      background: rgba(27,61,109,0.06);
-      border: 1px solid rgba(27,61,109,0.15);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: var(--cgc-blue);
-    }
-
-    .live-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--cgc-blue);
-      animation: pulse 1.5s infinite;
-    }
-
-    .masthead {
-      padding: 48px 36px 36px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(160deg, var(--cgc-blue-pale) 0%, transparent 60%);
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .masthead-title {
-      font-family: var(--font-serif);
-      font-size: 46px;
-      font-weight: 400;
-      line-height: 1.06;
-      letter-spacing: -0.5px;
-      color: var(--txt-1);
-      margin-bottom: 12px;
-    }
-
-    .masthead-title strong {
-      font-style: italic;
-      color: var(--cgc-blue);
-    }
-
-    .masthead-greeting {
-      max-width: 600px;
-      color: var(--txt-2);
+      gap: 16px;
+      padding: 6px 6px 18px;
+      border-bottom: 1px solid var(--cgc-line);
       margin-bottom: 20px;
     }
 
-    .masthead-meta {
+    .brand-wrap {
       display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
       align-items: center;
+      gap: 18px;
+      min-width: 0;
     }
 
-    .meta-chip {
-      display: inline-flex;
+    .brand-logo {
+      display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 5px 13px;
-      border-radius: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-size: 11px;
-      color: var(--txt-2);
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .brand-logo img {
+      height: 56px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 54px;
+      background: #b7c7df;
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 26px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      font-weight: 800;
+      color: var(--text-1);
+      margin-bottom: 6px;
+    }
+
+    .brand-text p {
+      font-size: 15px;
+      color: var(--text-2);
       font-weight: 500;
     }
 
-    .meta-chip .val.blue {
-      color: var(--cgc-blue);
+    .top-meta {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      border-left: 1px solid transparent;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
-    .workspace {
-      flex: 1;
-      padding: 32px 36px;
-    }
-
-    .section-block {
-      margin-bottom: 28px;
-    }
-
-    .sec {
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--txt-3);
-      margin-bottom: 14px;
+    .meta-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      padding: 4px 24px;
+      border-left: 1px solid var(--cgc-line);
+      min-height: 56px;
+      background: transparent;
     }
 
-    .sec::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg,var(--border),transparent);
-    }
-
-    .systems-grid {
+    .meta-icon {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      color: var(--cgc-blue-2);
       display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 10px;
-      margin-bottom: 28px;
+      place-items: center;
     }
 
-    .sys-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 18px 18px;
-      cursor: pointer;
-      transition: all 0.24s var(--ease);
+    .meta-text {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      position: relative;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
+      gap: 3px;
+      white-space: nowrap;
     }
 
-    .sys-card::after {
-      content: '';
+    .meta-label {
+      font-size: 13px;
+      color: var(--text-1);
+      font-weight: 600;
+    }
+
+    .meta-value {
+      font-size: 14px;
+      color: var(--cgc-blue);
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #28a745;
+      box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.12);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 12px;
+      align-items: stretch;
+      background:
+        radial-gradient(circle at top center, rgba(255,255,255,0.8), transparent 44%),
+        linear-gradient(180deg, #f7fbff 0%, #f1f5fb 100%);
+      border: 1px solid #c8d7ec;
+      border-radius: 16px;
+      padding: 34px 38px;
+      margin-bottom: 22px;
+      min-height: 192px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 44%, rgba(255,255,255,0) 65%);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      max-width: 620px;
+      align-self: center;
+    }
+
+    .hero-kicker {
+      font-size: 16px;
+      color: var(--cgc-blue-2);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 54px;
+      line-height: 0.98;
+      letter-spacing: -0.025em;
+      color: #102f6a;
+      margin-bottom: 18px;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-2);
+      line-height: 1.65;
+      max-width: 540px;
+    }
+
+    .hero-art {
+      position: relative;
+      z-index: 1;
+      min-height: 170px;
+      overflow: hidden;
+      border-radius: 12px;
+      align-self: stretch;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 100%);
+    }
+
+    .hero-art img {
       position: absolute;
       bottom: 0;
       left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--cgc-blue);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.28s var(--ease);
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: bottom center;
+      user-select: none;
+      pointer-events: none;
     }
 
-    .sys-card:hover {
-      background: var(--surface-hi);
-      border-color: var(--border-hi);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
+    /* =========================
+       SECTION
+    ========================= */
+    .section {
+      margin-bottom: 20px;
     }
 
-    .sys-card:hover::after {
-      transform: scaleX(1);
-    }
-
-    .sys-card:hover .sys-arrow {
-      opacity: 1;
-      color: var(--cgc-blue);
-      transform: translate(0,0);
-    }
-
-    .sys-card-top {
+    .section-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
     }
 
-    .sys-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 11px;
-      background: rgba(0,0,0,0.03);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
+    .section-icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: var(--cgc-blue-2);
+      flex-shrink: 0;
     }
 
-    .sys-arrow {
-      font-size: 13px;
-      color: var(--txt-3);
-      opacity: 0;
-      transform: translate(-3px, 3px);
-      transition: all 0.2s;
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #122c6a;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    .sys-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--txt-1);
-      line-height: 1.4;
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: #ccdaee;
     }
 
-    .sys-desc {
-      font-size: 12px;
-      color: var(--txt-2);
-      line-height: 1.6;
-    }
-
-    .sys-tags {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: auto;
-    }
-
-    .tag {
-      font-size: 9px;
+    .section-link {
+      font-size: 15px;
       font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 6px;
-      background: var(--cgc-blue-pale);
-      color: var(--cgc-blue);
-      border: 1px solid rgba(27,61,109,0.15);
-    }
-
-    .tag-pbi {
-      background: var(--tag-pbi-bg);
-      color: var(--tag-pbi-txt);
-      border-color: var(--tag-pbi-brd);
-    }
-
-    .tag-sp {
-      background: var(--tag-sp-bg);
-      color: var(--tag-sp-txt);
-      border-color: var(--tag-sp-brd);
-    }
-
-    .tag-ex {
-      background: var(--tag-ex-bg);
-      color: var(--tag-ex-txt);
-      border-color: var(--tag-ex-brd);
-    }
-
-    .footer {
-      padding: 14px 36px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .footer-l {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: 11px;
-      color: var(--txt-2);
-    }
-
-    .sys-ok {
+      color: #1d59ba;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      font-size: 10px;
-      color: #107C10;
-      font-weight: 600;
+      gap: 8px;
+      white-space: nowrap;
     }
 
-    .sys-ok::before {
-      content: '';
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #107C10;
-      animation: pulse 1.5s infinite;
+    .section-link svg {
+      transition: transform 0.22s var(--ease);
     }
 
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50% { opacity:0.45; transform:scale(0.7); }
+    .section-link:hover svg {
+      transform: translateX(4px);
     }
 
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(14px); }
-      to { opacity:1; transform:translateY(0); }
+    /* =========================
+       CARD GRIDS
+    ========================= */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .sys-card,
+    .dash-card {
+      background: var(--card);
+      border: 1px solid #dbe5f1;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease), border-color 0.22s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sys-card:hover,
+    .dash-card:hover {
+      transform: translateY(-3px);
+      border-color: #c8d6ea;
+      box-shadow: 0 8px 24px rgba(19, 35, 63, 0.08);
     }
 
     .sys-card {
-      animation: fadeUp 0.45s var(--ease) both;
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      align-items: start;
+      gap: 16px;
+      padding: 18px 18px 16px;
+      min-height: 136px;
     }
 
-    @media (max-width: 1100px) {
-      body { overflow-y: auto; }
-      .systems-grid { grid-template-columns: repeat(2,1fr); }
+    .dash-card {
+      padding: 14px 14px 14px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    @media (max-width: 640px) {
-      body { overflow-y: auto; }
-      .systems-grid { grid-template-columns: 1fr; }
+    .card-iconbox {
+      width: 74px;
+      height: 74px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: #f1f5fb;
+      color: var(--cgc-blue-2);
+      flex-shrink: 0;
+    }
+
+    .icon-blue { background: #eef3ff; color: #2e67d1; }
+    .icon-purple { background: #f3eefc; color: #7a54ce; }
+    .icon-green { background: #edf8f1; color: #258b4f; }
+    .icon-gold { background: #fff7e9; color: #d08b12; }
+
+    .card-iconbox svg {
+      width: 38px;
+      height: 38px;
+    }
+
+    .sys-main,
+    .dash-main {
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 800;
+      color: #162d68;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-2);
+    }
+
+    .card-arrow {
+      align-self: flex-start;
+      color: #1b4fb1;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .card-arrow svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .pill.blue {
+      background: var(--tag-blue-bg);
+      color: var(--tag-blue-txt);
+    }
+
+    .pill.green {
+      background: var(--tag-green-bg);
+      color: var(--tag-green-txt);
+    }
+
+    .pill.gold {
+      background: var(--tag-gold-bg);
+      color: var(--tag-gold-txt);
+    }
+
+    .pill.purple {
+      background: var(--tag-purple-bg);
+      color: var(--tag-purple-txt);
+    }
+
+    .dash-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .dash-top .card-iconbox {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+    }
+
+    .dash-top .card-iconbox svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .dash-main .card-title {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .dash-main .card-desc {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .dash-arrow {
+      color: #1b4fb1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .dash-arrow svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .dash-card .tag-row {
+      margin-top: auto;
+      padding-top: 4px;
+    }
+
+    /* =========================
+       QUICK ACCESS
+    ========================= */
+    .quick-strip {
+      display: grid;
+      grid-template-columns: 190px repeat(5, 1fr);
+      gap: 0;
+      background: #eff4fc;
+      border: 1px solid #dbe5f1;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .quick-head,
+    .quick-link {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+    }
+
+    .quick-head {
+      font-size: 16px;
+      font-weight: 800;
+      color: #173581;
+      border-right: 1px solid #d3deef;
+      background: rgba(255,255,255,0.22);
+      text-transform: uppercase;
+    }
+
+    .quick-link {
+      justify-content: space-between;
+      border-right: 1px solid #d3deef;
+      transition: background 0.2s var(--ease);
+    }
+
+    .quick-link:last-child {
+      border-right: 0;
+    }
+
+    .quick-link:hover {
+      background: rgba(255,255,255,0.35);
+    }
+
+    .quick-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .quick-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #17408d;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .quick-icon,
+    .quick-arrow {
+      color: #2257b2;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 6px 0;
+      margin-top: 12px;
+      border-top: 1px solid var(--cgc-line);
+      color: var(--text-2);
+      font-size: 15px;
+    }
+
+    .footer-center {
+      opacity: 0.9;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #1c55b3;
+      font-weight: 600;
+    }
+
+    /* =========================
+       SVG ICON DEFAULT
+    ========================= */
+    .i {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .i-solid {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 1380px) {
+      .grid-6 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .quick-strip {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .quick-head {
+        grid-column: 1 / -1;
+        border-right: 0;
+        border-bottom: 1px solid #d3deef;
+      }
+
+      .quick-link:nth-child(4),
+      .quick-link:nth-child(5),
+      .quick-link:nth-child(6) {
+        border-top: 1px solid #d3deef;
+      }
+    }
+
+    @media (max-width: 1120px) {
+      .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .top-meta {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .sys-card {
+        grid-template-columns: 78px 1fr auto;
+      }
+
+      .footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 14px;
+      }
+
+      .brand-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .brand-divider {
+        display: none;
+      }
+
+      .brand-logo img {
+        height: 48px;
+      }
+
+      .brand-text h1 {
+        font-size: 22px;
+      }
+
+      .hero {
+        padding: 24px 20px;
+      }
+
+      .hero-title {
+        font-size: 42px;
+      }
+
+      .meta-item {
+        padding: 8px 0 8px 0;
+        border-left: 0;
+        width: 100%;
+      }
+
+      .grid-6 {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-link {
+        border-right: 0;
+        border-top: 1px solid #d3deef;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="ambient">
-    <div class="ambient-grid"></div>
-  </div>
+  <div class="page">
 
-  <div class="shell">
-    <header class="topbar">
-      <div class="topbar-brand">
-        <div class="brand-title">Finance <em>&amp;</em> Procurement <em>Hub</em></div>
-        <div class="brand-sub">Credit Guarantee Corporation Malaysia Berhad</div>
+    <!-- =========================
+         TOP HEADER
+    ========================== -->
+    <header class="top-header">
+      <div class="brand-wrap">
+        <div class="brand-logo">
+          <!-- Exact uploaded CGC logo -->
+          <img src="image.png" alt="CGC logo" />
+          <div class="brand-divider"></div>
+        </div>
+
+        <div class="brand-text">
+          <h1>Finance &amp; Procurement Division Hub</h1>
+          <p>Credit Guarantee Corporation Malaysia Berhad</p>
+        </div>
       </div>
-      <div class="topbar-right">
-        <div class="live-pill">
-          <div class="live-dot"></div>
-          <span id="topbar-clock">—</span>
+
+      <div class="top-meta">
+        <div class="meta-item">
+          <div class="status-dot" aria-hidden="true"></div>
+          <div class="meta-text">
+            <div class="meta-label">System Status</div>
+            <div class="meta-value" style="color:#16894a;">All Systems Operational</div>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-icon" aria-hidden="true">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M16 2v4"></path>
+              <path d="M8 2v4"></path>
+              <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+              <path d="M3 10h18"></path>
+            </svg>
+          </div>
+          <div class="meta-text">
+            <div class="meta-label">Division</div>
+            <div class="meta-value">Finance &amp; Procurement</div>
+          </div>
         </div>
       </div>
     </header>
 
-    <section class="masthead">
-      <h1 class="masthead-title">
-        <span id="greeting">Good morning</span>,<br>
-        <strong>welcome back.</strong>
-      </h1>
-      <p class="masthead-greeting">
-        Your central access point for all finance and procurement systems, policy documents, and division resources.
-      </p>
-      <div class="masthead-meta">
-        <div class="meta-chip">
-          <span class="label">Date</span>&nbsp;<span class="val" id="meta-date">—</span>
-        </div>
-        <div class="meta-chip">
-          <span class="label">Fiscal Period</span>&nbsp;<span class="val blue">Q2 FY2026</span>
-        </div>
-        <div class="meta-chip">
-          <span class="label">Division</span>&nbsp;<span class="val">Finance &amp; Procurement</span>
-        </div>
+    <!-- =========================
+         HERO
+    ========================== -->
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="hero-kicker">Your central access point for</div>
+        <h2 class="hero-title">Finance &amp; Procurement.</h2>
+        <p class="hero-sub">
+          Access systems, dashboards, policy documents, and resources to streamline your work.
+        </p>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <!-- Save your exact skyline image as kl-skyline.png in the same folder -->
+        <img src="kl-skyline.png" alt="Kuala Lumpur city skyline" />
       </div>
     </section>
 
-    <main class="workspace">
-      <section class="section-block">
-        <div class="sec">Core Systems</div>
-        <div class="systems-grid">
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">📊</div>
-              <span class="sys-arrow">↗</span>
-            </div>
-            <div class="sys-name">Budget Management</div>
-            <div class="sys-desc">Budget verification, virement requests, and CAPEX/OPEX tracking.</div>
-            <div class="sys-tags">
-              <span class="tag">CAPEX</span>
-              <span class="tag">OPEX</span>
-            </div>
-          </a>
-
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">🛒</div>
-              <span class="sys-arrow">↗</span>
-            </div>
-            <div class="sys-name">Procurement Lifecycle</div>
-            <div class="sys-desc">Purchase requisitions (PO and Non-PO), contracts, and vendors.</div>
-            <div class="sys-tags">
-              <span class="tag">PO</span>
-              <span class="tag">Non-PO</span>
-            </div>
-          </a>
-
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">💵</div>
-              <span class="sys-arrow">↗</span>
-            </div>
-            <div class="sys-name">Petty Cash</div>
-            <div class="sys-desc">Claims, reimbursement requests, and float management.</div>
-            <div class="sys-tags">
-              <span class="tag">Claims</span>
-              <span class="tag">Float</span>
-            </div>
-          </a>
-
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">🏦</div>
-              <span class="sys-arrow">↗</span>
-            </div>
-            <div class="sys-name">Treasury &amp; Reporting</div>
-            <div class="sys-desc">GL reconciliation, investments, and cash flow forecasting.</div>
-            <div class="sys-tags">
-              <span class="tag">GL</span>
-              <span class="tag">ALCO</span>
-            </div>
-          </a>
-
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">⚖️</div>
-              <span class="sys-arrow">↗</span>
-            </div>
-            <div class="sys-name">Compliance &amp; Tax</div>
-            <div class="sys-desc">e-Invoice management, IRBM guidelines, and audit readiness.</div>
-            <div class="sys-tags">
-              <span class="tag">e-Invoice</span>
-              <span class="tag">IRBM</span>
-            </div>
-          </a>
-
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">🗄️</div>
-              <span class="sys-arrow">↗</span>
-            </div>
-            <div class="sys-name">Document Vault</div>
-            <div class="sys-desc">Centralised repository for templates, forms, and SOPs.</div>
-            <div class="sys-tags">
-              <span class="tag">SOPs</span>
-              <span class="tag">Forms</span>
-            </div>
-          </a>
+    <!-- =========================
+         CORE SYSTEMS
+    ========================== -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon" aria-hidden="true">
+          <svg class="i" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          </svg>
         </div>
-      </section>
+        <div class="section-title">Core Systems</div>
+        <div class="section-line"></div>
+        <a href="#" class="section-link">
+          <span>View all systems</span>
+          <svg class="i" viewBox="0 0 24 24">
+            <path d="M5 12h14"></path>
+            <path d="M13 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
 
-      <section class="section-block">
-        <div class="sec">Reporting &amp; Dashboards</div>
-        <div class="systems-grid">
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">📈</div>
-              <span class="sys-arrow">↗</span>
+      <div class="grid-3">
+        <a href="#" class="sys-card" target="_blank" rel="noopener noreferrer">
+          <div class="card-iconbox icon-blue">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M5 19V11"></path>
+              <path d="M12 19V5"></path>
+              <path d="M19 19V8"></path>
+            </svg>
+          </div>
+          <div class="sys-main">
+            <div class="card-title">Budget Management</div>
+            <div class="card-desc">Budget verification, virement requests, and CAPEX/OPEX tracking.</div>
+            <div class="tag-row">
+              <span class="pill blue">CAPEX</span>
+              <span class="pill blue">OPEX</span>
             </div>
-            <div class="sys-name">Budget Utilisation Dashboard</div>
-            <div class="sys-desc">Live CAPEX/OPEX spend vs. approved budget — updated monthly.</div>
-            <div class="sys-tags">
-              <span class="tag tag-pbi">POWER BI</span>
-            </div>
-          </a>
+          </div>
+          <div class="card-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M5 12h14"></path>
+              <path d="M13 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
 
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">📄</div>
-              <span class="sys-arrow">↗</span>
+        <a href="#" class="sys-card" target="_blank" rel="noopener noreferrer">
+          <div class="card-iconbox icon-purple">
+            <svg class="i" viewBox="0 0 24 24">
+              <circle cx="9" cy="19" r="1.5"></circle>
+              <circle cx="18" cy="19" r="1.5"></circle>
+              <path d="M3 4h2l2.2 10.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L21 7H7.2"></path>
+              <path d="M8 8h10"></path>
+            </svg>
+          </div>
+          <div class="sys-main">
+            <div class="card-title">Procurement Lifecycle</div>
+            <div class="card-desc">Purchase requisitions (PO and Non-PO), contracts, and vendors.</div>
+            <div class="tag-row">
+              <span class="pill purple">PO</span>
+              <span class="pill purple">Non-PO</span>
             </div>
-            <div class="sys-name">Accounts Payable Tracker</div>
-            <div class="sys-desc">Outstanding invoices, payment status, and SLA monitoring.</div>
-            <div class="sys-tags">
-              <span class="tag tag-sp">SHAREPOINT</span>
-            </div>
-          </a>
+          </div>
+          <div class="card-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M5 12h14"></path>
+              <path d="M13 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
 
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">🏦</div>
-              <span class="sys-arrow">↗</span>
+        <a href="#" class="sys-card" target="_blank" rel="noopener noreferrer">
+          <div class="card-iconbox icon-green">
+            <svg class="i" viewBox="0 0 24 24">
+              <rect x="3" y="6" width="18" height="12" rx="2"></rect>
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M7 9h0"></path>
+              <path d="M17 15h0"></path>
+            </svg>
+          </div>
+          <div class="sys-main">
+            <div class="card-title">Petty Cash</div>
+            <div class="card-desc">Claims, reimbursement requests, and float management.</div>
+            <div class="tag-row">
+              <span class="pill green">Claims</span>
+              <span class="pill green">Float</span>
             </div>
-            <div class="sys-name">Treasury Monthly Report</div>
-            <div class="sys-desc">Cash flow forecast, investment income, and GL reconciliation summary.</div>
-            <div class="sys-tags">
-              <span class="tag tag-ex">EXCEL</span>
-            </div>
-          </a>
+          </div>
+          <div class="card-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M5 12h14"></path>
+              <path d="M13 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
 
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">📋</div>
-              <span class="sys-arrow">↗</span>
+        <a href="#" class="sys-card" target="_blank" rel="noopener noreferrer">
+          <div class="card-iconbox icon-blue">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M3 21h18"></path>
+              <path d="M5 21V9"></path>
+              <path d="M19 21V9"></path>
+              <path d="M4 9l8-5 8 5"></path>
+              <path d="M8 13h8"></path>
+              <path d="M8 17h8"></path>
+            </svg>
+          </div>
+          <div class="sys-main">
+            <div class="card-title">Treasury &amp; Reporting</div>
+            <div class="card-desc">GL reconciliation, investments, and cash flow forecasting.</div>
+            <div class="tag-row">
+              <span class="pill blue">GL</span>
+              <span class="pill blue">ALCO</span>
             </div>
-            <div class="sys-name">Procurement Activity Log</div>
-            <div class="sys-desc">PO register, vendor performance, and contract expiry tracking.</div>
-            <div class="sys-tags">
-              <span class="tag tag-sp">SHAREPOINT</span>
-            </div>
-          </a>
+          </div>
+          <div class="card-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M5 12h14"></path>
+              <path d="M13 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
 
-          <a href="#" class="sys-card">
-            <div class="sys-card-top">
-              <div class="sys-icon">⚖️</div>
-              <span class="sys-arrow">↗</span>
+        <a href="#" class="sys-card" target="_blank" rel="noopener noreferrer">
+          <div class="card-iconbox icon-blue">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M12 3l7 4v5c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V7l7-4z"></path>
+              <path d="M9.5 12.5l1.8 1.8 3.8-4"></path>
+            </svg>
+          </div>
+          <div class="sys-main">
+            <div class="card-title">Compliance &amp; Tax</div>
+            <div class="card-desc">e-Invoice management, IRBM guidelines, and audit readiness.</div>
+            <div class="tag-row">
+              <span class="pill blue">e-Invoice</span>
+              <span class="pill blue">IRBM</span>
             </div>
-            <div class="sys-name">Compliance &amp; Tax Register</div>
-            <div class="sys-desc">e-Invoice status, IRBM submissions, and audit readiness checklist.</div>
-            <div class="sys-tags">
-              <span class="tag tag-sp">SHAREPOINT</span>
+          </div>
+          <div class="card-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M5 12h14"></path>
+              <path d="M13 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card" target="_blank" rel="noopener noreferrer">
+          <div class="card-iconbox icon-blue">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+            </svg>
+          </div>
+          <div class="sys-main">
+            <div class="card-title">Document Vault</div>
+            <div class="card-desc">Centralised repository for templates, forms, and SOPs.</div>
+            <div class="tag-row">
+              <span class="pill blue">SOPs</span>
+              <span class="pill blue">Forms</span>
             </div>
-          </a>
+          </div>
+          <div class="card-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M5 12h14"></path>
+              <path d="M13 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- =========================
+         REPORTING & DASHBOARDS
+    ========================== -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-icon" aria-hidden="true">
+          <svg class="i" viewBox="0 0 24 24">
+            <path d="M12 2v20"></path>
+            <path d="M12 12 4 4"></path>
+            <path d="M12 12 20 4"></path>
+            <path d="M12 12 4 20"></path>
+            <path d="M12 12 20 20"></path>
+          </svg>
         </div>
-      </section>
-    </main>
+        <div class="section-title">Reporting &amp; Dashboards</div>
+        <div class="section-line"></div>
+        <a href="#" class="section-link">
+          <span>View all dashboards</span>
+          <svg class="i" viewBox="0 0 24 24">
+            <path d="M5 12h14"></path>
+            <path d="M13 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
 
+      <div class="grid-6">
+        <a href="#" class="dash-card" target="_blank" rel="noopener noreferrer">
+          <div class="dash-top">
+            <div class="card-iconbox icon-gold">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M4 19V5"></path>
+                <path d="M4 19h16"></path>
+                <path d="M7 15l4-4 3 2 4-5"></path>
+              </svg>
+            </div>
+            <div class="dash-arrow">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M5 12h14"></path>
+                <path d="M13 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="dash-main">
+            <div class="card-title">Budget Utilisation Dashboard</div>
+            <div class="card-desc">Live CAPEX/OPEX spend vs. approved budget — updated monthly.</div>
+          </div>
+          <div class="tag-row">
+            <span class="pill gold">POWER BI</span>
+          </div>
+        </a>
+
+        <a href="#" class="dash-card" target="_blank" rel="noopener noreferrer">
+          <div class="dash-top">
+            <div class="card-iconbox icon-blue">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path>
+                <path d="M14 3v5h5"></path>
+                <path d="M9 13h6"></path>
+                <path d="M9 17h6"></path>
+                <path d="M9 9h2"></path>
+              </svg>
+            </div>
+            <div class="dash-arrow">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M5 12h14"></path>
+                <path d="M13 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="dash-main">
+            <div class="card-title">Accounts Payable Tracker</div>
+            <div class="card-desc">Outstanding invoices, payment status, and SLA monitoring.</div>
+          </div>
+          <div class="tag-row">
+            <span class="pill blue">SHAREPOINT</span>
+          </div>
+        </a>
+
+        <a href="#" class="dash-card" target="_blank" rel="noopener noreferrer">
+          <div class="dash-top">
+            <div class="card-iconbox icon-green">
+              <svg class="i" viewBox="0 0 24 24">
+                <rect x="5" y="3" width="14" height="18" rx="2"></rect>
+                <path d="M9 8h6"></path>
+                <path d="M9 12h6"></path>
+                <path d="M9 16h6"></path>
+              </svg>
+            </div>
+            <div class="dash-arrow">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M5 12h14"></path>
+                <path d="M13 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="dash-main">
+            <div class="card-title">Treasury Monthly Report</div>
+            <div class="card-desc">Cash flow forecast, investment income, and GL reconciliation summary.</div>
+          </div>
+          <div class="tag-row">
+            <span class="pill green">EXCEL</span>
+          </div>
+        </a>
+
+        <a href="#" class="dash-card" target="_blank" rel="noopener noreferrer">
+          <div class="dash-top">
+            <div class="card-iconbox icon-blue">
+              <svg class="i" viewBox="0 0 24 24">
+                <circle cx="9" cy="19" r="1.5"></circle>
+                <circle cx="18" cy="19" r="1.5"></circle>
+                <path d="M3 4h2l2.2 10.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L21 7H7.2"></path>
+                <path d="M8 8h10"></path>
+              </svg>
+            </div>
+            <div class="dash-arrow">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M5 12h14"></path>
+                <path d="M13 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="dash-main">
+            <div class="card-title">Procurement Activity Log</div>
+            <div class="card-desc">PO register, vendor performance, and contract expiry tracking.</div>
+          </div>
+          <div class="tag-row">
+            <span class="pill blue">SHAREPOINT</span>
+          </div>
+        </a>
+
+        <a href="#" class="dash-card" target="_blank" rel="noopener noreferrer">
+          <div class="dash-top">
+            <div class="card-iconbox icon-purple">
+              <svg class="i" viewBox="0 0 24 24">
+                <rect x="5" y="4" width="14" height="16" rx="2"></rect>
+                <path d="M9 2v4"></path>
+                <path d="M15 2v4"></path>
+                <path d="M8 10h8"></path>
+                <path d="M8 14h8"></path>
+              </svg>
+            </div>
+            <div class="dash-arrow">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M5 12h14"></path>
+                <path d="M13 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="dash-main">
+            <div class="card-title">Compliance &amp; Tax Register</div>
+            <div class="card-desc">e-Invoice status, IRBM submissions, and audit readiness checklist.</div>
+          </div>
+          <div class="tag-row">
+            <span class="pill blue">SHAREPOINT</span>
+          </div>
+        </a>
+
+        <a href="#" class="dash-card" target="_blank" rel="noopener noreferrer">
+          <div class="dash-top">
+            <div class="card-iconbox icon-gold">
+              <svg class="i" viewBox="0 0 24 24">
+                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                <path d="M8 8h8"></path>
+                <path d="M8 12h8"></path>
+                <path d="M8 16h5"></path>
+              </svg>
+            </div>
+            <div class="dash-arrow">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M5 12h14"></path>
+                <path d="M13 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="dash-main">
+            <div class="card-title">Management Summary Dashboard</div>
+            <div class="card-desc">Consolidated finance and procurement KPIs for leadership review.</div>
+          </div>
+          <div class="tag-row">
+            <span class="pill gold">POWER BI</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- =========================
+         QUICK ACCESS
+    ========================== -->
+    <section class="section">
+      <div class="quick-strip">
+        <div class="quick-head">
+          <svg class="i" viewBox="0 0 24 24">
+            <path d="M10 13a5 5 0 0 1 0-7l1.5-1.5a5 5 0 0 1 7 7L17 13"></path>
+            <path d="M14 11a5 5 0 0 1 0 7L12.5 19.5a5 5 0 0 1-7-7L7 11"></path>
+          </svg>
+          <span>Quick Access</span>
+        </div>
+
+        <a href="#" class="quick-link" target="_blank" rel="noopener noreferrer">
+          <div class="quick-left">
+            <div class="quick-icon">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path>
+                <path d="M14 3v5h5"></path>
+              </svg>
+            </div>
+            <div class="quick-text">Procurement Policy</div>
+          </div>
+          <div class="quick-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </div>
+        </a>
+
+        <a href="#" class="quick-link" target="_blank" rel="noopener noreferrer">
+          <div class="quick-left">
+            <div class="quick-icon">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="quick-text">Vendor List</div>
+          </div>
+          <div class="quick-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </div>
+        </a>
+
+        <a href="#" class="quick-link" target="_blank" rel="noopener noreferrer">
+          <div class="quick-left">
+            <div class="quick-icon">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path>
+                <path d="M14 3v5h5"></path>
+              </svg>
+            </div>
+            <div class="quick-text">Templates</div>
+          </div>
+          <div class="quick-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </div>
+        </a>
+
+        <a href="#" class="quick-link" target="_blank" rel="noopener noreferrer">
+          <div class="quick-left">
+            <div class="quick-icon">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
+            <div class="quick-text">SOPs</div>
+          </div>
+          <div class="quick-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </div>
+        </a>
+
+        <a href="#" class="quick-link" target="_blank" rel="noopener noreferrer">
+          <div class="quick-left">
+            <div class="quick-icon">
+              <svg class="i" viewBox="0 0 24 24">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"></path>
+              </svg>
+            </div>
+            <div class="quick-text">Forms</div>
+          </div>
+          <div class="quick-arrow">
+            <svg class="i" viewBox="0 0 24 24">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
     <footer class="footer">
-      <div class="footer-l">
-        <span>© 2026 Credit Guarantee Corporation Malaysia Berhad</span>
-        <span>·</span>
-        <span class="sys-ok">Portal Active</span>
+      <div class="footer-left">© 2026 Credit Guarantee Corporation Malaysia Berhad</div>
+      <div class="footer-center">All rights reserved.</div>
+      <div class="footer-right">
+        <a href="#" class="footer-link" target="_blank" rel="noopener noreferrer">
+          <svg class="i" viewBox="0 0 24 24">
+            <path d="M22 16.92V19a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 3.18 2 2 0 0 1 4.11 1h2.09a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.56 8.53a16 16 0 0 0 7.91 7.91l.89-.89a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          <span>Contact Finance Helpdesk</span>
+        </a>
+
+        <a href="#" class="footer-link" target="_blank" rel="noopener noreferrer">
+          <svg class="i" viewBox="0 0 24 24">
+            <path d="M22 2 11 13"></path>
+            <path d="M22 2 15 22l-4-9-9-4 20-7Z"></path>
+          </svg>
+          <span>Submit a Request</span>
+        </a>
       </div>
     </footer>
   </div>
-
-  <script>
-    function setGreeting() {
-      const h = new Date().getHours();
-      const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-      document.getElementById('greeting').textContent = g;
-    }
-    setGreeting();
-
-    function setDate() {
-      const now = new Date();
-      document.getElementById('meta-date').textContent = now.toLocaleDateString('en-MY', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-    setDate();
-
-    function tickClock() {
-      const el = document.getElementById('topbar-clock');
-      if (el) {
-        el.textContent =
-          new Date().toLocaleTimeString('en-MY', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-          }) + ' MYT';
-      }
-    }
-    tickClock();
-    setInterval(tickClock, 1000);
-  </script>
 </body>
 </html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
