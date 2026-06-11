@@ -26,6 +26,18 @@
   --txt-3:          #7A8AAA;
   --topbar-bg:      rgba(255,255,255,0.95);
   --shadow:         0 2px 16px rgba(0,0,0,0.06);
+
+  --tag-pbi-bg:     #fff8e1;
+  --tag-pbi-txt:    #b8860b;
+  --tag-pbi-brd:    #f7e6b0;
+
+  --tag-sp-bg:      #e3f2fd;
+  --tag-sp-txt:     #1976d2;
+  --tag-sp-brd:     #bbdefb;
+
+  --tag-ex-bg:      #e8f5e9;
+  --tag-ex-txt:     #2e7d32;
+  --tag-ex-brd:     #c8e6c9;
 }
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -92,7 +104,10 @@ body {
 .meta-chip .val.blue { color:var(--cgc-blue); }
 
 .workspace { flex:1; padding:32px 36px; }
-.sec { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.18em; color:var(--txt-3); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+
+.sec {
+  font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.18em; color:var(--txt-3); margin-bottom:14px; display:flex; align-items:center; gap:10px;
+}
 .sec::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
 
 .systems-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px; }
@@ -109,63 +124,323 @@ body {
 .sys-card:hover { background:var(--surface-hi); border-color:var(--border-hi); transform:translateY(-3px); box-shadow:var(--shadow); }
 .sys-card:hover::after { transform:scaleX(1); }
 .sys-card:hover .sys-arrow { opacity:1; color:var(--cgc-blue); transform:translate(0,0); }
-.sys-icon { width:42px; height:42px; border-radius:11px; background:rgba(0,0,0,0.03); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; }
+
+.sys-card-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.sys-icon {
+  width:42px; height:42px; border-radius:11px; background:rgba(0,0,0,0.03); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:20px;
+}
 .sys-arrow { font-size:13px; color:var(--txt-3); opacity:0; transition:all 0.2s; }
-.tag { font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; background:var(--cgc-blue-pale); color:var(--cgc-blue); border:1px solid rgba(27,61,109,0.15); }
+
+.sys-name {
+  font-size:14px;
+  font-weight:600;
+  color:var(--txt-1);
+  line-height:1.4;
+}
+
+.sys-desc {
+  font-size:12px;
+  color:var(--txt-2);
+  line-height:1.6;
+}
+
+.sys-tags {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:auto;
+}
+
+.tag {
+  font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px;
+  background:var(--cgc-blue-pale); color:var(--cgc-blue); border:1px solid rgba(27,61,109,0.15);
+}
+
+.tag-pbi {
+  background: var(--tag-pbi-bg);
+  color: var(--tag-pbi-txt);
+  border-color: var(--tag-pbi-brd);
+}
+
+.tag-sp {
+  background: var(--tag-sp-bg);
+  color: var(--tag-sp-txt);
+  border-color: var(--tag-sp-brd);
+}
+
+.tag-ex {
+  background: var(--tag-ex-bg);
+  color: var(--tag-ex-txt);
+  border-color: var(--tag-ex-brd);
+}
+
+.section-block { margin-bottom: 8px; }
 
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.45;transform:scale(0.7)} }
 @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 .sys-card { animation:fadeUp 0.45s var(--ease) both; }
 
 .footer { padding:14px 36px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
+.footer-l {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  font-size:11px;
+  color:var(--txt-2);
+}
 .sys-ok { display:inline-flex; align-items:center; gap:5px; font-size:10px; color:#107C10; font-weight:600; }
 .sys-ok::before { content:''; width:5px; height:5px; border-radius:50%; background:#107C10; animation:pulse 1.5s infinite; }
 
-@media(max-width:1100px) { .systems-grid{grid-template-columns:repeat(2,1fr)} }
-@media(max-width:640px) { .systems-grid{grid-template-columns:1fr} }
+@media(max-width:1100px) {
+  .systems-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px) {
+  .systems-grid{grid-template-columns:1fr}
+  .topbar {
+    padding:12px 20px;
+    height:auto;
+    gap:10px;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .masthead,
+  .workspace,
+  .footer {
+    padding-left:20px;
+    padding-right:20px;
+  }
+  .masthead-title {
+    font-size:36px;
+  }
+}
 </style>
 </head>
 <body>
 <div class="ambient"><div class="ambient-grid"></div></div>
+
 <div class="shell">
-<header class="topbar">
-  <div class="topbar-brand">
-    <div class="brand-title">Finance <em>&</em> Procurement <em>Hub</em></div>
-    <div class="brand-sub">Credit Guarantee Corporation Malaysia Berhad</div>
-  </div>
-  <div class="topbar-right"><div class="live-pill"><div class="live-dot"></div><span id="topbar-clock">—</span></div></div>
-</header>
-<section class="masthead">
-  <h1 class="masthead-title"><span id="greeting">Good morning</span>,<br><strong>welcome back.</strong></h1>
-  <p class="masthead-greeting">Your central access point for all finance and procurement systems, policy documents, and division resources.</p>
-  <div class="masthead-meta">
-    <div class="meta-chip"><span class="label">Date</span>&nbsp;<span class="val" id="meta-date">—</span></div>
-    <div class="meta-chip"><span class="label">Fiscal Period</span>&nbsp;<span class="val blue">Q2 FY2026</span></div>
-    <div class="meta-chip"><span class="label">Division</span>&nbsp;<span class="val">Finance &amp; Procurement</span></div>
-  </div>
-</section>
-<main class="workspace">
-    <div class="sec">Core Systems</div>
-    <div class="systems-grid">
-      <a href="#" class="sys-card"><div class="sys-card-top"><div class="sys-icon">📊</div><span class="sys-arrow">↗</span></div><div class="sys-name">Budget Management</div><div class="sys-desc">Budget verification, virement requests, and CAPEX/OPEX tracking.</div><div class="sys-tags"><span class="tag">CAPEX</span><span class="tag">OPEX</span></div></a>
-      <a href="#" class="sys-card"><div class="sys-card-top"><div class="sys-icon">🛒</div><span class="sys-arrow">↗</span></div><div class="sys-name">Procurement Lifecycle</div><div class="sys-desc">Purchase requisitions (PO and Non-PO), contracts, and vendors.</div><div class="sys-tags"><span class="tag">PO</span><span class="tag">Non-PO</span></div></a>
-      <a href="#" class="sys-card"><div class="sys-card-top"><div class="sys-icon">💵</div><span class="sys-arrow">↗</span></div><div class="sys-name">Petty Cash</div><div class="sys-desc">Claims, reimbursement requests, and float management.</div><div class="sys-tags"><span class="tag">Claims</span><span class="tag">Float</span></div></a>
-      <a href="#" class="sys-card"><div class="sys-card-top"><div class="sys-icon">🏦</div><span class="sys-arrow">↗</span></div><div class="sys-name">Treasury &amp; Reporting</div><div class="sys-desc">GL reconciliation, investments, and cash flow forecasting.</div><div class="sys-tags"><span class="tag">GL</span><span class="tag">ALCO</span></div></a>
-      <a href="#" class="sys-card"><div class="sys-card-top"><div class="sys-icon">⚖️</div><span class="sys-arrow">↗</span></div><div class="sys-name">Compliance &amp; Tax</div><div class="sys-desc">e-Invoice management, IRBM guidelines, and audit readiness.</div><div class="sys-tags"><span class="tag">e-Invoice</span><span class="tag">IRBM</span></div></a>
-      <a href="#" class="sys-card"><div class="sys-card-top"><div class="sys-icon">🗄️</div><span class="sys-arrow">↗</span></div><div class="sys-name">Document Vault</div><div class="sys-desc">Centralised repository for templates, forms, and SOPs.</div><div class="sys-tags"><span class="tag">SOPs</span><span class="tag">Forms</span></div></a>
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-title">Finance <em>&</em> Procurement <em>Hub</em></div>
+      <div class="brand-sub">Credit Guarantee Corporation Malaysia Berhad</div>
     </div>
-</main>
-<footer class="footer">
-  <div class="footer-l"><span>© 2026 Credit Guarantee Corporation Malaysia Berhad</span><span>·</span><span class="sys-ok">Portal Active</span></div>
-</footer>
+    <div class="topbar-right">
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        <span id="topbar-clock">—</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="masthead">
+    <h1 class="masthead-title"><span id="greeting">Good morning</span>,<br><strong>welcome back.</strong></h1>
+    <p class="masthead-greeting">Your central access point for all finance and procurement systems, policy documents, and division resources.</p>
+    <div class="masthead-meta">
+      <div class="meta-chip"><span class="label">Date</span>&nbsp;<span class="val" id="meta-date">—</span></div>
+      <div class="meta-chip"><span class="label">Fiscal Period</span>&nbsp;<span class="val blue">Q2 FY2026</span></div>
+      <div class="meta-chip"><span class="label">Division</span>&nbsp;<span class="val">Finance &amp; Procurement</span></div>
+    </div>
+  </section>
+
+  <main class="workspace">
+
+    <section class="section-block">
+      <div class="sec">Core Systems</div>
+      <div class="systems-grid">
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">📊</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Budget Management</div>
+          <div class="sys-desc">Budget verification, virement requests, and CAPEX/OPEX tracking.</div>
+          <div class="sys-tags">
+            <span class="tag">CAPEX</span>
+            <span class="tag">OPEX</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">🛒</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Procurement Lifecycle</div>
+          <div class="sys-desc">Purchase requisitions (PO and Non-PO), contracts, and vendors.</div>
+          <div class="sys-tags">
+            <span class="tag">PO</span>
+            <span class="tag">Non-PO</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">💵</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Petty Cash</div>
+          <div class="sys-desc">Claims, reimbursement requests, and float management.</div>
+          <div class="sys-tags">
+            <span class="tag">Claims</span>
+            <span class="tag">Float</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">🏦</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Treasury &amp; Reporting</div>
+          <div class="sys-desc">GL reconciliation, investments, and cash flow forecasting.</div>
+          <div class="sys-tags">
+            <span class="tag">GL</span>
+            <span class="tag">ALCO</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">⚖️</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Compliance &amp; Tax</div>
+          <div class="sys-desc">e-Invoice management, IRBM guidelines, and audit readiness.</div>
+          <div class="sys-tags">
+            <span class="tag">e-Invoice</span>
+            <span class="tag">IRBM</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">🗄️</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Document Vault</div>
+          <div class="sys-desc">Centralised repository for templates, forms, and SOPs.</div>
+          <div class="sys-tags">
+            <span class="tag">SOPs</span>
+            <span class="tag">Forms</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="sec">Reporting &amp; Dashboards</div>
+      <div class="systems-grid">
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">📈</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Budget Utilisation Dashboard</div>
+          <div class="sys-desc">Live CAPEX/OPEX spend vs. approved budget — updated monthly.</div>
+          <div class="sys-tags">
+            <span class="tag tag-pbi">POWER BI</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">📄</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Accounts Payable Tracker</div>
+          <div class="sys-desc">Outstanding invoices, payment status, and SLA monitoring.</div>
+          <div class="sys-tags">
+            <span class="tag tag-sp">SHAREPOINT</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">🏦</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Treasury Monthly Report</div>
+          <div class="sys-desc">Cash flow forecast, investment income, and GL reconciliation summary.</div>
+          <div class="sys-tags">
+            <span class="tag tag-ex">EXCEL</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">📋</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Procurement Activity Log</div>
+          <div class="sys-desc">PO register, vendor performance, and contract expiry tracking.</div>
+          <div class="sys-tags">
+            <span class="tag tag-sp">SHAREPOINT</span>
+          </div>
+        </a>
+
+        <a href="#" class="sys-card">
+          <div class="sys-card-top">
+            <div class="sys-icon">⚖️</div>
+            <span class="sys-arrow">↗</span>
+          </div>
+          <div class="sys-name">Compliance &amp; Tax Register</div>
+          <div class="sys-desc">e-Invoice status, IRBM submissions, and audit readiness checklist.</div>
+          <div class="sys-tags">
+            <span class="tag tag-sp">SHAREPOINT</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-l">
+      <span>© 2026 Credit Guarantee Corporation Malaysia Berhad</span>
+      <span>·</span>
+      <span class="sys-ok">Portal Active</span>
+    </div>
+  </footer>
 </div>
+
 <script>
-function setGreeting() { const h = new Date().getHours(); const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'; document.getElementById('greeting').textContent = g; }
+function setGreeting() {
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greeting').textContent = g;
+}
 setGreeting();
-function setDate() { const now = new Date(); document.getElementById('meta-date').textContent = now.toLocaleDateString('en-MY', { weekday:'short', day:'numeric', month:'short', year:'numeric' }); }
+
+function setDate() {
+  const now = new Date();
+  document.getElementById('meta-date').textContent = now.toLocaleDateString('en-MY', {
+    weekday:'short',
+    day:'numeric',
+    month:'short',
+    year:'numeric'
+  });
+}
 setDate();
-function tickClock() { const el = document.getElementById('topbar-clock'); if (el) el.textContent = new Date().toLocaleTimeString('en-MY', { hour:'2-digit', minute:'2-digit', second:'2-digit' }) + ' MYT'; }
-tickClock(); setInterval(tickClock, 1000);
+
+function tickClock() {
+  const el = document.getElementById('topbar-clock');
+  if (el) {
+    el.textContent = new Date().toLocaleTimeString('en-MY', {
+      hour:'2-digit',
+      minute:'2-digit',
+      second:'2-digit'
+    }) + ' MYT';
+  }
+}
+tickClock();
+setInterval(tickClock, 1000);
 </script>
 </body>
 </html>
