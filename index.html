@@ -1,446 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finance & Procurement Division Hub</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --cgc-blue:       #1B3D6D;
-  --cgc-blue-pale:  rgba(27,61,109,0.08);
-  --cgc-blue-glow:  rgba(27,61,109,0.15);
-  --font-serif:     'Instrument Serif', Georgia, serif;
-  --font-sans:      'Geist', -apple-system, sans-serif;
-  --font-mono:      'Geist Mono', monospace;
-  --ease:           cubic-bezier(0.22, 1, 0.36, 1);
-  
-  --bg:             #FFFFFF;
-  --surface:        rgba(0,0,0,0.03);
-  --surface-hi:     rgba(0,0,0,0.06);
-  --border:         rgba(0,0,0,0.1);
-  --border-hi:      rgba(27,61,109,0.4);
-  --txt-1:          #0F172A;
-  --txt-2:          #3A4A6A;
-  --txt-3:          #7A8AAA;
-  --topbar-bg:      rgba(255,255,255,0.95);
-  --shadow:         0 2px 16px rgba(0,0,0,0.06);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance & Procurement Division Hub</title>
 
-  --tag-pbi-bg:     #fff8e1;
-  --tag-pbi-txt:    #b8860b;
-  --tag-pbi-brd:    #f7e6b0;
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
 
-  --tag-sp-bg:      #e3f2fd;
-  --tag-sp-txt:     #1976d2;
-  --tag-sp-brd:     #bbdefb;
+  <style>
+    :root {
+      --cgc-blue:       #1B3D6D;
+      --cgc-blue-pale:  rgba(27,61,109,0.08);
+      --cgc-blue-glow:  rgba(27,61,109,0.15);
+      --font-serif:     'Instrument Serif', Georgia, serif;
+      --font-sans:      'Geist', -apple-system, sans-serif;
+      --font-mono:      'Geist Mono', monospace;
+      --ease:           cubic-bezier(0.22, 1, 0.36, 1);
 
-  --tag-ex-bg:      #e8f5e9;
-  --tag-ex-txt:     #2e7d32;
-  --tag-ex-brd:     #c8e6c9;
-}
+      --bg:             #FFFFFF;
+      --surface:        rgba(0,0,0,0.03);
+      --surface-hi:     rgba(0,0,0,0.06);
+      --border:         rgba(0,0,0,0.1);
+      --border-hi:      rgba(27,61,109,0.4);
+      --txt-1:          #0F172A;
+      --txt-2:          #3A4A6A;
+      --txt-3:          #7A8AAA;
+      --topbar-bg:      rgba(255,255,255,0.95);
+      --shadow:         0 2px 16px rgba(0,0,0,0.06);
 
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { background:var(--bg); scroll-behavior:smooth; }
-body {
-  font-family: var(--font-sans);
-  color: var(--txt-1);
-  background: var(--bg);
-  min-height: 100vh;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
+      --tag-pbi-bg:     #fff8e1;
+      --tag-pbi-txt:    #b8860b;
+      --tag-pbi-brd:    #f7e6b0;
 
-.ambient { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
-.ambient-grid { position:absolute; inset:0; }
+      --tag-sp-bg:      #e3f2fd;
+      --tag-sp-txt:     #1976d2;
+      --tag-sp-brd:     #bbdefb;
 
-.shell { position:relative; z-index:1; display:flex; flex-direction:column; min-height:100vh; }
+      --tag-ex-bg:      #e8f5e9;
+      --tag-ex-txt:     #2e7d32;
+      --tag-ex-brd:     #c8e6c9;
+    }
 
-.topbar {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 36px; height:60px;
-  background:var(--topbar-bg);
-  backdrop-filter:blur(24px) saturate(160%);
-  border-bottom:1px solid var(--border);
-  position:sticky; top:0; z-index:200;
-}
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-.brand-title { font-size:14px; font-weight:700; letter-spacing:0.03em; color:var(--txt-1); }
-.brand-title em { font-style:normal; color:var(--cgc-blue); }
-.brand-sub { font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--txt-3); margin-top:2px; }
+    html, body {
+      height: 100%;
+    }
 
-.live-pill {
-  display:inline-flex; align-items:center; gap:6px;
-  padding:4px 11px; border-radius:20px;
-  background:rgba(27,61,109,0.06);
-  border:1px solid rgba(27,61,109,0.15);
-  font-size:10px; font-weight:600;
-  letter-spacing:0.05em; color:var(--cgc-blue);
-}
-.live-dot { width:5px; height:5px; border-radius:50%; background:var(--cgc-blue); animation:pulse 1.5s infinite; }
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
 
-.masthead {
-  padding:48px 36px 36px;
-  border-bottom:1px solid var(--border);
-  background:linear-gradient(160deg, var(--cgc-blue-pale) 0%, transparent 60%);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    body {
+      font-family: var(--font-sans);
+      color: var(--txt-1);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: hidden; /* only change to remove right-side scrollbar */
+      -webkit-font-smoothing: antialiased;
+    }
 
-.masthead-title { font-family:var(--font-serif); font-size:46px; font-weight:400; line-height:1.06; letter-spacing:-0.5px; color:var(--txt-1); margin-bottom:12px; }
-.masthead-title strong { font-style:italic; color:var(--cgc-blue); }
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
 
-.masthead-greeting { max-width:600px; color:var(--txt-2); margin-bottom:20px; }
+    .ambient-grid {
+      position: absolute;
+      inset: 0;
+    }
 
-.masthead-meta { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center; align-items:center; }
-.meta-chip {
-  display:inline-flex; align-items:center; gap:7px;
-  padding:5px 13px; border-radius:8px;
-  background:var(--surface); border:1px solid var(--border);
-  font-size:11px; color:var(--txt-2); font-weight:500;
-}
-.meta-chip .val.blue { color:var(--cgc-blue); }
+    .shell {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-.workspace { flex:1; padding:32px 36px; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      height: 60px;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(24px) saturate(160%);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
 
-.sec {
-  font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.18em; color:var(--txt-3); margin-bottom:14px; display:flex; align-items:center; gap:10px;
-}
-.sec::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--txt-1);
+    }
 
-.systems-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px; }
-.sys-card {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:12px; padding:20px 18px 18px; cursor:pointer; transition:all 0.24s var(--ease);
-  display:flex; flex-direction:column; gap:10px; position:relative; overflow:hidden; text-decoration:none; color:inherit;
-}
-.sys-card::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
-  background:var(--cgc-blue); transform:scaleX(0); transform-origin:left;
-  transition:transform 0.28s var(--ease);
-}
-.sys-card:hover { background:var(--surface-hi); border-color:var(--border-hi); transform:translateY(-3px); box-shadow:var(--shadow); }
-.sys-card:hover::after { transform:scaleX(1); }
-.sys-card:hover .sys-arrow { opacity:1; color:var(--cgc-blue); transform:translate(0,0); }
+    .brand-title em {
+      font-style: normal;
+      color: var(--cgc-blue);
+    }
 
-.sys-card-top {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
+    .brand-sub {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--txt-3);
+      margin-top: 2px;
+    }
 
-.sys-icon {
-  width:42px; height:42px; border-radius:11px; background:rgba(0,0,0,0.03); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:20px;
-}
-.sys-arrow { font-size:13px; color:var(--txt-3); opacity:0; transition:all 0.2s; }
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      background: rgba(27,61,109,0.06);
+      border: 1px solid rgba(27,61,109,0.15);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--cgc-blue);
+    }
 
-.sys-name {
-  font-size:14px;
-  font-weight:600;
-  color:var(--txt-1);
-  line-height:1.4;
-}
+    .live-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cgc-blue);
+      animation: pulse 1.5s infinite;
+    }
 
-.sys-desc {
-  font-size:12px;
-  color:var(--txt-2);
-  line-height:1.6;
-}
+    .masthead {
+      padding: 48px 36px 36px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(160deg, var(--cgc-blue-pale) 0%, transparent 60%);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-.sys-tags {
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:auto;
-}
+    .masthead-title {
+      font-family: var(--font-serif);
+      font-size: 46px;
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.5px;
+      color: var(--txt-1);
+      margin-bottom: 12px;
+    }
 
-.tag {
-  font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px;
-  background:var(--cgc-blue-pale); color:var(--cgc-blue); border:1px solid rgba(27,61,109,0.15);
-}
+    .masthead-title strong {
+      font-style: italic;
+      color: var(--cgc-blue);
+    }
 
-.tag-pbi {
-  background: var(--tag-pbi-bg);
-  color: var(--tag-pbi-txt);
-  border-color: var(--tag-pbi-brd);
-}
+    .masthead-greeting {
+      max-width: 600px;
+      color: var(--txt-2);
+      margin-bottom: 20px;
+    }
 
-.tag-sp {
-  background: var(--tag-sp-bg);
-  color: var(--tag-sp-txt);
-  border-color: var(--tag-sp-brd);
-}
+    .masthead-meta {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
 
-.tag-ex {
-  background: var(--tag-ex-bg);
-  color: var(--tag-ex-txt);
-  border-color: var(--tag-ex-brd);
-}
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 13px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--txt-2);
+      font-weight: 500;
+    }
 
-.section-block { margin-bottom: 8px; }
+    .meta-chip .val.blue {
+      color: var(--cgc-blue);
+    }
 
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.45;transform:scale(0.7)} }
-@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-.sys-card { animation:fadeUp 0.45s var(--ease) both; }
+    .workspace {
+      flex: 1;
+      padding: 32px 36px;
+    }
 
-.footer { padding:14px 36px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
-.footer-l {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  flex-wrap:wrap;
-  font-size:11px;
-  color:var(--txt-2);
-}
-.sys-ok { display:inline-flex; align-items:center; gap:5px; font-size:10px; color:#107C10; font-weight:600; }
-.sys-ok::before { content:''; width:5px; height:5px; border-radius:50%; background:#107C10; animation:pulse 1.5s infinite; }
+    .section-block {
+      margin-bottom: 28px;
+    }
 
-@media(max-width:1100px) {
-  .systems-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:640px) {
-  .systems-grid{grid-template-columns:1fr}
-  .topbar {
-    padding:12px 20px;
-    height:auto;
-    gap:10px;
-    flex-direction:column;
-    align-items:flex-start;
-  }
-  .masthead,
-  .workspace,
-  .footer {
-    padding-left:20px;
-    padding-right:20px;
-  }
-  .masthead-title {
-    font-size:36px;
-  }
-}
-</style>
+    .sec {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--txt-3);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sec::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg,var(--border),transparent);
+    }
+
+    .systems-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .sys-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 18px 18px;
+      cursor: pointer;
+      transition: all 0.24s var(--ease);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sys-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--cgc-blue);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.28s var(--ease);
+    }
+
+    .sys-card:hover {
+      background: var(--surface-hi);
+      border-color: var(--border-hi);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .sys-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .sys-card:hover .sys-arrow {
+      opacity: 1;
+      color: var(--cgc-blue);
+      transform: translate(0,0);
+    }
+
+    .sys-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sys-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: rgba(0,0,0,0.03);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .sys-arrow {
+      font-size: 13px;
+      color: var(--txt-3);
+      opacity: 0;
+      transform: translate(-3px, 3px);
+      transition: all 0.2s;
+    }
+
+    .sys-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--txt-1);
+      line-height: 1.4;
+    }
+
+    .sys-desc {
+      font-size: 12px;
+      color: var(--txt-2);
+      line-height: 1.6;
+    }
+
+    .sys-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--cgc-blue-pale);
+      color: var(--cgc-blue);
+      border: 1px solid rgba(27,61,109,0.15);
+    }
+
+    .tag-pbi {
+      background: var(--tag-pbi-bg);
+      color: var(--tag-pbi-txt);
+      border-color: var(--tag-pbi-brd);
+    }
+
+    .tag-sp {
+      background: var(--tag-sp-bg);
+      color: var(--tag-sp-txt);
+      border-color: var(--tag-sp-brd);
+    }
+
+    .tag-ex {
+      background: var(--tag-ex-bg);
+      color: var(--tag-ex-txt);
+      border-color: var(--tag-ex-brd);
+    }
+
+    .footer {
+      padding: 14px 36px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer-l {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--txt-2);
+    }
+
+    .sys-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #107C10;
+      font-weight: 600;
+    }
+
+    .sys-ok::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #107C10;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.45; transform:scale(0.7); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(14px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    .sys-card {
+      animation: fadeUp 0.45s var(--ease) both;
+    }
+
+    @media (max-width: 1100px) {
+      body { overflow-y: auto; }
+      .systems-grid { grid-template-columns: repeat(2,1fr); }
+    }
+
+    @media (max-width: 640px) {
+      body { overflow-y: auto; }
+      .systems-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<div class="ambient"><div class="ambient-grid"></div></div>
+  <div class="ambient">
+    <div class="ambient-grid"></div>
+  </div>
 
-<div class="shell">
-  <header class="topbar">
-    <div class="topbar-brand">
-      <div class="brand-title">Finance <em>&</em> Procurement <em>Hub</em></div>
-      <div class="brand-sub">Credit Guarantee Corporation Malaysia Berhad</div>
-    </div>
-    <div class="topbar-right">
-      <div class="live-pill">
-        <div class="live-dot"></div>
-        <span id="topbar-clock">—</span>
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <div class="brand-title">Finance <em>&amp;</em> Procurement <em>Hub</em></div>
+        <div class="brand-sub">Credit Guarantee Corporation Malaysia Berhad</div>
       </div>
-    </div>
-  </header>
+      <div class="topbar-right">
+        <div class="live-pill">
+          <div class="live-dot"></div>
+          <span id="topbar-clock">—</span>
+        </div>
+      </div>
+    </header>
 
-  <section class="masthead">
-    <h1 class="masthead-title"><span id="greeting">Good morning</span>,<br><strong>welcome back.</strong></h1>
-    <p class="masthead-greeting">Your central access point for all finance and procurement systems, policy documents, and division resources.</p>
-    <div class="masthead-meta">
-      <div class="meta-chip"><span class="label">Date</span>&nbsp;<span class="val" id="meta-date">—</span></div>
-      <div class="meta-chip"><span class="label">Fiscal Period</span>&nbsp;<span class="val blue">Q2 FY2026</span></div>
-      <div class="meta-chip"><span class="label">Division</span>&nbsp;<span class="val">Finance &amp; Procurement</span></div>
-    </div>
-  </section>
-
-  <main class="workspace">
-
-    <section class="section-block">
-      <div class="sec">Core Systems</div>
-      <div class="systems-grid">
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">📊</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Budget Management</div>
-          <div class="sys-desc">Budget verification, virement requests, and CAPEX/OPEX tracking.</div>
-          <div class="sys-tags">
-            <span class="tag">CAPEX</span>
-            <span class="tag">OPEX</span>
-          </div>
-        </a>
-
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">🛒</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Procurement Lifecycle</div>
-          <div class="sys-desc">Purchase requisitions (PO and Non-PO), contracts, and vendors.</div>
-          <div class="sys-tags">
-            <span class="tag">PO</span>
-            <span class="tag">Non-PO</span>
-          </div>
-        </a>
-
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">💵</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Petty Cash</div>
-          <div class="sys-desc">Claims, reimbursement requests, and float management.</div>
-          <div class="sys-tags">
-            <span class="tag">Claims</span>
-            <span class="tag">Float</span>
-          </div>
-        </a>
-
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">🏦</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Treasury &amp; Reporting</div>
-          <div class="sys-desc">GL reconciliation, investments, and cash flow forecasting.</div>
-          <div class="sys-tags">
-            <span class="tag">GL</span>
-            <span class="tag">ALCO</span>
-          </div>
-        </a>
-
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">⚖️</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Compliance &amp; Tax</div>
-          <div class="sys-desc">e-Invoice management, IRBM guidelines, and audit readiness.</div>
-          <div class="sys-tags">
-            <span class="tag">e-Invoice</span>
-            <span class="tag">IRBM</span>
-          </div>
-        </a>
-
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">🗄️</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Document Vault</div>
-          <div class="sys-desc">Centralised repository for templates, forms, and SOPs.</div>
-          <div class="sys-tags">
-            <span class="tag">SOPs</span>
-            <span class="tag">Forms</span>
-          </div>
-        </a>
+    <section class="masthead">
+      <h1 class="masthead-title">
+        <span id="greeting">Good morning</span>,<br>
+        <strong>welcome back.</strong>
+      </h1>
+      <p class="masthead-greeting">
+        Your central access point for all finance and procurement systems, policy documents, and division resources.
+      </p>
+      <div class="masthead-meta">
+        <div class="meta-chip">
+          <span class="label">Date</span>&nbsp;<span class="val" id="meta-date">—</span>
+        </div>
+        <div class="meta-chip">
+          <span class="label">Fiscal Period</span>&nbsp;<span class="val blue">Q2 FY2026</span>
+        </div>
+        <div class="meta-chip">
+          <span class="label">Division</span>&nbsp;<span class="val">Finance &amp; Procurement</span>
+        </div>
       </div>
     </section>
 
-    <section class="section-block">
-      <div class="sec">Reporting &amp; Dashboards</div>
-      <div class="systems-grid">
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">📈</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Budget Utilisation Dashboard</div>
-          <div class="sys-desc">Live CAPEX/OPEX spend vs. approved budget — updated monthly.</div>
-          <div class="sys-tags">
-            <span class="tag tag-pbi">POWER BI</span>
-          </div>
-        </a>
+    <main class="workspace">
+      <section class="section-block">
+        <div class="sec">Core Systems</div>
+        <div class="systems-grid">
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">📊</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Budget Management</div>
+            <div class="sys-desc">Budget verification, virement requests, and CAPEX/OPEX tracking.</div>
+            <div class="sys-tags">
+              <span class="tag">CAPEX</span>
+              <span class="tag">OPEX</span>
+            </div>
+          </a>
 
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">📄</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Accounts Payable Tracker</div>
-          <div class="sys-desc">Outstanding invoices, payment status, and SLA monitoring.</div>
-          <div class="sys-tags">
-            <span class="tag tag-sp">SHAREPOINT</span>
-          </div>
-        </a>
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">🛒</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Procurement Lifecycle</div>
+            <div class="sys-desc">Purchase requisitions (PO and Non-PO), contracts, and vendors.</div>
+            <div class="sys-tags">
+              <span class="tag">PO</span>
+              <span class="tag">Non-PO</span>
+            </div>
+          </a>
 
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">🏦</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Treasury Monthly Report</div>
-          <div class="sys-desc">Cash flow forecast, investment income, and GL reconciliation summary.</div>
-          <div class="sys-tags">
-            <span class="tag tag-ex">EXCEL</span>
-          </div>
-        </a>
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">💵</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Petty Cash</div>
+            <div class="sys-desc">Claims, reimbursement requests, and float management.</div>
+            <div class="sys-tags">
+              <span class="tag">Claims</span>
+              <span class="tag">Float</span>
+            </div>
+          </a>
 
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">📋</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Procurement Activity Log</div>
-          <div class="sys-desc">PO register, vendor performance, and contract expiry tracking.</div>
-          <div class="sys-tags">
-            <span class="tag tag-sp">SHAREPOINT</span>
-          </div>
-        </a>
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">🏦</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Treasury &amp; Reporting</div>
+            <div class="sys-desc">GL reconciliation, investments, and cash flow forecasting.</div>
+            <div class="sys-tags">
+              <span class="tag">GL</span>
+              <span class="tag">ALCO</span>
+            </div>
+          </a>
 
-        <a href="#" class="sys-card">
-          <div class="sys-card-top">
-            <div class="sys-icon">⚖️</div>
-            <span class="sys-arrow">↗</span>
-          </div>
-          <div class="sys-name">Compliance &amp; Tax Register</div>
-          <div class="sys-desc">e-Invoice status, IRBM submissions, and audit readiness checklist.</div>
-          <div class="sys-tags">
-            <span class="tag tag-sp">SHAREPOINT</span>
-          </div>
-        </a>
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">⚖️</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Compliance &amp; Tax</div>
+            <div class="sys-desc">e-Invoice management, IRBM guidelines, and audit readiness.</div>
+            <div class="sys-tags">
+              <span class="tag">e-Invoice</span>
+              <span class="tag">IRBM</span>
+            </div>
+          </a>
+
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">🗄️</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Document Vault</div>
+            <div class="sys-desc">Centralised repository for templates, forms, and SOPs.</div>
+            <div class="sys-tags">
+              <span class="tag">SOPs</span>
+              <span class="tag">Forms</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <div class="sec">Reporting &amp; Dashboards</div>
+        <div class="systems-grid">
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">📈</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Budget Utilisation Dashboard</div>
+            <div class="sys-desc">Live CAPEX/OPEX spend vs. approved budget — updated monthly.</div>
+            <div class="sys-tags">
+              <span class="tag tag-pbi">POWER BI</span>
+            </div>
+          </a>
+
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">📄</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Accounts Payable Tracker</div>
+            <div class="sys-desc">Outstanding invoices, payment status, and SLA monitoring.</div>
+            <div class="sys-tags">
+              <span class="tag tag-sp">SHAREPOINT</span>
+            </div>
+          </a>
+
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">🏦</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Treasury Monthly Report</div>
+            <div class="sys-desc">Cash flow forecast, investment income, and GL reconciliation summary.</div>
+            <div class="sys-tags">
+              <span class="tag tag-ex">EXCEL</span>
+            </div>
+          </a>
+
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">📋</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Procurement Activity Log</div>
+            <div class="sys-desc">PO register, vendor performance, and contract expiry tracking.</div>
+            <div class="sys-tags">
+              <span class="tag tag-sp">SHAREPOINT</span>
+            </div>
+          </a>
+
+          <a href="#" class="sys-card">
+            <div class="sys-card-top">
+              <div class="sys-icon">⚖️</div>
+              <span class="sys-arrow">↗</span>
+            </div>
+            <div class="sys-name">Compliance &amp; Tax Register</div>
+            <div class="sys-desc">e-Invoice status, IRBM submissions, and audit readiness checklist.</div>
+            <div class="sys-tags">
+              <span class="tag tag-sp">SHAREPOINT</span>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-l">
+        <span>© 2026 Credit Guarantee Corporation Malaysia Berhad</span>
+        <span>·</span>
+        <span class="sys-ok">Portal Active</span>
       </div>
-    </section>
+    </footer>
+  </div>
 
-  </main>
+  <script>
+    function setGreeting() {
+      const h = new Date().getHours();
+      const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+      document.getElementById('greeting').textContent = g;
+    }
+    setGreeting();
 
-  <footer class="footer">
-    <div class="footer-l">
-      <span>© 2026 Credit Guarantee Corporation Malaysia Berhad</span>
-      <span>·</span>
-      <span class="sys-ok">Portal Active</span>
-    </div>
-  </footer>
-</div>
+    function setDate() {
+      const now = new Date();
+      document.getElementById('meta-date').textContent = now.toLocaleDateString('en-MY', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+    setDate();
 
-<script>
-function setGreeting() {
-  const h = new Date().getHours();
-  const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('greeting').textContent = g;
-}
-setGreeting();
-
-function setDate() {
-  const now = new Date();
-  document.getElementById('meta-date').textContent = now.toLocaleDateString('en-MY', {
-    weekday:'short',
-    day:'numeric',
-    month:'short',
-    year:'numeric'
-  });
-}
-setDate();
-
-function tickClock() {
-  const el = document.getElementById('topbar-clock');
-  if (el) {
-    el.textContent = new Date().toLocaleTimeString('en-MY', {
-      hour:'2-digit',
-      minute:'2-digit',
-      second:'2-digit'
-    }) + ' MYT';
-  }
-}
-tickClock();
-setInterval(tickClock, 1000);
-</script>
+    function tickClock() {
+      const el = document.getElementById('topbar-clock');
+      if (el) {
+        el.textContent =
+          new Date().toLocaleTimeString('en-MY', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }) + ' MYT';
+      }
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+  </script>
 </body>
 </html>
