@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CGC Petty Cash Management System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: linear-gradient(135deg, #f4f6fa 0%, #e8ecf3 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    color: #1a2a4f;
+  }
+
+  .form-container {
+    background: #ffffff;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(26, 42, 79, 0.15);
+    overflow: hidden;
+    border-top: 6px solid #c9a94a;
+  }
+
+  .form-header {
+    background: linear-gradient(135deg, #1a2a4f 0%, #2c3e6e 100%);
+    color: #fff;
+    padding: 30px 40px;
+    text-align: center;
+    border-bottom: 3px solid #c9a94a;
+  }
+
+  .form-header h1 { font-size: 26px; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .form-header p { font-size: 14px; opacity: 0.85; }
+
+  .form-body { padding: 35px 40px; }
+
+  .gate-screen {
+    padding: 50px 40px;
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gate-title { font-size: 22px; color: #1a2a4f; margin-bottom: 10px; font-weight: 700; }
+  .gate-subtitle { font-size: 14px; color: #5a6b8c; margin-bottom: 30px; }
+
+  .location-options {
+    display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 20px;
+  }
+
+  .location-card {
+    flex: 1; min-width: 200px; max-width: 260px;
+    background: #fff; border: 2px solid #d5dbe6; border-radius: 12px;
+    padding: 30px 20px; cursor: pointer; transition: all 0.25s ease; text-align: center;
+  }
+
+  .location-card:hover {
+    border-color: #c9a94a;
+    box-shadow: 0 10px 25px rgba(201, 169, 74, 0.2);
+    transform: translateY(-4px); background: #fdfaf0;
+  }
+
+  .location-card.selected {
+    border-color: #c9a94a;
+    background: linear-gradient(135deg, #fff9e6 0%, #fdfaf0 100%);
+    box-shadow: 0 8px 20px rgba(201, 169, 74, 0.25);
+  }
+
+  .location-icon { font-size: 48px; margin-bottom: 12px; }
+  .location-label { font-size: 18px; font-weight: 700; color: #1a2a4f; margin-bottom: 5px; }
+  .location-desc { font-size: 12px; color: #6b7a99; }
+
+  .email-step { max-width: 460px; margin: 0 auto; text-align: left; }
+  .email-step label { display: block; font-size: 13px; font-weight: 600; color: #2c3e6e; margin-bottom: 8px; }
+  .email-step input, .email-step select {
+    width: 100%; padding: 12px 14px; font-size: 15px;
+    border: 1.5px solid #d5dbe6; border-radius: 6px; background: #fafbfd; transition: all 0.2s;
+  }
+  .email-step input:focus, .email-step select:focus {
+    outline: none; border-color: #c9a94a; box-shadow: 0 0 0 3px rgba(201, 169, 74, 0.18); background: #fff;
+  }
+
+  .selected-location-tag {
+    display: inline-block; background: #1a2a4f; color: #c9a94a;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    margin-bottom: 20px; letter-spacing: 0.5px;
+  }
+
+  .branch-field { margin-top: 16px; display: none; }
+  .branch-field.show { display: block; }
+
+  .gate-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+
+  .gate-btn {
+    padding: 12px 30px; border: none; border-radius: 6px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; min-width: 130px;
+  }
+
+  .gate-btn-primary { background: linear-gradient(135deg, #1a2a4f 0%, #2c3e6e 100%); color: #fff; }
+  .gate-btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(26, 42, 79, 0.25); }
+  .gate-btn-primary:disabled { background: #b7bfd0; cursor: not-allowed; }
+  .gate-btn-secondary { background: #fff; color: #1a2a4f; border: 1.5px solid #d5dbe6; }
+  .gate-btn-secondary:hover { background: #e8ecf3; }
+
+  .gate-btn-primary.loading { background: #b7bfd0; cursor: wait; }
+  .gate-btn-primary.loading::after {
+    content: ''; display: inline-block; width: 12px; height: 12px;
+    border: 2px solid #fff; border-top-color: transparent;
+    border-radius: 50%; margin-left: 8px;
+    animation: spin 0.8s linear infinite; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .gate-error { color: #c0392b; font-size: 12px; margin-top: 8px; display: none; }
+  .gate-error.show { display: block; }
+
+  .gate-success {
+    background: #e8f5e9; border-left: 4px solid #2e7d32; color: #2e7d32;
+    padding: 10px 14px; font-size: 13px; border-radius: 4px;
+    margin-top: 12px; display: none;
+  }
+  .gate-success.show { display: block; }
+
+  .otp-divider {
+    margin: 24px 0 16px; padding-top: 20px;
+    border-top: 1px dashed #d5dbe6; text-align: center;
+  }
+
+  .otp-info-box {
+    background: #eaf1fb; border-left: 4px solid #1a2a4f;
+    padding: 12px 16px; font-size: 13px; line-height: 1.55;
+    color: #1a2a4f; border-radius: 4px; text-align: center; margin-bottom: 14px;
+  }
+
+  .otp-input-group {
+    display: flex; gap: 10px; justify-content: center; margin: 12px 0;
+  }
+
+  .otp-digit {
+    width: 50px !important; height: 60px; text-align: center;
+    font-size: 24px; font-weight: 700; font-family: 'Courier New', monospace;
+    border: 2px solid #d5dbe6; border-radius: 8px;
+    background: #fafbfd; color: #1a2a4f; padding: 0 !important;
+    transition: all 0.2s;
+  }
+
+  .otp-digit:focus {
+    outline: none; border-color: #c9a94a;
+    box-shadow: 0 0 0 3px rgba(201, 169, 74, 0.18);
+    background: #fff; transform: scale(1.05);
+  }
+
+  .otp-digit.filled { background: #fff9e6; border-color: #c9a94a; }
+
+  .otp-status {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px; font-size: 12px; color: #6b7a99;
+  }
+
+  .resend-btn {
+    background: none; border: none; color: #1a2a4f;
+    font-weight: 600; font-size: 12px; cursor: pointer;
+    text-decoration: underline; padding: 0;
+  }
+
+  .resend-btn:disabled { color: #b7bfd0; cursor: not-allowed; text-decoration: none; }
+  .resend-btn:not(:disabled):hover { color: #c9a94a; }
+
+  .otp-hidden { display: none; }
+
+  .subflow-options {
+    display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 20px;
+  }
+  .subflow-card {
+    flex: 1; min-width: 220px; max-width: 300px;
+    background: #fff; border: 2px solid #d5dbe6; border-radius: 12px;
+    padding: 26px 20px; cursor: pointer; transition: all 0.25s ease; text-align: center;
+  }
+  .subflow-card:hover {
+    border-color: #c9a94a; box-shadow: 0 10px 25px rgba(201, 169, 74, 0.2);
+    transform: translateY(-4px); background: #fdfaf0;
+  }
+  .subflow-icon { font-size: 40px; margin-bottom: 10px; }
+  .subflow-label { font-size: 16px; font-weight: 700; color: #1a2a4f; margin-bottom: 6px; }
+  .subflow-desc { font-size: 12px; color: #6b7a99; line-height: 1.5; }
+
+  .workflow-tracker {
+    background: #f8f9fc; border-bottom: 1px solid #e5e9f0; padding: 20px 40px;
+  }
+  .tracker-title {
+    font-size: 12px; font-weight: 700; color: #1a2a4f;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; text-align: center;
+  }
+  .tracker-steps {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 6px; position: relative;
+  }
+  .tracker-step { flex: 1; text-align: center; position: relative; z-index: 2; }
+  .tracker-step .step-num {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #fff; border: 2px solid #d5dbe6; color: #6b7a99;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 6px; font-weight: 700; font-size: 13px; transition: all 0.3s;
+  }
+  .tracker-step.active .step-num {
+    background: #c9a94a; border-color: #c9a94a; color: #1a2a4f;
+    box-shadow: 0 0 0 4px rgba(201, 169, 74, 0.2);
+  }
+  .tracker-step.done .step-num { background: #1a2a4f; border-color: #1a2a4f; color: #c9a94a; }
+  .tracker-step .step-label { font-size: 10.5px; color: #2c3e6e; font-weight: 600; line-height: 1.3; }
+  .tracker-step.active .step-label { color: #1a2a4f; font-weight: 700; }
+  .tracker-connector {
+    position: absolute; top: 17px; left: 5%; right: 5%; height: 2px;
+    background: #d5dbe6; z-index: 1;
+  }
+
+  .section-title {
+    font-size: 15px; font-weight: 600; color: #1a2a4f; margin: 22px 0 14px;
+    padding-bottom: 6px; border-bottom: 2px solid #c9a94a;
+    text-transform: uppercase; letter-spacing: 0.6px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  .row { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+  .field { flex: 1; min-width: 220px; display: flex; flex-direction: column; }
+  label { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #2c3e6e; }
+  label .required { color: #c0392b; margin-left: 3px; }
+
+  input[type="text"], input[type="email"], input[type="date"], input[type="number"],
+  input[type="file"], select, textarea {
+    padding: 10px 12px; font-size: 14px; border: 1.5px solid #d5dbe6;
+    border-radius: 6px; background: #fafbfd; color: #1a2a4f;
+    transition: border-color 0.2s, box-shadow 0.2s; font-family: inherit;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: #c9a94a;
+    box-shadow: 0 0 0 3px rgba(201, 169, 74, 0.18); background: #fff;
+  }
+
+  input:disabled, input[readonly], select:disabled {
+    background: #eef1f6; color: #6b7a99; cursor: not-allowed;
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .items-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+  .items-table th {
+    background: #1a2a4f; color: #fff; padding: 10px; text-align: left; font-weight: 600;
+  }
+  .items-table td { padding: 8px; border-bottom: 1px solid #e5e9f0; }
+  .items-table input, .items-table select { width: 100%; padding: 8px; font-size: 13px; }
+
+  .remove-btn {
+    background: #c0392b; color: #fff; border: none; border-radius: 5px;
+    padding: 6px 10px; cursor: pointer; font-size: 12px; transition: background 0.2s;
+  }
+  .remove-btn:hover { background: #a5301f; }
+
+  .add-btn {
+    background: #c9a94a; color: #1a2a4f; border: none; padding: 9px 18px;
+    border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 12px;
+    font-size: 13px; transition: background 0.2s, transform 0.1s;
+  }
+  .add-btn:hover { background: #b8962f; transform: translateY(-1px); }
+
+  .total-row { background: #f4f6fa; font-weight: 700; color: #1a2a4f; }
+  .total-row td { padding: 12px 10px; border-top: 2px solid #c9a94a; }
+
+  .declaration {
+    background: #f8f9fc; border-left: 4px solid #c9a94a;
+    padding: 14px 16px; font-size: 13px; line-height: 1.55; color: #2c3e6e;
+    border-radius: 4px; margin-top: 10px;
+  }
+
+  .info-box {
+    background: #eaf1fb; border-left: 4px solid #1a2a4f;
+    padding: 12px 16px; font-size: 13px; line-height: 1.55; color: #1a2a4f;
+    border-radius: 4px; margin-bottom: 18px;
+  }
+
+  .variance-box {
+    background: #fff8e1; border: 1.5px solid #c9a94a; border-radius: 8px;
+    padding: 16px; margin-top: 14px;
+  }
+  .variance-row {
+    display: flex; justify-content: space-between; padding: 6px 0;
+    font-size: 13px; color: #2c3e6e;
+  }
+  .variance-row.total { border-top: 2px solid #c9a94a; margin-top: 6px; padding-top: 10px; font-weight: 700; font-size: 15px; color: #1a2a4f; }
+  .variance-refund { color: #c0392b; }
+  .variance-ok { color: #2e7d32; }
+
+  .checkbox-row {
+    display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 13px;
+  }
+  .checkbox-row input { width: 18px; height: 18px; accent-color: #c9a94a; }
+
+  .form-footer {
+    background: #f4f6fa; padding: 22px 40px;
+    display: flex; justify-content: space-between; gap: 12px;
+    border-top: 1px solid #e5e9f0; flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 11px 26px; border-radius: 6px; font-size: 14px;
+    font-weight: 600; cursor: pointer; border: none; transition: all 0.2s;
+  }
+  .btn-reset { background: #fff; color: #1a2a4f; border: 1.5px solid #d5dbe6; }
+  .btn-reset:hover { background: #e8ecf3; }
+  .btn-submit { background: linear-gradient(135deg, #1a2a4f 0%, #2c3e6e 100%); color: #fff; }
+  .btn-submit:hover { background: linear-gradient(135deg, #2c3e6e 0%, #3a4d85 100%); transform: translateY(-1px); box-shadow: 0 6px 14px rgba(26, 42, 79, 0.25); }
+
+  .error-msg { color: #c0392b; font-size: 12px; margin-top: 4px; display: none; }
+  .error-msg.show { display: block; }
+
+  .hidden { display: none !important; }
+
+  .user-info-bar {
+    background: #f4f6fa; border-bottom: 1px solid #e5e9f0; padding: 12px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; color: #2c3e6e; flex-wrap: wrap; gap: 10px;
+  }
+  .user-info-bar strong { color: #1a2a4f; }
+
+  .flow-badge {
+    display: inline-block; background: #c9a94a; color: #1a2a4f;
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  @media (max-width: 700px) {
+    .form-body, .form-header, .form-footer, .gate-screen, .user-info-bar, .workflow-tracker { padding: 20px; }
+    .form-header h1 { font-size: 20px; }
+    .row { flex-direction: column; gap: 0; }
+    .tracker-steps { flex-wrap: wrap; gap: 12px; }
+    .tracker-step { min-width: 30%; }
+    .tracker-step .step-label { font-size: 10px; }
+    .otp-digit { width: 40px !important; height: 50px; font-size: 20px; }
+    .otp-input-group { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+  <div class="form-header">
+    <h1>💰 CGC Petty Cash Management System</h1>
+    <p id="headerSubtitle">Please confirm your location to proceed</p>
+  </div>
+
+  <!-- STEP 1: HQ or BRANCH -->
+  <div id="step1" class="gate-screen">
+    <div class="gate-title">Where are you based?</div>
+    <div class="gate-subtitle">Please select your working location to continue.</div>
+
+    <div class="location-options">
+      <div class="location-card" data-value="HQ" onclick="selectLocation(this)">
+        <div class="location-icon">🏢</div>
+        <div class="location-label">Headquarters</div>
+        <div class="location-desc">Petaling Jaya, Selangor</div>
+      </div>
+      <div class="location-card" data-value="Branch" onclick="selectLocation(this)">
+        <div class="location-icon">🏬</div>
+        <div class="location-label">Branch</div>
+        <div class="location-desc">Regional / State Office</div>
+      </div>
+    </div>
+
+    <div class="gate-buttons">
+      <button class="gate-btn gate-btn-primary" id="step1Next" onclick="goToStep2()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: VERIFY YOUR IDENTITY -->
+  <div id="step2" class="gate-screen hidden">
+    <div class="email-step">
+      <div style="text-align:center;">
+        <div class="selected-location-tag" id="locationTag">HQ</div>
+        <div class="gate-title">Verify Your Identity</div>
+        <div class="gate-subtitle" id="step2Subtitle">Please enter your CGC email address to receive a verification code.</div>
+      </div>
+
+      <label>Email Address <span style="color:#c0392b;">*</span></label>
+      <input type="email" id="gateEmail" placeholder="yourname@cgc.com.my" />
+
+      <div class="branch-field" id="branchField">
+        <label style="margin-top:16px; display:block;">Branch Location <span style="color:#c0392b;">*</span></label>
+        <select id="branchSelect">
+          <option value="">-- Select Branch --</option>
+          <option>Johor Bahru</option><option>Melaka</option><option>Seremban</option>
+          <option>Kuantan</option><option>Kuala Terengganu</option><option>Kota Bharu</option>
+          <option>Ipoh</option><option>Pulau Pinang</option><option>Alor Setar</option>
+          <option>Kota Kinabalu</option><option>Kuching</option><option>Miri</option>
+        </select>
+      </div>
+
+      <div style="margin-top:16px; text-align:center;">
+        <button class="gate-btn gate-btn-primary" id="sendCodeBtn" onclick="sendOTP()" style="min-width:180px;">
+          📧 Send Verification Code
+        </button>
+      </div>
+
+      <div class="gate-success" id="gateSuccess">
+        ✅ Code sent! Please check your inbox (and spam folder).
+      </div>
+      <div class="gate-error" id="gateError">Please enter a valid email address.</div>
+
+      <div id="otpSection" class="otp-hidden">
+        <div class="otp-divider"></div>
+
+        <div class="otp-info-box">
+          ✉️ A 6-digit code has been sent to<br>
+          <strong id="otpEmailDisplay">-</strong>
+        </div>
+
+        <label>Enter Verification Code <span style="color:#c0392b;">*</span></label>
+        <div class="otp-input-group">
+          <input type="text" class="otp-digit" maxlength="1" data-index="0" inputmode="numeric" />
+          <input type="text" class="otp-digit" maxlength="1" data-index="1" inputmode="numeric" />
+          <input type="text" class="otp-digit" maxlength="1" data-index="2" inputmode="numeric" />
+          <input type="text" class="otp-digit" maxlength="1" data-index="3" inputmode="numeric" />
+          <input type="text" class="otp-digit" maxlength="1" data-index="4" inputmode="numeric" />
+          <input type="text" class="otp-digit" maxlength="1" data-index="5" inputmode="numeric" />
+        </div>
+
+        <div class="otp-status">
+          <span id="otpTimer">⏱️ Expires in: <strong id="timerDisplay">01:00</strong></span>
+          <button type="button" class="resend-btn" id="resendBtn" onclick="resendOTP()" disabled>
+            Resend (<span id="resendTimer">30</span>s)
+          </button>
+        </div>
+
+        <div class="gate-error" id="otpError">Incorrect code. Please try again.</div>
+      </div>
+
+      <div class="gate-buttons">
+        <button class="gate-btn gate-btn-secondary" onclick="backToStep1()">← Back</button>
+        <button class="gate-btn gate-btn-primary otp-hidden" id="verifyBtn" onclick="verifyOTP()">
+          ✅ Verify & Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: HQ SUB-FLOW SELECTOR -->
+  <div id="step3HQ" class="gate-screen hidden">
+    <div style="text-align:center;">
+      <div class="selected-location-tag">🏢 Headquarters</div>
+      <div class="gate-title">Select Request Type</div>
+      <div class="gate-subtitle">Please choose the type of petty cash transaction you wish to submit.</div>
+    </div>
+
+    <div class="subflow-options">
+      <div class="subflow-card" onclick="selectHQFlow('advance')">
+        <div class="subflow-icon">💵</div>
+        <div class="subflow-label">Phase A: Advance Request</div>
+        <div class="subflow-desc">Request cash advance before making a purchase. Routes through AAM → Finance AAM → Disbursement.</div>
+      </div>
+      <div class="subflow-card" onclick="selectHQFlow('claim')">
+        <div class="subflow-icon">🧾</div>
+        <div class="subflow-label">Phase B: Expense Claim & Settlement</div>
+        <div class="subflow-desc">Submit receipts against a prior advance, or claim reimbursement for spending already incurred.</div>
+      </div>
+    </div>
+
+    <div class="gate-buttons">
+      <button class="gate-btn gate-btn-secondary" onclick="backToStep2()">← Back</button>
+    </div>
+  </div>
+
+  <!-- MAIN FORM -->
+  <div id="mainForm" class="hidden">
+    <div class="user-info-bar">
+      <div>📍 <strong id="displayLocation">-</strong> <span id="displayBranch"></span></div>
+      <div>✉️ <strong id="displayEmail">-</strong></div>
+      <div><span class="flow-badge" id="flowBadge">-</span></div>
+    </div>
+
+    <div class="workflow-tracker" id="workflowTracker">
+      <div class="tracker-title">Approval Workflow</div>
+      <div class="tracker-steps" id="trackerSteps">
+        <div class="tracker-connector"></div>
+      </div>
+    </div>
+
+    <form id="pettyCashForm" class="form-body" novalidate>
+
+      <div class="section-title">Requester Details</div>
+      <div class="row">
+        <div class="field">
+          <label>Full Name <span class="required">*</span></label>
+          <input type="text" id="fullName" required />
+          <span class="error-msg">Please enter your full name.</span>
+        </div>
+        <div class="field">
+          <label>Employee ID <span class="required">*</span></label>
+          <input type="text" id="empId" required />
+          <span class="error-msg">Please enter your Employee ID.</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Department <span class="required">*</span></label>
+          <select id="department" required>
+            <option value="">-- Select Department --</option>
+            <option>Change Management</option><option>Finance</option>
+            <option>Human Resources</option><option>Information Technology</option>
+            <option>Operations</option><option>Claims</option>
+            <option>Branch Support & Management (BSM)</option><option>Others</option>
+          </select>
+          <span class="error-msg">Please select your department.</span>
+        </div>
+        <div class="field">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" id="email" required readonly />
+          <span class="error-msg">Please enter a valid email address.</span>
+        </div>
+      </div>
+
+      <!-- HQ PHASE A: ADVANCE -->
+      <div id="hqAdvanceSection" class="hidden">
+        <div class="info-box">
+          <strong>ℹ️ Phase A: Advance Request</strong><br>
+          This request will be automatically routed to your <strong>Assistant Area Manager (AAM)</strong> for departmental approval, then to the <strong>Finance AAM</strong> for final review, before disbursement by the <strong>Finance Team</strong>.
+        </div>
+
+        <div class="section-title">Advance Request Details</div>
+        <div class="row">
+          <div class="field">
+            <label>Request Date <span class="required">*</span></label>
+            <input type="date" id="requestDate" required />
+            <span class="error-msg">Please select the request date.</span>
+          </div>
+          <div class="field">
+            <label>Date Required By <span class="required">*</span></label>
+            <input type="date" id="requiredDate" required />
+            <span class="error-msg">Please select the required date.</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Amount Requested (RM) <span class="required">*</span></label>
+            <input type="number" id="advanceAmount" step="0.01" min="0" placeholder="0.00" required />
+            <span class="error-msg">Please enter the requested amount.</span>
+          </div>
+          <div class="field">
+            <label>Reporting AAM Email <span class="required">*</span></label>
+            <input type="email" id="aamEmail" placeholder="aam.name@cgc.com.my" required />
+            <span class="error-msg">Please enter your AAM's email.</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>GL Code <span class="required">*</span></label>
+            <input type="text" id="glCode" placeholder="e.g. 5100-001" required />
+            <span class="error-msg">Please enter the GL Code.</span>
+          </div>
+          <div class="field">
+            <label>Cost Centre <span class="required">*</span></label>
+            <input type="text" id="costCentre" placeholder="e.g. CM-100" required />
+            <span class="error-msg">Please enter the Cost Centre.</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Purpose of Advance <span class="required">*</span></label>
+          <textarea id="purpose" placeholder="Please clearly state the business purpose..." required></textarea>
+          <span class="error-msg">Please provide justification.</span>
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>BCA / Paper Approval Attachment <span class="required">*</span></label>
+          <input type="file" id="bcaAttachment" accept=".pdf,.doc,.docx,.jpg,.png" required />
+          <span class="error-msg">Please attach the BCA / Paper Approval document.</span>
+        </div>
+      </div>
+
+      <!-- HQ PHASE B: CLAIM -->
+      <div id="hqClaimSection" class="hidden">
+        <div class="info-box">
+          <strong>ℹ️ Phase B: Expense Claim & Settlement</strong><br>
+          Submit your actual expenses with original supporting receipts. The system will automatically calculate the variance against your advance and highlight any refund required.
+        </div>
+
+        <div class="section-title">Related Advance Reference</div>
+        <div class="row">
+          <div class="field">
+            <label>Advance Reference No. <span class="required">*</span></label>
+            <input type="text" id="advanceRef" placeholder="e.g. PC-ADV-20260708-001" required />
+            <span class="error-msg">Please enter the advance reference number.</span>
+          </div>
+          <div class="field">
+            <label>Original Advance Amount (RM) <span class="required">*</span></label>
+            <input type="number" id="originalAdvance" step="0.01" min="0" placeholder="0.00" oninput="calcVariance()" required />
+            <span class="error-msg">Please enter the original advance amount.</span>
+          </div>
+        </div>
+
+        <div class="section-title">Actual Expense Breakdown</div>
+        <table class="items-table" id="itemsTable">
+          <thead>
+            <tr>
+              <th style="width:35%;">Description</th>
+              <th style="width:20%;">Category</th>
+              <th style="width:15%;">Date</th>
+              <th style="width:20%;">Actual Amount (RM)</th>
+              <th style="width:10%;"></th>
+            </tr>
+          </thead>
+          <tbody id="itemsBody">
+            <tr>
+              <td><input type="text" class="desc" placeholder="e.g. Taxi fare to client" /></td>
+              <td>
+                <select class="cat">
+                  <option value="">-- Select --</option>
+                  <option>Stationery</option><option>Meals & Refreshments</option>
+                  <option>Transportation</option><option>Postage & Courier</option>
+                  <option>Miscellaneous</option>
+                </select>
+              </td>
+              <td><input type="date" class="itemDate" /></td>
+              <td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>
+              <td><button type="button" class="remove-btn" onclick="removeRow(this)">✕</button></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3" style="text-align:right;">Total Actual Spent (RM):</td>
+              <td id="totalAmount">0.00</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+        <button type="button" class="add-btn" onclick="addRow()">+ Add Expense Item</button>
+
+        <div class="field" style="margin-top:16px;">
+          <label>Upload Original Receipts <span class="required">*</span></label>
+          <input type="file" id="receipts" accept=".pdf,.jpg,.jpeg,.png" multiple required />
+          <span class="error-msg">Please upload supporting receipts.</span>
+        </div>
+
+        <div class="variance-box">
+          <div class="variance-row"><span>Advance Received:</span><span>RM <strong id="varAdvance">0.00</strong></span></div>
+          <div class="variance-row"><span>Actual Spent:</span><span>RM <strong id="varSpent">0.00</strong></span></div>
+          <div class="variance-row total"><span id="varLabel">Balance to Refund:</span><span id="varAmount" class="variance-refund">RM 0.00</span></div>
+          <div style="font-size:12px; color:#6b7a99; margin-top:8px;" id="varNote">💡 Any unused balance must be refunded to close this claim.</div>
+        </div>
+      </div>
+
+      <!-- BRANCH REPLENISHMENT -->
+      <div id="branchReplenishSection" class="hidden">
+        <div class="info-box">
+          <strong>ℹ️ Branch Petty Cash Replenishment Flow</strong><br>
+          Your submission will be routed: <strong>BSM Manager → Head of BSM → FIN Cost Team (GL Verification) → BSM (Hand-back) → AP Team → SAP Processing → Payment Advice</strong>.
+        </div>
+
+        <div class="section-title">Replenishment Details</div>
+        <div class="row">
+          <div class="field">
+            <label>Submission Date <span class="required">*</span></label>
+            <input type="date" id="replenishDate" required />
+            <span class="error-msg">Please select the submission date.</span>
+          </div>
+          <div class="field">
+            <label>Replenishment Period <span class="required">*</span></label>
+            <input type="text" id="replenishPeriod" placeholder="e.g. June 2026" required />
+            <span class="error-msg">Please indicate the period.</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Current Cash Balance (RM) <span class="required">*</span></label>
+            <input type="number" id="currentBalance" step="0.01" min="0" placeholder="0.00" required />
+            <span class="error-msg">Please enter current cash balance.</span>
+          </div>
+          <div class="field">
+            <label>Requested Replenishment Amount (RM) <span class="required">*</span></label>
+            <input type="number" id="replenishAmount" step="0.01" min="0" placeholder="0.00" required />
+            <span class="error-msg">Please enter replenishment amount.</span>
+          </div>
+        </div>
+
+        <div class="section-title">Payment Vouchers & Invoices</div>
+        <table class="items-table" id="itemsTable2">
+          <thead>
+            <tr>
+              <th style="width:15%;">PV No.</th>
+              <th style="width:30%;">Description</th>
+              <th style="width:15%;">Payee/Vendor</th>
+              <th style="width:15%;">Invoice Date</th>
+              <th style="width:15%;">Amount (RM)</th>
+              <th style="width:10%;"></th>
+            </tr>
+          </thead>
+          <tbody id="itemsBody2">
+            <tr>
+              <td><input type="text" class="pv" placeholder="PV-001" /></td>
+              <td><input type="text" class="desc" placeholder="Description" /></td>
+              <td><input type="text" class="payee" placeholder="Vendor" /></td>
+              <td><input type="date" class="itemDate" /></td>
+              <td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>
+              <td><button type="button" class="remove-btn" onclick="removeRow2(this)">✕</button></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="4" style="text-align:right;">Total Replenishment (RM):</td>
+              <td id="totalAmount2">0.00</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+        <button type="button" class="add-btn" onclick="addRow2()">+ Add PV / Invoice</button>
+
+        <div class="section-title">HQ Routing Contacts</div>
+        <div class="row">
+          <div class="field">
+            <label>BSM Manager Email <span class="required">*</span></label>
+            <input type="email" id="bsmManagerEmail" placeholder="bsm.manager@cgc.com.my" required />
+            <span class="error-msg">Please enter BSM Manager email.</span>
+          </div>
+          <div class="field">
+            <label>Head of BSM Email <span class="required">*</span></label>
+            <input type="email" id="bsmHeadEmail" placeholder="bsm.head@cgc.com.my" required />
+            <span class="error-msg">Please enter Head of BSM email.</span>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:16px;">
+          <label>Upload Supporting Documents (PVs, Invoices, Receipts) <span class="required">*</span></label>
+          <input type="file" id="branchDocs" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" multiple required />
+          <span class="error-msg">Please upload supporting documents.</span>
+          <small style="color:#6b7a99; margin-top:6px; font-size:11px;">💡 Documents will be processed via AI Builder/OCR for verification.</small>
+        </div>
+      </div>
+
+      <div class="section-title">Declaration</div>
+      <div class="declaration" id="declarationText">
+        I hereby declare that the above information is true and correct to the best of my knowledge.
+        I confirm that this petty cash request is solely for legitimate business purposes and I agree
+        to submit all supporting receipts within <strong>7 working days</strong> of receiving the funds.
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="agree" required />
+        <label for="agree">I acknowledge and agree to the declaration above. <span class="required">*</span></label>
+      </div>
+      <span class="error-msg" id="agreeErr">You must agree to the declaration before submitting.</span>
+
+    </form>
+
+    <div class="form-footer">
+      <button type="button" class="btn btn-reset" onclick="restartFlow()">← Start Over</button>
+      <button type="button" class="btn btn-submit" onclick="submitForm()">Submit Request</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---------- CONFIG: Power Automate endpoints ----------
+  const OTP_ENDPOINTS = {
+    send: 'https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4',
+    verify: 'https://prod-XX.southeastasia.logic.azure.com/workflows/YOUR_VERIFY_OTP_URL',
+    submit: 'https://prod-XX.southeastasia.logic.azure.com/workflows/YOUR_SUBMIT_URL'
+  };
+
+  // Auto-detect demo mode when endpoints are still placeholders
+  const DEMO_MODE = OTP_ENDPOINTS.send.includes('YOUR_SEND_OTP_URL') ||
+                    OTP_ENDPOINTS.send.includes('prod-XX');
+  const DEMO_CODE = '123456';
+
+  // ---------- STATE ----------
+  let selectedLocation = '';
+  let userEmail = '';
+  let selectedBranch = '';
+  let hqFlow = '';
+  let otpExpiryTimer = null;
+  let resendCooldownTimer = null;
+  let otpSecondsLeft = 60;      // ⭐ 60 seconds validity (matches backend)
+  let resendSecondsLeft = 30;   // ⭐ 30 seconds resend cooldown
+  let isVerifying = false;
+  let isSending = false;
+
+  const workflows = {
+    'HQ-advance': [
+      { label: 'Submit', icon: '📝' },
+      { label: "Requester's AAM", icon: '✅' },
+      { label: 'Finance AAM', icon: '✅' },
+      { label: 'Finance Disbursement', icon: '💵' }
+    ],
+    'HQ-claim': [
+      { label: 'Submit Receipts', icon: '🧾' },
+      { label: 'Reconciliation', icon: '🔍' },
+      { label: 'Refund Balance (if any)', icon: '💰' },
+      { label: 'Claim Closed', icon: '🔒' }
+    ],
+    'Branch': [
+      { label: 'Branch PIC Submit', icon: '📤' },
+      { label: 'BSM Manager', icon: '✅' },
+      { label: 'Head of BSM', icon: '✅' },
+      { label: 'FIN Cost (GL)', icon: '📊' },
+      { label: 'AP Team', icon: '💼' },
+      { label: 'SAP Payment', icon: '🏦' }
+    ]
+  };
+
+  /* ---------- STEP 1 ---------- */
+  function selectLocation(card) {
+    document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedLocation = card.dataset.value;
+    document.getElementById('step1Next').disabled = false;
+  }
+
+  function goToStep2() {
+    if (!selectedLocation) return;
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    document.getElementById('locationTag').textContent = selectedLocation === 'HQ' ? '🏢 Headquarters' : '🏬 Branch';
+    document.getElementById('headerSubtitle').textContent = 'Please verify your email to proceed';
+    document.getElementById('branchField').classList.toggle('show', selectedLocation === 'Branch');
+  }
+
+  function backToStep1() {
+    resetOTPState();
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('headerSubtitle').textContent = 'Please confirm your location to proceed';
+    document.getElementById('gateError').classList.remove('show');
+    document.getElementById('gateSuccess').classList.remove('show');
+  }
+
+  /* ---------- OTP: SEND ---------- */
+  async function sendOTP() {
+    if (isSending) { console.warn('⏸️ sendOTP already running.'); return; }
+
+    const email = document.getElementById('gateEmail').value.trim();
+    const branch = document.getElementById('branchSelect').value;
+    const errBox = document.getElementById('gateError');
+    const successBox = document.getElementById('gateSuccess');
+    const btn = document.getElementById('sendCodeBtn');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      errBox.textContent = 'Please enter a valid email address.';
+      errBox.classList.add('show'); successBox.classList.remove('show'); return;
+    }
+    if (selectedLocation === 'Branch' && !branch) {
+      errBox.textContent = 'Please select your branch location.';
+      errBox.classList.add('show'); successBox.classList.remove('show'); return;
+    }
+
+    isSending = true;
+    errBox.classList.remove('show');
+    successBox.classList.remove('show');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    btn.textContent = 'Sending';
+
+    const resetSendBtn = () => {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      btn.innerHTML = '🔁 Resend Verification Code';
+      isSending = false;
+    };
+
+    try {
+      if (DEMO_MODE) {
+        console.log('🧪 DEMO MODE — use code:', DEMO_CODE);
+        await new Promise(r => setTimeout(r, 600));
+        userEmail = email;
+        selectedBranch = branch;
+        showOTPSection();
+        successBox.innerHTML = '⚠️ <strong>DEMO MODE</strong> — Use code <strong style="font-family:monospace; letter-spacing:2px; color:#c9a94a;">' + DEMO_CODE + '</strong> to proceed.';
+        successBox.classList.add('show');
+        resetSendBtn();
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const res = await fetch(OTP_ENDPOINTS.send, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      const data = await res.json();
+
+      resetSendBtn();
+
+      if (data.status === 'sent') {
+        userEmail = email;
+        selectedBranch = branch;
+        showOTPSection();
+        successBox.textContent = '✅ Code sent! Please check your inbox (and spam folder).';
+        successBox.classList.add('show');
+      } else {
+        errBox.textContent = data.message || 'Failed to send code. Please try again.';
+        errBox.classList.add('show');
+      }
+    } catch (err) {
+      console.error('❌ sendOTP error:', err);
+      resetSendBtn();
+      errBox.textContent = (err.name === 'AbortError')
+        ? 'Request timed out. Please try again.'
+        : 'Network error. Please try again.';
+      errBox.classList.add('show');
+    }
+  }
+
+  function showOTPSection() {
+    document.getElementById('otpSection').classList.remove('otp-hidden');
+    document.getElementById('verifyBtn').classList.remove('otp-hidden');
+    document.getElementById('otpEmailDisplay').textContent = userEmail;
+    document.getElementById('step2Subtitle').textContent = 'Enter the 6-digit code sent to your email. Code expires in 60 seconds.';
+
+    document.getElementById('gateEmail').setAttribute('readonly', true);
+    document.getElementById('branchSelect').disabled = true;
+
+    document.querySelectorAll('.otp-digit').forEach(el => {
+      el.value = '';
+      el.classList.remove('filled');
+    });
+    setTimeout(() => {
+      const first = document.querySelector('.otp-digit[data-index="0"]');
+      if (first) first.focus();
+    }, 200);
+
+    startOTPExpiryTimer();
+    startResendCooldown();
+  }
+
+  /* ---------- OTP: TIMERS ---------- */
+  function startOTPExpiryTimer() {
+    clearInterval(otpExpiryTimer);
+    otpSecondsLeft = 60;   // ⭐ 60 seconds
+    updateTimerDisplay();
+    otpExpiryTimer = setInterval(() => {
+      otpSecondsLeft--;
+      updateTimerDisplay();
+      if (otpSecondsLeft <= 0) {
+        clearInterval(otpExpiryTimer);
+        document.getElementById('timerDisplay').textContent = 'EXPIRED';
+        document.getElementById('otpError').textContent = 'Code expired. Please request a new one.';
+        document.getElementById('otpError').classList.add('show');
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(otpSecondsLeft / 60).toString().padStart(2, '0');
+    const s = (otpSecondsLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+  }
+
+  function startResendCooldown() {
+    clearInterval(resendCooldownTimer);
+    resendSecondsLeft = 30;   // ⭐ 30 seconds
+    const btn = document.getElementById('resendBtn');
+    btn.disabled = true;
+    btn.innerHTML = 'Resend (<span id="resendTimer">' + resendSecondsLeft + '</span>s)';
+    resendCooldownTimer = setInterval(() => {
+      resendSecondsLeft--;
+      const t = document.getElementById('resendTimer');
+      if (t) t.textContent = resendSecondsLeft;
+      if (resendSecondsLeft <= 0) {
+        clearInterval(resendCooldownTimer);
+        btn.disabled = false;
+        btn.innerHTML = '🔁 Resend Code';
+      }
+    }, 1000);
+  }
+
+  async function resendOTP() {
+    document.getElementById('otpError').classList.remove('show');
+    document.querySelectorAll('.otp-digit').forEach(el => {
+      el.value = ''; el.classList.remove('filled');
+    });
+    await sendOTP();
+  }
+
+  /* ---------- OTP: VERIFY ---------- */
+  async function verifyOTP() {
+    if (isVerifying) {
+      console.warn('⏸️ verifyOTP already running.');
+      return;
+    }
+
+    const code = Array.from(document.querySelectorAll('.otp-digit'))
+                      .map(el => el.value).join('');
+    const errBox = document.getElementById('otpError');
+    const btn = document.getElementById('verifyBtn');
+
+    console.log('🔎 verifyOTP called with code:', code, '| DEMO_MODE:', DEMO_MODE);
+
+    if (code.length !== 6) {
+      errBox.textContent = 'Please enter all 6 digits.';
+      errBox.classList.add('show');
+      return;
+    }
+
+    isVerifying = true;
+    errBox.classList.remove('show');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    btn.textContent = 'Verifying';
+
+    const resetVerifyBtn = () => {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      btn.innerHTML = '✅ Verify & Continue';
+      isVerifying = false;
+    };
+
+    try {
+      let result;
+
+      if (DEMO_MODE) {
+        await new Promise(r => setTimeout(r, 400));
+        result = (code === DEMO_CODE)
+          ? { status: 'verified', token: 'demo-token-' + Date.now(), profile: {} }
+          : { status: 'invalid', message: 'Incorrect code. In DEMO mode, use ' + DEMO_CODE };
+      } else {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const res = await fetch(OTP_ENDPOINTS.verify, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userEmail, code }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        result = await res.json();
+      }
+
+      resetVerifyBtn();
+
+      if (result.status === 'verified') {
+        console.log('✅ Verification success');
+        onVerificationSuccess(result);
+      } else {
+        errBox.textContent = result.message || 'Incorrect code.';
+        errBox.classList.add('show');
+        clearOTPInputs();
+      }
+    } catch (err) {
+      console.error('❌ verifyOTP error:', err);
+      resetVerifyBtn();
+      errBox.textContent = (err.name === 'AbortError')
+        ? 'Request timed out. Please try again.'
+        : 'Network error: ' + err.message;
+      errBox.classList.add('show');
+    }
+  }
+
+  function clearOTPInputs() {
+    document.querySelectorAll('.otp-digit').forEach(el => {
+      el.value = ''; el.classList.remove('filled');
+    });
+    const first = document.querySelector('.otp-digit[data-index="0"]');
+    if (first) first.focus();
+  }
+
+  function onVerificationSuccess(data) {
+    console.log('🎯 Verification success. Location:', selectedLocation);
+    try {
+      if (data.token) sessionStorage.setItem('pc_token', data.token);
+      sessionStorage.setItem('pc_email', userEmail);
+    } catch (e) {
+      console.warn('⚠️ sessionStorage unavailable.', e);
+    }
+
+    clearInterval(otpExpiryTimer);
+    clearInterval(resendCooldownTimer);
+
+    if (selectedLocation === 'HQ') {
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3HQ').classList.remove('hidden');
+      document.getElementById('headerSubtitle').textContent = 'Choose your request type';
+    } else if (selectedLocation === 'Branch') {
+      document.getElementById('step2').classList.add('hidden');
+      loadForm('Branch');
+    } else {
+      console.error('❌ selectedLocation is empty!');
+      alert('Session issue — please restart the flow.');
+    }
+  }
+
+  function resetOTPState() {
+    clearInterval(otpExpiryTimer);
+    clearInterval(resendCooldownTimer);
+    isVerifying = false;
+    isSending = false;
+    document.getElementById('otpSection').classList.add('otp-hidden');
+    document.getElementById('verifyBtn').classList.add('otp-hidden');
+    document.getElementById('gateEmail').removeAttribute('readonly');
+    document.getElementById('branchSelect').disabled = false;
+    document.getElementById('sendCodeBtn').innerHTML = '📧 Send Verification Code';
+    document.getElementById('sendCodeBtn').disabled = false;
+    document.getElementById('sendCodeBtn').classList.remove('loading');
+    document.getElementById('verifyBtn').innerHTML = '✅ Verify & Continue';
+    document.getElementById('verifyBtn').disabled = false;
+    document.getElementById('verifyBtn').classList.remove('loading');
+    document.getElementById('step2Subtitle').textContent = 'Please enter your CGC email address to receive a verification code.';
+    document.querySelectorAll('.otp-digit').forEach(el => {
+      el.value = ''; el.classList.remove('filled');
+    });
+  }
+
+  /* ---------- OTP: Input navigation ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.otp-digit').forEach((input, idx) => {
+      input.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        e.target.value = val;
+        if (val) {
+          e.target.classList.add('filled');
+          const next = document.querySelector(`.otp-digit[data-index="${idx + 1}"]`);
+          if (next) {
+            next.focus();
+          } else {
+            setTimeout(() => verifyOTP(), 150);
+          }
+        } else {
+          e.target.classList.remove('filled');
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+          const prev = document.querySelector(`.otp-digit[data-index="${idx - 1}"]`);
+          if (prev) { prev.focus(); prev.value = ''; prev.classList.remove('filled'); }
+        }
+      });
+
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+        paste.split('').forEach((ch, i) => {
+          const box = document.querySelector(`.otp-digit[data-index="${i}"]`);
+          if (box) { box.value = ch; box.classList.add('filled'); }
+        });
+        if (paste.length === 6) setTimeout(() => verifyOTP(), 150);
+      });
+    });
+  });
+
+  /* ---------- STEP 3: HQ Sub-flow ---------- */
+  function selectHQFlow(flow) {
+    hqFlow = flow;
+    document.getElementById('step3HQ').classList.add('hidden');
+    loadForm(flow === 'advance' ? 'HQ-advance' : 'HQ-claim');
+  }
+
+  function backToStep2() {
+    document.getElementById('step3HQ').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    document.getElementById('headerSubtitle').textContent = 'Please verify your email to proceed';
+  }
+
+  /* ---------- Load Form ---------- */
+  function loadForm(flowKey) {
+    document.getElementById('mainForm').classList.remove('hidden');
+    document.getElementById('headerSubtitle').textContent = 'Please complete all mandatory fields marked with *';
+
+    document.getElementById('displayLocation').textContent = selectedLocation === 'HQ' ? 'Headquarters' : 'Branch';
+    document.getElementById('displayBranch').textContent = selectedBranch ? '— ' + selectedBranch : '';
+    document.getElementById('displayEmail').textContent = userEmail;
+    document.getElementById('email').value = userEmail;
+
+    const badgeMap = {
+      'HQ-advance': '💵 HQ Advance Request',
+      'HQ-claim': '🧾 HQ Expense Claim',
+      'Branch': '🏬 Branch Replenishment'
+    };
+    document.getElementById('flowBadge').textContent = badgeMap[flowKey];
+
+    document.getElementById('hqAdvanceSection').classList.toggle('hidden', flowKey !== 'HQ-advance');
+    document.getElementById('hqClaimSection').classList.toggle('hidden', flowKey !== 'HQ-claim');
+    document.getElementById('branchReplenishSection').classList.toggle('hidden', flowKey !== 'Branch');
+
+    buildTracker(flowKey);
+    updateDeclaration(flowKey);
+    attachListeners();
+  }
+
+  function buildTracker(flowKey) {
+    const steps = workflows[flowKey];
+    const container = document.getElementById('trackerSteps');
+    container.innerHTML = '<div class="tracker-connector"></div>';
+    steps.forEach((s, idx) => {
+      const el = document.createElement('div');
+      el.className = 'tracker-step' + (idx === 0 ? ' active' : '');
+      el.innerHTML = `<div class="step-num">${s.icon}</div><div class="step-label">${s.label}</div>`;
+      container.appendChild(el);
+    });
+  }
+
+  function updateDeclaration(flowKey) {
+    const d = document.getElementById('declarationText');
+    if (flowKey === 'HQ-advance') {
+      d.innerHTML = "I hereby declare that the above information is true and correct. I confirm this advance is solely for legitimate business purposes and I agree to submit all supporting receipts within <strong>7 working days</strong> of receiving the funds, and to refund any unutilized balance.";
+    } else if (flowKey === 'HQ-claim') {
+      d.innerHTML = "I hereby declare that all receipts and amounts submitted reflect actual expenses incurred for legitimate business purposes. I understand that any unused balance from the advance <strong>must be refunded</strong> to close this claim.";
+    } else {
+      d.innerHTML = "I hereby confirm that all Payment Vouchers, invoices, and supporting documents submitted are genuine and reflect actual branch operating expenses. I agree that BSM and Finance may verify these documents before replenishment is processed.";
+    }
+  }
+
+  function restartFlow() {
+    if (!confirm('Are you sure you want to start over? All entered data will be cleared.')) return;
+    document.getElementById('pettyCashForm').reset();
+    document.getElementById('gateEmail').value = '';
+    document.getElementById('branchSelect').value = '';
+    document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('step1Next').disabled = true;
+    selectedLocation = ''; userEmail = ''; selectedBranch = ''; hqFlow = '';
+    try {
+      sessionStorage.removeItem('pc_token');
+      sessionStorage.removeItem('pc_email');
+    } catch(e) {}
+    resetOTPState();
+    document.getElementById('mainForm').classList.add('hidden');
+    document.getElementById('step3HQ').classList.add('hidden');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('headerSubtitle').textContent = 'Please confirm your location to proceed';
+  }
+
+  /* ---------- HQ CLAIM Items ---------- */
+  function addRow() {
+    const tbody = document.getElementById('itemsBody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="text" class="desc" placeholder="Description" /></td>
+      <td>
+        <select class="cat">
+          <option value="">-- Select --</option>
+          <option>Stationery</option><option>Meals & Refreshments</option>
+          <option>Transportation</option><option>Postage & Courier</option>
+          <option>Miscellaneous</option>
+        </select>
+      </td>
+      <td><input type="date" class="itemDate" /></td>
+      <td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>
+      <td><button type="button" class="remove-btn" onclick="removeRow(this)">✕</button></td>
+    `;
+    tbody.appendChild(row);
+    attachListeners();
+  }
+
+  function removeRow(btn) {
+    const tbody = document.getElementById('itemsBody');
+    if (tbody.rows.length > 1) { btn.closest('tr').remove(); calcVariance(); }
+    else alert('At least one item is required.');
+  }
+
+  /* ---------- BRANCH Items ---------- */
+  function addRow2() {
+    const tbody = document.getElementById('itemsBody2');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="text" class="pv" placeholder="PV-002" /></td>
+      <td><input type="text" class="desc" placeholder="Description" /></td>
+      <td><input type="text" class="payee" placeholder="Vendor" /></td>
+      <td><input type="date" class="itemDate" /></td>
+      <td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>
+      <td><button type="button" class="remove-btn" onclick="removeRow2(this)">✕</button></td>
+    `;
+    tbody.appendChild(row);
+    attachListeners();
+  }
+
+  function removeRow2(btn) {
+    const tbody = document.getElementById('itemsBody2');
+    if (tbody.rows.length > 1) { btn.closest('tr').remove(); calcBranchTotal(); }
+    else alert('At least one item is required.');
+  }
+
+  function calcBranchTotal() {
+    let total = 0;
+    document.querySelectorAll('#itemsBody2 .amt').forEach(el => { total += parseFloat(el.value) || 0; });
+    document.getElementById('totalAmount2').textContent = total.toFixed(2);
+  }
+
+  /* ---------- Variance ---------- */
+  function calcVariance() {
+    let spent = 0;
+    document.querySelectorAll('#itemsBody .amt').forEach(el => { spent += parseFloat(el.value) || 0; });
+    document.getElementById('totalAmount').textContent = spent.toFixed(2);
+
+    const advance = parseFloat(document.getElementById('originalAdvance').value) || 0;
+    const balance = advance - spent;
+
+    document.getElementById('varAdvance').textContent = advance.toFixed(2);
+    document.getElementById('varSpent').textContent = spent.toFixed(2);
+
+    const amtEl = document.getElementById('varAmount');
+    const lblEl = document.getElementById('varLabel');
+    const noteEl = document.getElementById('varNote');
+
+    if (balance > 0) {
+      lblEl.textContent = 'Balance to Refund:';
+      amtEl.textContent = 'RM ' + balance.toFixed(2);
+      amtEl.className = 'variance-refund';
+      noteEl.textContent = '⚠️ You must refund RM ' + balance.toFixed(2) + ' to close this claim.';
+    } else if (balance < 0) {
+      lblEl.textContent = 'Additional Reimbursement Due:';
+      amtEl.textContent = 'RM ' + Math.abs(balance).toFixed(2);
+      amtEl.className = 'variance-ok';
+      noteEl.textContent = '✅ Actual spending exceeded advance. Finance will reimburse the shortfall.';
+    } else {
+      lblEl.textContent = 'Fully Reconciled:';
+      amtEl.textContent = 'RM 0.00';
+      amtEl.className = 'variance-ok';
+      noteEl.textContent = '✅ No variance. Claim will be closed upon approval.';
+    }
+  }
+
+  function attachListeners() {
+    document.querySelectorAll('#itemsBody .amt').forEach(el => { el.oninput = calcVariance; });
+    document.querySelectorAll('#itemsBody2 .amt').forEach(el => { el.oninput = calcBranchTotal; });
+  }
+
+  /* ---------- File to Base64 for Power Automate ---------- */
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function collectFiles(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input || !input.files || input.files.length === 0) return [];
+    const files = Array.from(input.files);
+    return await Promise.all(files.map(async f => ({
+      name: f.name,
+      size: f.size,
+      contentBytes: await fileToBase64(f)
+    })));
+  }
+
+  /* ---------- Submit ---------- */
+  async function submitForm() {
+    let isValid = true;
+    const commonRequired = ['fullName', 'empId', 'department'];
+    let required = [...commonRequired];
+
+    if (selectedLocation === 'HQ' && hqFlow === 'advance') {
+      required.push('requestDate', 'requiredDate', 'advanceAmount', 'aamEmail', 'glCode', 'costCentre', 'purpose', 'bcaAttachment');
+    } else if (selectedLocation === 'HQ' && hqFlow === 'claim') {
+      required.push('advanceRef', 'originalAdvance', 'receipts');
+    } else if (selectedLocation === 'Branch') {
+      required.push('replenishDate', 'replenishPeriod', 'currentBalance', 'replenishAmount', 'bsmManagerEmail', 'bsmHeadEmail', 'branchDocs');
+    }
+
+    required.forEach(id => {
+      const field = document.getElementById(id);
+      if (!field) return;
+      const err = field.nextElementSibling;
+      if (!field.value || !field.value.trim()) {
+        if (err && err.classList.contains('error-msg')) err.classList.add('show');
+        field.style.borderColor = '#c0392b';
+        isValid = false;
+      } else {
+        if (err && err.classList.contains('error-msg')) err.classList.remove('show');
+        field.style.borderColor = '#d5dbe6';
+      }
+    });
+
+    if (hqFlow === 'claim') {
+      let hasItem = false;
+      document.querySelectorAll('#itemsBody tr').forEach(row => {
+        if (row.querySelector('.desc').value.trim() && (parseFloat(row.querySelector('.amt').value) || 0) > 0) hasItem = true;
+      });
+      if (!hasItem) { alert('Please enter at least one valid expense item.'); isValid = false; }
+    }
+    if (selectedLocation === 'Branch') {
+      let hasItem = false;
+      document.querySelectorAll('#itemsBody2 tr').forEach(row => {
+        if (row.querySelector('.desc').value.trim() && (parseFloat(row.querySelector('.amt').value) || 0) > 0) hasItem = true;
+      });
+      if (!hasItem) { alert('Please enter at least one Payment Voucher / invoice.'); isValid = false; }
+    }
+
+    const agree = document.getElementById('agree');
+    const agreeErr = document.getElementById('agreeErr');
+    if (!agree.checked) { agreeErr.classList.add('show'); isValid = false; }
+    else agreeErr.classList.remove('show');
+
+    if (!isValid) return;
+
+    // Build payload
+    let token = null;
+    try { token = sessionStorage.getItem('pc_token'); } catch(e) {}
+
+    const payload = {
+      flowType: selectedLocation === 'HQ' ? ('HQ-' + hqFlow) : 'Branch',
+      location: selectedLocation,
+      branch: selectedBranch || 'N/A',
+      email: userEmail,
+      sessionToken: token,
+      fullName: document.getElementById('fullName').value,
+      empId: document.getElementById('empId').value,
+      department: document.getElementById('department').value,
+      submittedAt: new Date().toISOString()
+    };
+
+    // Flow-specific fields
+    try {
+      if (hqFlow === 'advance') {
+        Object.assign(payload, {
+          requestDate: document.getElementById('requestDate').value,
+          requiredDate: document.getElementById('requiredDate').value,
+          amountRequested: document.getElementById('advanceAmount').value,
+          aamEmail: document.getElementById('aamEmail').value,
+          glCode: document.getElementById('glCode').value,
+          costCentre: document.getElementById('costCentre').value,
+          purpose: document.getElementById('purpose').value,
+          bcaAttachments: await collectFiles('bcaAttachment')
+        });
+      } else if (hqFlow === 'claim') {
+        const items = Array.from(document.querySelectorAll('#itemsBody tr')).map(row => ({
+          description: row.querySelector('.desc').value,
+          category: row.querySelector('.cat').value,
+          date: row.querySelector('.itemDate').value,
+          amount: parseFloat(row.querySelector('.amt').value) || 0
+        }));
+        Object.assign(payload, {
+          advanceRef: document.getElementById('advanceRef').value,
+          originalAdvance: parseFloat(document.getElementById('originalAdvance').value) || 0,
+          totalSpent: parseFloat(document.getElementById('totalAmount').textContent) || 0,
+          items,
+          receiptAttachments: await collectFiles('receipts')
+        });
+      } else if (selectedLocation === 'Branch') {
+        const pvs = Array.from(document.querySelectorAll('#itemsBody2 tr')).map(row => ({
+          pvNo: row.querySelector('.pv').value,
+          description: row.querySelector('.desc').value,
+          payee: row.querySelector('.payee').value,
+          date: row.querySelector('.itemDate').value,
+          amount: parseFloat(row.querySelector('.amt').value) || 0
+        }));
+        Object.assign(payload, {
+          replenishDate: document.getElementById('replenishDate').value,
+          replenishPeriod: document.getElementById('replenishPeriod').value,
+          currentBalance: parseFloat(document.getElementById('currentBalance').value) || 0,
+          replenishAmount: parseFloat(document.getElementById('replenishAmount').value) || 0,
+          bsmManagerEmail: document.getElementById('bsmManagerEmail').value,
+          bsmHeadEmail: document.getElementById('bsmHeadEmail').value,
+          pvItems: pvs,
+          totalPV: parseFloat(document.getElementById('totalAmount2').textContent) || 0,
+          supportingDocs: await collectFiles('branchDocs')
+        });
+      }
+    } catch (err) {
+      alert('Error preparing files. Please check your attachments and try again.');
+      console.error(err);
+      return;
+    }
+
+    // Show loading state
+    const submitBtn = document.querySelector('.btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+      if (DEMO_MODE) {
+        console.log('🧪 DEMO submission payload:', payload);
+        await new Promise(r => setTimeout(r, 1000));
+        alert('✅ [DEMO] Request submitted successfully!\n\nFlow: ' + payload.flowType +
+              '\nEmail: ' + payload.email +
+              '\n\nNext step: ' + workflows[payload.flowType][1].label + ' will receive an approval notification.');
+        restartFlow();
+      } else {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
+        const res = await fetch(OTP_ENDPOINTS.submit, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+
+        if (data.status === 'submitted') {
+          alert('✅ Request submitted successfully!\n\nReference: ' + (data.requestId || 'N/A') +
+                '\n\nNext step: ' + workflows[payload.flowType][1].label + ' will receive an approval notification.');
+          restartFlow();
+        } else {
+          alert('❌ Submission failed: ' + (data.message || 'Unknown error'));
+        }
+      }
+    } catch (err) {
+      console.error('❌ Submit error:', err);
+      alert('❌ Network error during submission. Please try again.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Request';
+    }
+  }
+</script>
+
+</body>
+</html>
