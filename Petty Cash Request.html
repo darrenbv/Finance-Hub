@@ -776,14 +776,19 @@
   // ---------- CONFIG: Power Automate endpoints ----------
   const OTP_ENDPOINTS = {
     send: 'https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4',
-    verify: 'https://prod-XX.southeastasia.logic.azure.com/workflows/YOUR_VERIFY_OTP_URL',
+    verify: 'https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ',
     submit: 'https://prod-XX.southeastasia.logic.azure.com/workflows/YOUR_SUBMIT_URL'
   };
 
-  // Auto-detect demo mode when endpoints are still placeholders
-  const DEMO_MODE = OTP_ENDPOINTS.send.includes('YOUR_SEND_OTP_URL') ||
-                    OTP_ENDPOINTS.send.includes('prod-XX');
+  // 🔧 DEMO MODE per endpoint — auto-detects placeholders
+  const DEMO_MODE = {
+    send: OTP_ENDPOINTS.send.includes('YOUR_') || OTP_ENDPOINTS.send.includes('prod-XX'),
+    verify: OTP_ENDPOINTS.verify.includes('YOUR_') || OTP_ENDPOINTS.verify.includes('prod-XX'),
+    submit: OTP_ENDPOINTS.submit.includes('YOUR_') || OTP_ENDPOINTS.submit.includes('prod-XX')
+  };
   const DEMO_CODE = '123456';
+
+  console.log('🔧 DEMO_MODE status:', DEMO_MODE);
 
   // ---------- STATE ----------
   let selectedLocation = '';
@@ -792,8 +797,8 @@
   let hqFlow = '';
   let otpExpiryTimer = null;
   let resendCooldownTimer = null;
-  let otpSecondsLeft = 60;      // ⭐ 60 seconds validity (matches backend)
-  let resendSecondsLeft = 30;   // ⭐ 30 seconds resend cooldown
+  let otpSecondsLeft = 60;
+  let resendSecondsLeft = 30;
   let isVerifying = false;
   let isSending = false;
 
@@ -881,8 +886,8 @@
     };
 
     try {
-      if (DEMO_MODE) {
-        console.log('🧪 DEMO MODE — use code:', DEMO_CODE);
+      if (DEMO_MODE.send) {
+        console.log('🧪 DEMO MODE (send) — use code:', DEMO_CODE);
         await new Promise(r => setTimeout(r, 600));
         userEmail = email;
         selectedBranch = branch;
@@ -951,7 +956,7 @@
   /* ---------- OTP: TIMERS ---------- */
   function startOTPExpiryTimer() {
     clearInterval(otpExpiryTimer);
-    otpSecondsLeft = 60;   // ⭐ 60 seconds
+    otpSecondsLeft = 60;
     updateTimerDisplay();
     otpExpiryTimer = setInterval(() => {
       otpSecondsLeft--;
@@ -973,7 +978,7 @@
 
   function startResendCooldown() {
     clearInterval(resendCooldownTimer);
-    resendSecondsLeft = 30;   // ⭐ 30 seconds
+    resendSecondsLeft = 30;
     const btn = document.getElementById('resendBtn');
     btn.disabled = true;
     btn.innerHTML = 'Resend (<span id="resendTimer">' + resendSecondsLeft + '</span>s)';
@@ -1009,7 +1014,7 @@
     const errBox = document.getElementById('otpError');
     const btn = document.getElementById('verifyBtn');
 
-    console.log('🔎 verifyOTP called with code:', code, '| DEMO_MODE:', DEMO_MODE);
+    console.log('🔎 verifyOTP called with code:', code, '| DEMO_MODE.verify:', DEMO_MODE.verify);
 
     if (code.length !== 6) {
       errBox.textContent = 'Please enter all 6 digits.';
@@ -1033,7 +1038,7 @@
     try {
       let result;
 
-      if (DEMO_MODE) {
+      if (DEMO_MODE.verify) {
         await new Promise(r => setTimeout(r, 400));
         result = (code === DEMO_CODE)
           ? { status: 'verified', token: 'demo-token-' + Date.now(), profile: {} }
@@ -1411,7 +1416,6 @@
 
     if (!isValid) return;
 
-    // Build payload
     let token = null;
     try { token = sessionStorage.getItem('pc_token'); } catch(e) {}
 
@@ -1427,7 +1431,6 @@
       submittedAt: new Date().toISOString()
     };
 
-    // Flow-specific fields
     try {
       if (hqFlow === 'advance') {
         Object.assign(payload, {
@@ -1480,13 +1483,12 @@
       return;
     }
 
-    // Show loading state
     const submitBtn = document.querySelector('.btn-submit');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
     try {
-      if (DEMO_MODE) {
+      if (DEMO_MODE.submit) {
         console.log('🧪 DEMO submission payload:', payload);
         await new Promise(r => setTimeout(r, 1000));
         alert('✅ [DEMO] Request submitted successfully!\n\nFlow: ' + payload.flowType +
