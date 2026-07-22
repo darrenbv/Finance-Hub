@@ -1059,13 +1059,21 @@
       resetVerifyBtn();
 
       if (result.status === 'verified') {
-        console.log('✅ Verification success');
-        onVerificationSuccess(result);
-      } else {
-        errBox.textContent = result.message || 'Incorrect code.';
-        errBox.classList.add('show');
-        clearOTPInputs();
-      }
+  console.log('✅ Verification success');
+  onVerificationSuccess(result);
+} else if (result.status === 'locked') {
+  errBox.textContent = result.message || 'Too many incorrect attempts. Please request a new code.';
+  errBox.classList.add('show');
+  // Disable verify button since code is dead — user must resend
+  document.getElementById('verifyBtn').disabled = true;
+  document.getElementById('verifyBtn').style.opacity = '0.5';
+  clearOTPInputs();
+} else {
+  // "invalid" or "no_code" or "expired" — still can retry
+  errBox.textContent = result.message || 'Incorrect code.';
+  errBox.classList.add('show');
+  clearOTPInputs();
+}
     } catch (err) {
       console.error('❌ verifyOTP error:', err);
       resetVerifyBtn();
