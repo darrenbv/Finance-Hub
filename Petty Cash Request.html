@@ -448,7 +448,7 @@
       <div class="gate-buttons">
         <button class="gate-btn gate-btn-secondary" onclick="backToStep1()">← Back</button>
         <button class="gate-btn gate-btn-primary otp-hidden" id="verifyBtn" onclick="verifyOTP()">
-          ✅ Verify & Continue
+          ✅ Verify &amp; Continue
         </button>
       </div>
     </div>
@@ -470,7 +470,7 @@
       </div>
       <div class="subflow-card" onclick="selectHQFlow('claim')">
         <div class="subflow-icon">🧾</div>
-        <div class="subflow-label">Phase B: Expense Claim & Settlement</div>
+        <div class="subflow-label">Phase B: Expense Claim &amp; Settlement</div>
         <div class="subflow-desc">Submit receipts against a prior advance, or claim reimbursement for spending already incurred.</div>
       </div>
     </div>
@@ -519,7 +519,7 @@
             <option>Change Management</option><option>Finance</option>
             <option>Human Resources</option><option>Information Technology</option>
             <option>Operations</option><option>Claims</option>
-            <option>Branch Support & Management (BSM)</option><option>Others</option>
+            <option>Branch Support &amp; Management (BSM)</option><option>Others</option>
           </select>
           <span class="error-msg">Please select your department.</span>
         </div>
@@ -593,7 +593,7 @@
       <!-- HQ PHASE B: CLAIM -->
       <div id="hqClaimSection" class="hidden">
         <div class="info-box">
-          <strong>ℹ️ Phase B: Expense Claim & Settlement</strong><br>
+          <strong>ℹ️ Phase B: Expense Claim &amp; Settlement</strong><br>
           Submit your actual expenses with original supporting receipts. The system will automatically calculate the variance against your advance and highlight any refund required.
         </div>
 
@@ -628,8 +628,8 @@
               <td>
                 <select class="cat">
                   <option value="">-- Select --</option>
-                  <option>Stationery</option><option>Meals & Refreshments</option>
-                  <option>Transportation</option><option>Postage & Courier</option>
+                  <option>Stationery</option><option>Meals &amp; Refreshments</option>
+                  <option>Transportation</option><option>Postage &amp; Courier</option>
                   <option>Miscellaneous</option>
                 </select>
               </td>
@@ -696,7 +696,7 @@
           </div>
         </div>
 
-        <div class="section-title">Payment Vouchers & Invoices</div>
+        <div class="section-title">Payment Vouchers &amp; Invoices</div>
         <table class="items-table" id="itemsTable2">
           <thead>
             <tr>
@@ -773,24 +773,28 @@
 </div>
 
 <script>
-  // ---------- CONFIG: Power Automate endpoints ----------
+  /* ============================================================
+     CONFIG — Power Automate endpoints (ALL LIVE)
+     ============================================================ */
   const OTP_ENDPOINTS = {
     send: 'https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4',
     verify: 'https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ',
     submit: 'https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/10/workflows/195698cee0dd45009d59558023261812/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nmMGLLIhDuANgyFwez1G7ZWmV1ACoxJ6Zvy5XFIESBs'
   };
 
-  // 🔧 DEMO MODE per endpoint — auto-detects placeholders
+  // 🔧 Manually controlled — all endpoints LIVE
   const DEMO_MODE = {
-    send: OTP_ENDPOINTS.send.includes('YOUR_') || OTP_ENDPOINTS.send.includes('prod-XX'),
-    verify: OTP_ENDPOINTS.verify.includes('YOUR_') || OTP_ENDPOINTS.verify.includes('prod-XX'),
-    submit: OTP_ENDPOINTS.submit.includes('YOUR_') || OTP_ENDPOINTS.submit.includes('prod-XX')
+    send: false,
+    verify: false,
+    submit: false
   };
   const DEMO_CODE = '123456';
 
-  console.log('🔧 DEMO_MODE status:', DEMO_MODE);
+  console.log('🔧 BUILD v3 — LIVE MODE');
+  console.log('🔧 DEMO_MODE:', DEMO_MODE);
+  console.log('🔧 Submit URL:', OTP_ENDPOINTS.submit);
 
-  // ---------- STATE ----------
+  /* ---------- STATE ---------- */
   let selectedLocation = '';
   let userEmail = '';
   let selectedBranch = '';
@@ -887,12 +891,11 @@
 
     try {
       if (DEMO_MODE.send) {
-        console.log('🧪 DEMO MODE (send) — use code:', DEMO_CODE);
         await new Promise(r => setTimeout(r, 600));
         userEmail = email;
         selectedBranch = branch;
         showOTPSection();
-        successBox.innerHTML = '⚠️ <strong>DEMO MODE</strong> — Use code <strong style="font-family:monospace; letter-spacing:2px; color:#c9a94a;">' + DEMO_CODE + '</strong> to proceed.';
+        successBox.innerHTML = '⚠️ <strong>DEMO MODE</strong> — Use code <strong>' + DEMO_CODE + '</strong>';
         successBox.classList.add('show');
         resetSendBtn();
         return;
@@ -973,7 +976,7 @@
   function updateTimerDisplay() {
     const m = Math.floor(otpSecondsLeft / 60).toString().padStart(2, '0');
     const s = (otpSecondsLeft % 60).toString().padStart(2, '0');
-    document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    document.getElementById('timerDisplay').textContent = m + ':' + s;
   }
 
   function startResendCooldown() {
@@ -1004,17 +1007,14 @@
 
   /* ---------- OTP: VERIFY ---------- */
   async function verifyOTP() {
-    if (isVerifying) {
-      console.warn('⏸️ verifyOTP already running.');
-      return;
-    }
+    if (isVerifying) { console.warn('⏸️ verifyOTP already running.'); return; }
 
     const code = Array.from(document.querySelectorAll('.otp-digit'))
                       .map(el => el.value).join('');
     const errBox = document.getElementById('otpError');
     const btn = document.getElementById('verifyBtn');
 
-    console.log('🔎 verifyOTP called with code:', code, '| DEMO_MODE.verify:', DEMO_MODE.verify);
+    console.log('🔎 verifyOTP:', code, '| DEMO:', DEMO_MODE.verify);
 
     if (code.length !== 6) {
       errBox.textContent = 'Please enter all 6 digits.';
@@ -1031,7 +1031,7 @@
     const resetVerifyBtn = () => {
       btn.classList.remove('loading');
       btn.disabled = false;
-      btn.innerHTML = '✅ Verify & Continue';
+      btn.innerHTML = '✅ Verify &amp; Continue';
       isVerifying = false;
     };
 
@@ -1041,8 +1041,8 @@
       if (DEMO_MODE.verify) {
         await new Promise(r => setTimeout(r, 400));
         result = (code === DEMO_CODE)
-          ? { status: 'verified', token: 'demo-token-' + Date.now(), profile: {} }
-          : { status: 'invalid', message: 'Incorrect code. In DEMO mode, use ' + DEMO_CODE };
+          ? { status: 'verified', token: 'demo-token-' + Date.now() }
+          : { status: 'invalid', message: 'Incorrect code.' };
       } else {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -1059,21 +1059,19 @@
       resetVerifyBtn();
 
       if (result.status === 'verified') {
-  console.log('✅ Verification success');
-  onVerificationSuccess(result);
-} else if (result.status === 'locked') {
-  errBox.textContent = result.message || 'Too many incorrect attempts. Please request a new code.';
-  errBox.classList.add('show');
-  // Disable verify button since code is dead — user must resend
-  document.getElementById('verifyBtn').disabled = true;
-  document.getElementById('verifyBtn').style.opacity = '0.5';
-  clearOTPInputs();
-} else {
-  // "invalid" or "no_code" or "expired" — still can retry
-  errBox.textContent = result.message || 'Incorrect code.';
-  errBox.classList.add('show');
-  clearOTPInputs();
-}
+        console.log('✅ Verification success');
+        onVerificationSuccess(result);
+      } else if (result.status === 'locked') {
+        errBox.textContent = result.message || 'Too many incorrect attempts. Please request a new code.';
+        errBox.classList.add('show');
+        document.getElementById('verifyBtn').disabled = true;
+        document.getElementById('verifyBtn').style.opacity = '0.5';
+        clearOTPInputs();
+      } else {
+        errBox.textContent = result.message || 'Incorrect code.';
+        errBox.classList.add('show');
+        clearOTPInputs();
+      }
     } catch (err) {
       console.error('❌ verifyOTP error:', err);
       resetVerifyBtn();
@@ -1093,7 +1091,7 @@
   }
 
   function onVerificationSuccess(data) {
-    console.log('🎯 Verification success. Location:', selectedLocation);
+    console.log('🎯 Verified. Location:', selectedLocation);
     try {
       if (data.token) sessionStorage.setItem('pc_token', data.token);
       sessionStorage.setItem('pc_email', userEmail);
@@ -1112,7 +1110,6 @@
       document.getElementById('step2').classList.add('hidden');
       loadForm('Branch');
     } else {
-      console.error('❌ selectedLocation is empty!');
       alert('Session issue — please restart the flow.');
     }
   }
@@ -1129,8 +1126,9 @@
     document.getElementById('sendCodeBtn').innerHTML = '📧 Send Verification Code';
     document.getElementById('sendCodeBtn').disabled = false;
     document.getElementById('sendCodeBtn').classList.remove('loading');
-    document.getElementById('verifyBtn').innerHTML = '✅ Verify & Continue';
+    document.getElementById('verifyBtn').innerHTML = '✅ Verify &amp; Continue';
     document.getElementById('verifyBtn').disabled = false;
+    document.getElementById('verifyBtn').style.opacity = '1';
     document.getElementById('verifyBtn').classList.remove('loading');
     document.getElementById('step2Subtitle').textContent = 'Please enter your CGC email address to receive a verification code.';
     document.querySelectorAll('.otp-digit').forEach(el => {
@@ -1146,7 +1144,7 @@
         e.target.value = val;
         if (val) {
           e.target.classList.add('filled');
-          const next = document.querySelector(`.otp-digit[data-index="${idx + 1}"]`);
+          const next = document.querySelector('.otp-digit[data-index="' + (idx + 1) + '"]');
           if (next) {
             next.focus();
           } else {
@@ -1159,7 +1157,7 @@
 
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace' && !e.target.value && idx > 0) {
-          const prev = document.querySelector(`.otp-digit[data-index="${idx - 1}"]`);
+          const prev = document.querySelector('.otp-digit[data-index="' + (idx - 1) + '"]');
           if (prev) { prev.focus(); prev.value = ''; prev.classList.remove('filled'); }
         }
       });
@@ -1168,7 +1166,7 @@
         e.preventDefault();
         const paste = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
         paste.split('').forEach((ch, i) => {
-          const box = document.querySelector(`.otp-digit[data-index="${i}"]`);
+          const box = document.querySelector('.otp-digit[data-index="' + i + '"]');
           if (box) { box.value = ch; box.classList.add('filled'); }
         });
         if (paste.length === 6) setTimeout(() => verifyOTP(), 150);
@@ -1222,7 +1220,7 @@
     steps.forEach((s, idx) => {
       const el = document.createElement('div');
       el.className = 'tracker-step' + (idx === 0 ? ' active' : '');
-      el.innerHTML = `<div class="step-num">${s.icon}</div><div class="step-label">${s.label}</div>`;
+      el.innerHTML = '<div class="step-num">' + s.icon + '</div><div class="step-label">' + s.label + '</div>';
       container.appendChild(el);
     });
   }
@@ -1262,20 +1260,17 @@
   function addRow() {
     const tbody = document.getElementById('itemsBody');
     const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><input type="text" class="desc" placeholder="Description" /></td>
-      <td>
-        <select class="cat">
-          <option value="">-- Select --</option>
-          <option>Stationery</option><option>Meals & Refreshments</option>
-          <option>Transportation</option><option>Postage & Courier</option>
-          <option>Miscellaneous</option>
-        </select>
-      </td>
-      <td><input type="date" class="itemDate" /></td>
-      <td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>
-      <td><button type="button" class="remove-btn" onclick="removeRow(this)">✕</button></td>
-    `;
+    row.innerHTML =
+      '<td><input type="text" class="desc" placeholder="Description" /></td>' +
+      '<td><select class="cat">' +
+      '<option value="">-- Select --</option>' +
+      '<option>Stationery</option><option>Meals &amp; Refreshments</option>' +
+      '<option>Transportation</option><option>Postage &amp; Courier</option>' +
+      '<option>Miscellaneous</option>' +
+      '</select></td>' +
+      '<td><input type="date" class="itemDate" /></td>' +
+      '<td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>' +
+      '<td><button type="button" class="remove-btn" onclick="removeRow(this)">✕</button></td>';
     tbody.appendChild(row);
     attachListeners();
   }
@@ -1290,14 +1285,13 @@
   function addRow2() {
     const tbody = document.getElementById('itemsBody2');
     const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><input type="text" class="pv" placeholder="PV-002" /></td>
-      <td><input type="text" class="desc" placeholder="Description" /></td>
-      <td><input type="text" class="payee" placeholder="Vendor" /></td>
-      <td><input type="date" class="itemDate" /></td>
-      <td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>
-      <td><button type="button" class="remove-btn" onclick="removeRow2(this)">✕</button></td>
-    `;
+    row.innerHTML =
+      '<td><input type="text" class="pv" placeholder="PV-002" /></td>' +
+      '<td><input type="text" class="desc" placeholder="Description" /></td>' +
+      '<td><input type="text" class="payee" placeholder="Vendor" /></td>' +
+      '<td><input type="date" class="itemDate" /></td>' +
+      '<td><input type="number" class="amt" min="0" step="0.01" placeholder="0.00" /></td>' +
+      '<td><button type="button" class="remove-btn" onclick="removeRow2(this)">✕</button></td>';
     tbody.appendChild(row);
     attachListeners();
   }
@@ -1353,7 +1347,7 @@
     document.querySelectorAll('#itemsBody2 .amt').forEach(el => { el.oninput = calcBranchTotal; });
   }
 
-  /* ---------- File to Base64 for Power Automate ---------- */
+  /* ---------- File to Base64 ---------- */
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -1376,6 +1370,8 @@
 
   /* ---------- Submit ---------- */
   async function submitForm() {
+    console.log('🚀 submitForm called | DEMO_MODE.submit:', DEMO_MODE.submit);
+
     let isValid = true;
     const commonRequired = ['fullName', 'empId', 'department'];
     let required = [...commonRequired];
@@ -1396,6 +1392,7 @@
         if (err && err.classList.contains('error-msg')) err.classList.add('show');
         field.style.borderColor = '#c0392b';
         isValid = false;
+        console.warn('⚠️ Missing required field:', id);
       } else {
         if (err && err.classList.contains('error-msg')) err.classList.remove('show');
         field.style.borderColor = '#d5dbe6';
@@ -1422,7 +1419,10 @@
     if (!agree.checked) { agreeErr.classList.add('show'); isValid = false; }
     else agreeErr.classList.remove('show');
 
-    if (!isValid) return;
+    if (!isValid) {
+      console.warn('⛔ Validation failed — submission stopped.');
+      return;
+    }
 
     let token = null;
     try { token = sessionStorage.getItem('pc_token'); } catch(e) {}
@@ -1462,7 +1462,7 @@
           advanceRef: document.getElementById('advanceRef').value,
           originalAdvance: parseFloat(document.getElementById('originalAdvance').value) || 0,
           totalSpent: parseFloat(document.getElementById('totalAmount').textContent) || 0,
-          items,
+          items: items,
           receiptAttachments: await collectFiles('receipts')
         });
       } else if (selectedLocation === 'Branch') {
@@ -1499,11 +1499,12 @@
       if (DEMO_MODE.submit) {
         console.log('🧪 DEMO submission payload:', payload);
         await new Promise(r => setTimeout(r, 1000));
-        alert('✅ [DEMO] Request submitted successfully!\n\nFlow: ' + payload.flowType +
-              '\nEmail: ' + payload.email +
-              '\n\nNext step: ' + workflows[payload.flowType][1].label + ' will receive an approval notification.');
+        alert('✅ [DEMO] Request submitted successfully!');
         restartFlow();
       } else {
+        console.log('📤 POSTing to:', OTP_ENDPOINTS.submit);
+        console.log('📦 Payload:', payload);
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 60000);
         const res = await fetch(OTP_ENDPOINTS.submit, {
@@ -1513,7 +1514,10 @@
           signal: controller.signal
         });
         clearTimeout(timeoutId);
+
+        console.log('📥 HTTP status:', res.status);
         const data = await res.json();
+        console.log('📥 Response body:', data);
 
         if (data.status === 'submitted') {
           alert('✅ Request submitted successfully!\n\nReference: ' + (data.requestId || 'N/A') +
