@@ -1,0 +1,153 @@
+/* ============================================================
+   CGC FINANCE HUB - FIXED ASSET MODULE
+   fa-theme.css : brand tokens, base layout, buttons, fields
+   ============================================================ */
+
+:root{
+  --fa-navy:        #1B3D6D;
+  --fa-navy-dark:   #122C50;
+  --fa-navy-light:  #2C5892;
+  --fa-gold:        #E8B21E;
+  --fa-bg:          #EEF2F7;
+  --fa-surface:     #FFFFFF;
+  --fa-line:        #D7DEE8;
+  --fa-text:        #1F2937;
+  --fa-muted:       #6B7280;
+  --fa-ok:          #1A7F37;
+  --fa-warn:        #B7791F;
+  --fa-err:         #C0392B;
+  --fa-radius:      12px;
+  --fa-radius-sm:   6px;
+  --fa-shadow:      0 4px 20px rgba(27,61,109,.10);
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  font-family:"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background:var(--fa-bg);
+  color:var(--fa-text);
+  line-height:1.55;
+  padding:22px 14px;
+  -webkit-font-smoothing:antialiased;
+}
+
+.fa-shell{ max-width:780px; margin:0 auto; }
+
+/* ---------------- HEADER ---------------- */
+.fa-brand{
+  background:linear-gradient(135deg, var(--fa-navy) 0%, var(--fa-navy-dark) 100%);
+  color:#fff;
+  padding:22px 26px;
+  border-radius:var(--fa-radius) var(--fa-radius) 0 0;
+  display:flex; align-items:center; gap:16px;
+  position:relative; overflow:hidden;
+}
+.fa-brand::after{
+  content:""; position:absolute; right:-40px; top:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:rgba(232,178,30,.10);
+}
+.fa-brand-mark{
+  background:#fff; color:var(--fa-navy);
+  font-weight:800; font-size:18px; letter-spacing:1.5px;
+  padding:9px 13px; border-radius:var(--fa-radius-sm);
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
+}
+.fa-brand-text h1{ font-size:19px; font-weight:600; letter-spacing:.2px; }
+.fa-brand-text p{ font-size:12px; opacity:.82; margin-top:2px; }
+
+.fa-signout{
+  margin-left:auto; z-index:1;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.38);
+  color:#fff; padding:7px 15px;
+  border-radius:20px; font-size:12px; cursor:pointer;
+  transition:background .15s;
+}
+.fa-signout:hover{ background:rgba(255,255,255,.28); }
+
+/* ---------------- CARD ---------------- */
+.fa-card{
+  background:var(--fa-surface);
+  padding:30px 28px;
+  border-radius:0 0 var(--fa-radius) var(--fa-radius);
+  box-shadow:var(--fa-shadow);
+}
+.fa-title{ font-size:19px; color:var(--fa-navy); margin-bottom:6px; font-weight:600; }
+.fa-lead{ font-size:13.5px; color:var(--fa-muted); margin-bottom:22px; }
+.fa-center{ text-align:center; }
+.fa-fineprint{ font-size:11.5px; color:var(--fa-muted); text-align:center; margin-top:16px; }
+
+/* ---------------- FIELDS ---------------- */
+.fa-field{ margin-bottom:18px; }
+.fa-field label{
+  display:block; font-size:12.5px; font-weight:600;
+  margin-bottom:7px; letter-spacing:.2px;
+}
+.fa-field label em{ color:var(--fa-err); font-style:normal; margin-left:2px; }
+
+.fa-field input,
+.fa-field select,
+.fa-field textarea{
+  width:100%; padding:11px 13px;
+  border:1px solid var(--fa-line);
+  border-radius:var(--fa-radius-sm);
+  font-size:14px; font-family:inherit; color:var(--fa-text);
+  background:#fff; transition:border-color .15s, box-shadow .15s;
+}
+.fa-field textarea{ resize:vertical; min-height:80px; }
+.fa-field input:focus,
+.fa-field select:focus,
+.fa-field textarea:focus{
+  outline:none; border-color:var(--fa-navy);
+  box-shadow:0 0 0 3px rgba(27,61,109,.12);
+}
+.fa-field input.fa-bad,
+.fa-field select.fa-bad,
+.fa-field textarea.fa-bad{
+  border-color:var(--fa-err);
+  box-shadow:0 0 0 3px rgba(192,57,43,.10);
+}
+.fa-hint{ display:block; font-size:11.5px; color:var(--fa-muted); margin-top:5px; }
+.fa-grid2{ display:flex; gap:16px; }
+.fa-grid2 .fa-field{ flex:1; }
+
+/* ---------------- BUTTONS ---------------- */
+.fa-btn{
+  padding:12px 24px; border:none;
+  border-radius:var(--fa-radius-sm);
+  font-size:14px; font-weight:600; font-family:inherit;
+  cursor:pointer; transition:background .15s, transform .1s, box-shadow .15s;
+}
+.fa-btn:active:not(:disabled){ transform:translateY(1px); }
+.fa-btn-primary{ background:var(--fa-navy); color:#fff; box-shadow:0 2px 8px rgba(27,61,109,.24); }
+.fa-btn-primary:hover:not(:disabled){ background:var(--fa-navy-light); }
+.fa-btn-primary:disabled{ background:#A8B3C2; box-shadow:none; cursor:not-allowed; }
+.fa-btn-ghost{ background:#fff; border:1px solid var(--fa-line); color:var(--fa-text); }
+.fa-btn-ghost:hover{ background:#F4F7FB; }
+.fa-btn-block{ width:100%; }
+.fa-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
+
+.fa-link{
+  background:none; border:none; color:var(--fa-navy);
+  font-size:12.5px; font-family:inherit;
+  cursor:pointer; text-decoration:underline; padding:0;
+}
+.fa-link:disabled{ color:var(--fa-muted); cursor:not-allowed; text-decoration:none; }
+
+/* ---------------- FOOTER ---------------- */
+.fa-foot{
+  text-align:center; font-size:11.5px;
+  color:var(--fa-muted); margin-top:18px;
+}
+
+.fa-hide{ display:none !important; }
+
+@media (max-width:600px){
+  body{ padding:12px 8px; }
+  .fa-card{ padding:22px 18px; }
+  .fa-grid2{ flex-direction:column; gap:0; }
+  .fa-brand{ flex-wrap:wrap; }
+  .fa-signout{ margin-left:0; }
+}
