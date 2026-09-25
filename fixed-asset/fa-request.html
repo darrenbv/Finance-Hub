@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixed Asset Number Request | CGC Finance Hub</title>
+
+css/fa-theme.css?v=1.0.0
+css/fa-components.css?v=1.0.0
+css/fa-request.css?v=1.0.0
+</head>
+<body>
+
+<div class="fa-shell">
+
+  <!-- ================= HEADER ================= -->
+  <header class="fa-brand">
+    <div class="fa-brand-mark">CGC</div>
+    <div class="fa-brand-text">
+      <h1>Fixed Asset Number Request</h1>
+      <p>Credit Guarantee Corporation Malaysia Berhad</p>
+    </div>
+    <button id="faBtnSignOut" class="fa-signout fa-hide">Sign out</button>
+  </header>
+
+  <!-- ================= STEPPER ================= -->
+  <nav class="fa-stepper">
+    <div class="fa-step fa-step-active" data-step="1"><span>1</span><label>Verify</label></div>
+    <div class="fa-step" data-step="2"><span>2</span><label>Request</label></div>
+    <div class="fa-step" data-step="3"><span>3</span><label>Done</label></div>
+  </nav>
+
+  <main class="fa-card">
+
+    <!-- ============ SCREEN 1 : EMAIL ============ -->
+    <section id="faScreenEmail" class="fa-screen">
+      <h2 class="fa-title">Secure Access</h2>
+      <p class="fa-lead">Enter your CGC email address. A one-time password will be sent to your inbox.</p>
+
+      <div class="fa-field">
+        <label for="faEmail">CGC Email Address <em>*</em></label>
+        <input type="email" id="faEmail" placeholder="name@cgc.com.my" autocomplete="email" spellcheck="false">
+      </div>
+
+      <div id="faEmailMsg" class="fa-msg fa-hide"></div>
+
+      <button id="faBtnRequestOtp" class="fa-btn fa-btn-primary fa-btn-block">
+        Send One-Time Password
+      </button>
+
+      <p class="fa-fineprint">Access is restricted to authorised CGC staff.</p>
+    </section>
+
+    <!-- ============ SCREEN 2 : OTP ============ -->
+    <section id="faScreenOtp" class="fa-screen fa-hide">
+      <h2 class="fa-title">Enter Verification Code</h2>
+      <p class="fa-lead">We sent a 6-digit code to <strong id="faMaskedEmail"></strong></p>
+
+      <div class="fa-otp-group" id="faOtpGroup">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box" autocomplete="one-time-code">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+      </div>
+
+      <div class="fa-countdown" id="faCountdown">
+        Code expires in <strong id="faTimer">05:00</strong>
+      </div>
+
+      <div id="faOtpMsg" class="fa-msg fa-hide"></div>
+
+      <button id="faBtnVerify" class="fa-btn fa-btn-primary fa-btn-block">
+        Verify &amp; Continue
+      </button>
+
+      <div class="fa-subactions">
+        <button id="faBtnResend" class="fa-link" disabled>
+          Resend code (<span id="faResendTimer">60</span>s)
+        </button>
+        <button id="faBtnChangeEmail" class="fa-link">Change email</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 3 : FORM ============ -->
+    <section id="faScreenForm" class="fa-screen fa-hide">
+
+      <div class="fa-who">
+        <div class="fa-avatar" id="faAvatar"></div>
+        <div class="fa-who-text">
+          <strong id="faUserName"></strong>
+          <small id="faUserEmail"></small>
+        </div>
+        <span class="fa-chip" id="faUserDept"></span>
+      </div>
+
+      <h2 class="fa-title">New Fixed Asset Number Request</h2>
+      <p class="fa-lead">Complete all mandatory fields. Finance will create the asset record in SAP S/4HANA.</p>
+
+      <form id="faForm" novalidate>
+
+        <div class="fa-field">
+          <label for="faCategory">Request Category <em>*</em></label>
+          <select id="faCategory">
+            <option value="">&mdash; Select &mdash;</option>
+            <option value="FAS">FAS</option>
+            <option value="IT">IT</option>
+          </select>
+          <small class="fa-hint">Select FAS, or IT for non-IT items as advised by Finance.</small>
+        </div>
+
+        <div class="fa-field">
+          <label for="faAssetDetails">Particulars / Details of Asset <em>*</em></label>
+          <textarea id="faAssetDetails" rows="3" maxlength="500"
+                    placeholder="Describe the asset to be purchased"></textarea>
+          <small class="fa-hint"><span id="faCharCount">0</span>/500 characters</small>
+        </div>
+
+        <div class="fa-field">
+          <label for="faAssetClass">Asset Class <em>*</em></label>
+          <select id="faAssetClass"><option value="">&mdash; Loading &mdash;</option></select>
+        </div>
+
+        <div class="fa-field">
+          <label for="faAssetType">Asset Type <em>*</em></label>
+          <select id="faAssetType"><option value="">&mdash; Loading &mdash;</option></select>
+        </div>
+
+        <div class="fa-grid2">
+          <div class="fa-field">
+            <label for="faQuantity">Quantity <em>*</em></label>
+            <select id="faQuantity"><option value="">&mdash; Select &mdash;</option></select>
+          </div>
+          <div class="fa-field">
+            <label for="faAmount">Amount (RM) <em>*</em></label>
+            <input type="number" id="faAmount" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+
+        <div class="fa-field">
+          <label for="faLocation">Location <em>*</em></label>
+          <select id="faLocation"><option value="">&mdash; Loading &mdash;</option></select>
+        </div>
+
+        <div class="fa-summary" id="faSummary">
+          <span>Estimated Total</span>
+          <strong id="faTotal">RM 0.00</strong>
+        </div>
+
+        <div id="faFormMsg" class="fa-msg fa-hide"></div>
+
+        <div class="fa-actions">
+          <button type="button" id="faBtnClear" class="fa-btn fa-btn-ghost">Clear</button>
+          <button type="submit" id="faBtnSubmit" class="fa-btn fa-btn-primary">Submit Request</button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ============ SCREEN 4 : SUCCESS ============ -->
+    <section id="faScreenDone" class="fa-screen fa-hide fa-center">
+      <div class="fa-tick">&#10004;</div>
+      <h2 class="fa-title">Request Submitted</h2>
+      <p class="fa-lead">Your reference number is</p>
+      <div class="fa-refno" id="faRefNo"></div>
+      <p class="fa-note">
+        Finance has been notified. You will receive an email once the Fixed Asset
+        number has been created and verified in SAP S/4HANA.
+      </p>
+      <button id="faBtnAnother" class="fa-btn fa-btn-primary">Submit Another Request</button>
+    </section>
+
+  </main>
+
+  <footer class="fa-foot">
+    CGC Finance Hub &middot; Internal Use Only &middot; <span id="faVersion"></span>
+  </footer>
+
+</div>
+
+<div id="faLoader" class="fa-loader fa-hide">
+  <div class="fa-spinner"></div>
+  <span id="faLoaderText">Processing&hellip;</span>
+</div>
+
+js/fa-config.js?v=1.0.0"></script>
+<script src="js/fa-ui.js?v=1.0.0"></script>js?v=1.0.0"></script>js?v=1.0.0"></script"></script>
+
+</body>
+</html>
