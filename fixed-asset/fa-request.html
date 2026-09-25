@@ -15,24 +15,18 @@
 
   <title>Fixed Asset Number Request | CGC Finance Hub</title>
 
-  <!-- Existing external CSS files -->
-  css/fa-theme.css?v=2.0.0
+  css/fa-theme.css?v=2.1.0
 
-  css/fa-components.css?v=2.0.0
+  css/fa-components.css?v=2.1.0
 
-  css/fa-request.css?v=2.0.0
+  css/fa-request.css?v=2.1.0
 
-  <!--
-    Critical page styling is included here to ensure the redesigned
-    interface renders correctly even if an external stylesheet is cached.
-  -->
   <style>
     :root {
       --fa-primary: #173b6c;
       --fa-primary-dark: #0d294d;
       --fa-primary-light: #2d5c97;
       --fa-accent: #f3b61f;
-      --fa-accent-light: #fff4cf;
       --fa-background: #f3f6fa;
       --fa-surface: #ffffff;
       --fa-surface-soft: #f7f9fc;
@@ -40,14 +34,10 @@
       --fa-text: #172033;
       --fa-text-muted: #667085;
       --fa-success: #16835a;
-      --fa-warning: #b26b00;
       --fa-error: #c83737;
-      --fa-shadow:
-        0 24px 60px rgba(15, 39, 71, 0.12);
-      --fa-shadow-soft:
-        0 10px 30px rgba(15, 39, 71, 0.08);
+      --fa-shadow: 0 24px 60px rgba(15, 39, 71, 0.12);
+      --fa-shadow-soft: 0 10px 30px rgba(15, 39, 71, 0.08);
       --fa-radius-large: 24px;
-      --fa-radius-medium: 16px;
       --fa-radius-small: 10px;
     }
 
@@ -76,11 +66,7 @@
         ),
         var(--fa-background);
       color: var(--fa-text);
-      font-family:
-        "Segoe UI",
-        Arial,
-        Helvetica,
-        sans-serif;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
@@ -116,12 +102,10 @@
       border-radius: var(--fa-radius-large);
       box-shadow: var(--fa-shadow);
       display: grid;
-      grid-template-columns: minmax(310px, 39%) minmax(0, 61%);
+      grid-template-columns: minmax(330px, 39%) minmax(0, 61%);
     }
 
-    /* =========================================================
-       LEFT BRAND PANEL
-       ========================================================= */
+    /* Left branding panel */
 
     .fa-brand-panel {
       position: relative;
@@ -182,24 +166,28 @@
     .fa-brand-top {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 15px;
     }
 
     .fa-logo {
-      width: 68px;
-      height: 52px;
+      width: 122px;
+      height: 72px;
       flex-shrink: 0;
-      border-radius: 10px;
+      padding: 8px 10px;
+      overflow: hidden;
+      border-radius: 12px;
       background: #ffffff;
-      color: var(--fa-primary);
-      box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: 3px;
+    }
+
+    .fa-logo-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .fa-brand-identity strong {
@@ -210,9 +198,11 @@
 
     .fa-brand-identity span {
       display: block;
+      max-width: 190px;
       margin-top: 3px;
       color: rgba(255, 255, 255, 0.68);
-      font-size: 12px;
+      font-size: 11px;
+      line-height: 1.45;
     }
 
     .fa-brand-content {
@@ -271,8 +261,8 @@
     }
 
     .fa-feature-icon {
-      width: 28px;
-      height: 28px;
+      width: 29px;
+      height: 29px;
       flex-shrink: 0;
       border-radius: 9px;
       background: rgba(255, 255, 255, 0.1);
@@ -280,7 +270,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
     }
 
@@ -326,9 +316,7 @@
       font-size: 10.5px;
     }
 
-    /* =========================================================
-       RIGHT APPLICATION PANEL
-       ========================================================= */
+    /* Right application panel */
 
     .fa-application-panel {
       min-width: 0;
@@ -376,9 +364,6 @@
       color: var(--fa-primary);
       font-size: 12px;
       font-weight: 650;
-      transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
     }
 
     .fa-signout:hover {
@@ -386,18 +371,16 @@
       background: var(--fa-surface-soft);
     }
 
-    /* =========================================================
-       PROGRESS STEPPER
-       ========================================================= */
+    /* Progress stepper */
 
     .fa-progress-wrapper {
       padding: 26px 38px 0;
     }
 
     .fa-stepper {
+      position: relative;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      position: relative;
     }
 
     .fa-stepper::before {
@@ -413,11 +396,11 @@
     .fa-step {
       position: relative;
       z-index: 1;
+      color: #98a2b3;
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      color: #98a2b3;
-      text-align: center;
     }
 
     .fa-step-number {
@@ -449,8 +432,7 @@
       border-color: var(--fa-primary);
       background: var(--fa-primary);
       color: #ffffff;
-      box-shadow:
-        0 0 0 5px rgba(23, 59, 108, 0.11);
+      box-shadow: 0 0 0 5px rgba(23, 59, 108, 0.11);
     }
 
     .fa-step.fa-step-done {
@@ -463,9 +445,7 @@
       color: #ffffff;
     }
 
-    /* =========================================================
-       SCREEN CONTENT
-       ========================================================= */
+    /* Screen content */
 
     .fa-screen-container {
       width: min(640px, 100%);
@@ -475,10 +455,10 @@
     }
 
     .fa-screen {
-      animation: faScreenEnter 0.35s ease;
+      animation: fa-screen-enter 0.35s ease;
     }
 
-    @keyframes faScreenEnter {
+    @keyframes fa-screen-enter {
       from {
         opacity: 0;
         transform: translateY(10px);
@@ -552,10 +532,6 @@
       color: var(--fa-error);
     }
 
-    .fa-control-wrapper {
-      position: relative;
-    }
-
     .fa-field input,
     .fa-field select,
     .fa-field textarea {
@@ -570,8 +546,7 @@
       font-size: 14px;
       transition:
         border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+        box-shadow 0.2s ease;
     }
 
     .fa-field textarea {
@@ -588,25 +563,23 @@
     .fa-field select:focus,
     .fa-field textarea:focus {
       border-color: var(--fa-primary-light);
-      box-shadow:
-        0 0 0 4px rgba(45, 92, 151, 0.11);
+      box-shadow: 0 0 0 4px rgba(45, 92, 151, 0.11);
     }
 
     .fa-field input.fa-bad,
     .fa-field select.fa-bad,
     .fa-field textarea.fa-bad {
       border-color: var(--fa-error);
-      box-shadow:
-        0 0 0 4px rgba(200, 55, 55, 0.09);
+      box-shadow: 0 0 0 4px rgba(200, 55, 55, 0.09);
     }
 
     .fa-field-hint {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
       margin-top: 7px;
       color: var(--fa-text-muted);
       font-size: 10.5px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .fa-field-grid {
@@ -615,9 +588,7 @@
       gap: 16px;
     }
 
-    /* =========================================================
-       BUTTONS
-       ========================================================= */
+    /* Buttons */
 
     .fa-btn {
       min-height: 48px;
@@ -644,8 +615,7 @@
           var(--fa-primary-light) 100%
         );
       color: #ffffff;
-      box-shadow:
-        0 10px 22px rgba(23, 59, 108, 0.2);
+      box-shadow: 0 10px 22px rgba(23, 59, 108, 0.2);
     }
 
     .fa-btn-primary:hover:not(:disabled) {
@@ -655,8 +625,7 @@
           #12335e 0%,
           #264f83 100%
         );
-      box-shadow:
-        0 12px 28px rgba(23, 59, 108, 0.26);
+      box-shadow: 0 12px 28px rgba(23, 59, 108, 0.26);
     }
 
     .fa-btn-secondary {
@@ -687,9 +656,7 @@
       gap: 12px;
     }
 
-    /* =========================================================
-       INFORMATION AND MESSAGES
-       ========================================================= */
+    /* Messages */
 
     .fa-access-note {
       margin-top: 17px;
@@ -731,9 +698,7 @@
       color: #885600;
     }
 
-    /* =========================================================
-       OTP
-       ========================================================= */
+    /* OTP */
 
     .fa-otp-email-card {
       margin-top: 24px;
@@ -776,8 +741,7 @@
 
     .fa-otp-box:focus {
       border-color: var(--fa-primary-light);
-      box-shadow:
-        0 0 0 4px rgba(45, 92, 151, 0.11);
+      box-shadow: 0 0 0 4px rgba(45, 92, 151, 0.11);
       transform: translateY(-2px);
     }
 
@@ -789,10 +753,10 @@
     .fa-otp-box.fa-bad {
       border-color: var(--fa-error);
       background: #fff4f4;
-      animation: faShake 0.3s ease;
+      animation: fa-shake 0.3s ease;
     }
 
-    @keyframes faShake {
+    @keyframes fa-shake {
       0%,
       100% {
         transform: translateX(0);
@@ -848,9 +812,7 @@
       color: #98a2b3;
     }
 
-    /* =========================================================
-       SIGNED-IN USER PANEL
-       ========================================================= */
+    /* User card */
 
     .fa-user-card {
       margin-bottom: 28px;
@@ -919,9 +881,7 @@
       white-space: nowrap;
     }
 
-    /* =========================================================
-       SUMMARY
-       ========================================================= */
+    /* Request total */
 
     .fa-request-summary {
       margin-top: 7px;
@@ -954,9 +914,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* =========================================================
-       SUCCESS
-       ========================================================= */
+    /* Success screen */
 
     .fa-success-screen {
       padding-top: 34px;
@@ -974,7 +932,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: faSuccessEnter 0.4s ease;
+      animation: fa-success-enter 0.4s ease;
     }
 
     .fa-success-icon svg {
@@ -982,7 +940,7 @@
       height: 38px;
     }
 
-    @keyframes faSuccessEnter {
+    @keyframes fa-success-enter {
       from {
         opacity: 0;
         transform: scale(0.75);
@@ -1014,10 +972,7 @@
 
     .fa-reference-card strong {
       color: var(--fa-primary);
-      font-family:
-        Consolas,
-        "Courier New",
-        monospace;
+      font-family: Consolas, "Courier New", monospace;
       font-size: 22px;
       letter-spacing: 0.5px;
       word-break: break-word;
@@ -1031,9 +986,7 @@
       line-height: 1.65;
     }
 
-    /* =========================================================
-       APPLICATION FOOTER
-       ========================================================= */
+    /* Footer */
 
     .fa-app-footer {
       padding: 17px 38px;
@@ -1045,9 +998,7 @@
       gap: 15px;
     }
 
-    /* =========================================================
-       LOADER
-       ========================================================= */
+    /* Loader */
 
     .fa-loader {
       position: fixed;
@@ -1077,10 +1028,10 @@
       border: 4px solid #e4eaf1;
       border-top-color: var(--fa-primary);
       border-radius: 50%;
-      animation: faSpin 0.75s linear infinite;
+      animation: fa-spin 0.75s linear infinite;
     }
 
-    @keyframes faSpin {
+    @keyframes fa-spin {
       to {
         transform: rotate(360deg);
       }
@@ -1092,9 +1043,7 @@
       font-weight: 650;
     }
 
-    /* =========================================================
-       RESPONSIVE
-       ========================================================= */
+    /* Responsive design */
 
     @media (max-width: 940px) {
       .fa-page {
@@ -1137,6 +1086,11 @@
     @media (max-width: 640px) {
       .fa-brand-panel {
         padding: 20px;
+      }
+
+      .fa-logo {
+        width: 105px;
+        height: 64px;
       }
 
       .fa-brand-content {
@@ -1219,21 +1173,19 @@
 
     <div class="fa-app-shell">
 
-      <!-- =====================================================
-           LEFT BRANDING PANEL
-           ===================================================== -->
-
       <aside class="fa-brand-panel">
 
         <div class="fa-brand-top">
 
-          <div class="fa-logo" aria-label="CGC">
-            CGC
+          <div class="fa-logo">
+            ../assets/images/cgc-logo.jpg
           </div>
 
           <div class="fa-brand-identity">
             <strong>Finance Hub</strong>
-            <span>Credit Guarantee Corporation Malaysia Berhad</span>
+            <span>
+              Credit Guarantee Corporation Malaysia Berhad
+            </span>
           </div>
 
         </div>
@@ -1286,13 +1238,21 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="10"
+                rx="2"
+              ></rect>
+
               <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
             </svg>
           </div>
 
           <div>
             <strong>Secure internal access</strong>
+
             <span>
               Access is restricted to authorised CGC users using email
               verification.
@@ -1306,10 +1266,6 @@
         </div>
 
       </aside>
-
-      <!-- =====================================================
-           RIGHT APPLICATION PANEL
-           ===================================================== -->
 
       <section class="fa-application-panel">
 
@@ -1330,8 +1286,6 @@
 
         </header>
 
-        <!-- ================= PROGRESS ================= -->
-
         <div class="fa-progress-wrapper">
 
           <nav
@@ -1348,591 +1302,4 @@
             </div>
 
             <div
-              class="fa-step"
-              data-step="2"
-            >
-              <span class="fa-step-number">2</span>
-              <span class="fa-step-label">Request Details</span>
-            </div>
-
-            <div
-              class="fa-step"
-              data-step="3"
-            >
-              <span class="fa-step-number">3</span>
-              <span class="fa-step-label">Completed</span>
-            </div>
-
-          </nav>
-
-        </div>
-
-        <main class="fa-screen-container">
-
-          <!-- =================================================
-               SCREEN 1: EMAIL
-               ================================================= -->
-
-          <section
-            id="faScreenEmail"
-            class="fa-screen"
-          >
-
-            <div class="fa-screen-icon" aria-hidden="true">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-                <path d="m3 7 9 6 9-6"></path>
-              </svg>
-            </div>
-
-            <h2 class="fa-title">
-              Verify your email
-            </h2>
-
-            <p class="fa-lead">
-              Enter your CGC email address. A six-digit one-time password
-              will be sent to the registered inbox.
-            </p>
-
-            <div class="fa-form-area">
-
-              <div class="fa-field">
-
-                <label for="faEmail">
-                  CGC email address
-                  <span class="fa-required">*</span>
-                </label>
-
-                <div class="fa-control-wrapper">
-                  <input
-                    type="email"
-                    id="faEmail"
-                    placeholder="name@cgc.com.my"
-                    autocomplete="email"
-                    spellcheck="false"
-                    inputmode="email"
-                  >
-                </div>
-
-                <div class="fa-field-hint">
-                  <span>Use the official CGC email address.</span>
-                </div>
-
-              </div>
-
-              <div
-                id="faEmailMsg"
-                class="fa-msg fa-hide"
-                role="alert"
-              ></div>
-
-              <button
-                type="button"
-                id="faBtnRequestOtp"
-                class="fa-btn fa-btn-primary fa-btn-block"
-              >
-                Request verification code
-              </button>
-
-              <p class="fa-access-note">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  aria-hidden="true"
-                >
-                  <rect x="5" y="10" width="14" height="10" rx="2"></rect>
-                  <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-                </svg>
-
-                Access is restricted to authorised CGC staff.
-              </p>
-
-            </div>
-
-          </section>
-
-          <!-- =================================================
-               SCREEN 2: OTP
-               ================================================= -->
-
-          <section
-            id="faScreenOtp"
-            class="fa-screen fa-hide"
-          >
-
-            <div class="fa-screen-icon" aria-hidden="true">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <path d="M12 2 4 5v6c0 5.2 3.4 9 8 11 4.6-2 8-5.8 8-11V5l-8-3Z"></path>
-                <path d="m9 12 2 2 4-5"></path>
-              </svg>
-            </div>
-
-            <h2 class="fa-title">
-              Enter verification code
-            </h2>
-
-            <p class="fa-lead">
-              Enter the six-digit code sent to the registered email address.
-            </p>
-
-            <div class="fa-otp-email-card">
-              Verification code sent to
-              <strong id="faMaskedEmail"></strong>
-            </div>
-
-            <div
-              class="fa-otp-group"
-              id="faOtpGroup"
-              aria-label="Six-digit verification code"
-            >
-
-              <input
-                type="text"
-                maxlength="1"
-                inputmode="numeric"
-                class="fa-otp-box"
-                autocomplete="one-time-code"
-                aria-label="Verification code digit 1"
-              >
-
-              <input
-                type="text"
-                maxlength="1"
-                inputmode="numeric"
-                class="fa-otp-box"
-                aria-label="Verification code digit 2"
-              >
-
-              <input
-                type="text"
-                maxlength="1"
-                inputmode="numeric"
-                class="fa-otp-box"
-                aria-label="Verification code digit 3"
-              >
-
-              <input
-                type="text"
-                maxlength="1"
-                inputmode="numeric"
-                class="fa-otp-box"
-                aria-label="Verification code digit 4"
-              >
-
-              <input
-                type="text"
-                maxlength="1"
-                inputmode="numeric"
-                class="fa-otp-box"
-                aria-label="Verification code digit 5"
-              >
-
-              <input
-                type="text"
-                maxlength="1"
-                inputmode="numeric"
-                class="fa-otp-box"
-                aria-label="Verification code digit 6"
-              >
-
-            </div>
-
-            <div
-              class="fa-otp-meta"
-              id="faCountdown"
-            >
-              Code expires in
-              <strong id="faTimer">05:00</strong>
-            </div>
-
-            <div
-              id="faOtpMsg"
-              class="fa-msg fa-hide"
-              role="alert"
-            ></div>
-
-            <button
-              type="button"
-              id="faBtnVerify"
-              class="fa-btn fa-btn-primary fa-btn-block"
-            >
-              Verify and continue
-            </button>
-
-            <div class="fa-subactions">
-
-              <button
-                type="button"
-                id="faBtnResend"
-                class="fa-link"
-                disabled
-              >
-                Resend code
-                (<span id="faResendTimer">60</span>s)
-              </button>
-
-              <button
-                type="button"
-                id="faBtnChangeEmail"
-                class="fa-link"
-              >
-                Change email address
-              </button>
-
-            </div>
-
-          </section>
-
-          <!-- =================================================
-               SCREEN 3: REQUEST FORM
-               ================================================= -->
-
-          <section
-            id="faScreenForm"
-            class="fa-screen fa-hide"
-          >
-
-            <div class="fa-user-card">
-
-              <div
-                class="fa-avatar"
-                id="faAvatar"
-              ></div>
-
-              <div class="fa-user-details">
-                <strong id="faUserName"></strong>
-                <small id="faUserEmail"></small>
-              </div>
-
-              <span
-                class="fa-department"
-                id="faUserDept"
-              ></span>
-
-            </div>
-
-            <div class="fa-screen-icon" aria-hidden="true">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <path d="M9 4h6"></path>
-                <path d="M9 2h6v4H9z"></path>
-                <rect x="5" y="4" width="14" height="18" rx="2"></rect>
-                <path d="M8 11h8M8 15h8"></path>
-              </svg>
-            </div>
-
-            <h2 class="fa-title">
-              Request details
-            </h2>
-
-            <p class="fa-lead">
-              Complete the required information. Finance will use the
-              submitted details to create the fixed asset record in SAP
-              S/4HANA.
-            </p>
-
-            <form
-              id="faForm"
-              class="fa-form-area"
-              novalidate
-            >
-
-              <div class="fa-field">
-
-                <label for="faCategory">
-                  Request category
-                  <span class="fa-required">*</span>
-                </label>
-
-                <select id="faCategory">
-                  <option value="">
-                    Select request category
-                  </option>
-
-                  <option value="FAS">
-                    FAS
-                  </option>
-
-                  <option value="IT">
-                    IT
-                  </option>
-                </select>
-
-                <div class="fa-field-hint">
-                  <span>
-                    Select the applicable category provided by Finance.
-                  </span>
-                </div>
-
-              </div>
-
-              <div class="fa-field">
-
-                <label for="faAssetDetails">
-                  Particulars or details of asset
-                  <span class="fa-required">*</span>
-                </label>
-
-                <textarea
-                  id="faAssetDetails"
-                  maxlength="500"
-                  placeholder="Provide a clear description of the asset"
-                ></textarea>
-
-                <div class="fa-field-hint">
-                  <span>
-                    Include sufficient details for Finance processing.
-                  </span>
-
-                  <span>
-                    <span id="faCharCount">0</span>/500
-                  </span>
-                </div>
-
-              </div>
-
-              <div class="fa-field-grid">
-
-                <div class="fa-field">
-
-                  <label for="faAssetClass">
-                    Asset class
-                    <span class="fa-required">*</span>
-                  </label>
-
-                  <select id="faAssetClass">
-                    <option value="">
-                      Loading asset classes
-                    </option>
-                  </select>
-
-                </div>
-
-                <div class="fa-field">
-
-                  <label for="faAssetType">
-                    Asset type
-                    <span class="fa-required">*</span>
-                  </label>
-
-                  <select id="faAssetType">
-                    <option value="">
-                      Loading asset types
-                    </option>
-                  </select>
-
-                </div>
-
-              </div>
-
-              <div class="fa-field-grid">
-
-                <div class="fa-field">
-
-                  <label for="faQuantity">
-                    Quantity
-                    <span class="fa-required">*</span>
-                  </label>
-
-                  <select id="faQuantity">
-                    <option value="">
-                      Select quantity
-                    </option>
-                  </select>
-
-                </div>
-
-                <div class="fa-field">
-
-                  <label for="faAmount">
-                    Amount (RM)
-                    <span class="fa-required">*</span>
-                  </label>
-
-                  <input
-                    type="number"
-                    id="faAmount"
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
-                    inputmode="decimal"
-                  >
-
-                </div>
-
-              </div>
-
-              <div class="fa-field">
-
-                <label for="faLocation">
-                  Location
-                  <span class="fa-required">*</span>
-                </label>
-
-                <select id="faLocation">
-                  <option value="">
-                    Loading locations
-                  </option>
-                </select>
-
-              </div>
-
-              <div
-                class="fa-request-summary"
-                id="faSummary"
-              >
-                <span>Estimated total</span>
-                <strong id="faTotal">RM 0.00</strong>
-              </div>
-
-              <div
-                id="faFormMsg"
-                class="fa-msg fa-hide"
-                role="alert"
-              ></div>
-
-              <div class="fa-form-actions">
-
-                <button
-                  type="button"
-                  id="faBtnClear"
-                  class="fa-btn fa-btn-secondary"
-                >
-                  Clear form
-                </button>
-
-                <button
-                  type="submit"
-                  id="faBtnSubmit"
-                  class="fa-btn fa-btn-primary"
-                >
-                  Submit request
-                </button>
-
-              </div>
-
-            </form>
-
-          </section>
-
-          <!-- =================================================
-               SCREEN 4: SUCCESS
-               ================================================= -->
-
-          <section
-            id="faScreenDone"
-            class="fa-screen fa-success-screen fa-hide"
-          >
-
-            <div class="fa-success-icon" aria-hidden="true">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M20 6 9 17l-5-5"></path>
-              </svg>
-            </div>
-
-            <h2 class="fa-title">
-              Request submitted successfully
-            </h2>
-
-            <p class="fa-lead">
-              The request has been recorded and submitted to Finance for
-              processing.
-            </p>
-
-            <div class="fa-reference-card">
-              <span>Request reference number</span>
-              <strong id="faRefNo"></strong>
-            </div>
-
-            <p class="fa-success-note">
-              Finance has been notified. An email notification will be sent
-              after the fixed asset number has been created and verified in
-              SAP S/4HANA.
-            </p>
-
-            <button
-              type="button"
-              id="faBtnAnother"
-              class="fa-btn fa-btn-primary"
-            >
-              Submit another request
-            </button>
-
-          </section>
-
-        </main>
-
-        <footer class="fa-app-footer">
-
-          <span>CGC Finance Hub · Internal Use Only</span>
-
-          <span>
-            Fixed Asset Module ·
-            <span id="faVersion">v2.0.0</span>
-          </span>
-
-        </footer>
-
-      </section>
-
-    </div>
-
-  </div>
-
-  <!-- =======================================================
-       LOADING OVERLAY
-       ======================================================= -->
-
-  <div
-    id="faLoader"
-    class="fa-loader fa-hide"
-    aria-live="polite"
-    aria-busy="true"
-  >
-
-    <div class="fa-loader-card">
-
-      <div class="fa-spinner"></div>
-
-      <span id="faLoaderText">
-        Processing...
-      </span>
-
-    </div>
-
-  </div>
-
-  <!--
-    Script order is important:
-    configuration → UI → API → OTP → request controller
-  -->
-
-  js/fa-config.js?v=2.0.0script>
-  js/fa-ui.js?v=2.0.0script>
-  js/fa-api.js?v=2.0.0script>
-  js/fa-otp.js?v=2.0.0script>
-  js/fa-request.js?v=2.0.0script>
-
-</body>
-</html>
+     
