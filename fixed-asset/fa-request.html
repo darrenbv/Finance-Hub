@@ -15,12 +15,14 @@
 
   <title>Fixed Asset Number Request | CGC Finance Hub</title>
 
-  css/fa-theme.css?v=2.1.0
+  <!-- Existing Fixed Asset stylesheets -->
+  css/fa-theme.css?v=2.2.0
 
-  css/fa-components.css?v=2.1.0
+  <linka-components.css?v=2.2.0
 
-  css/fa-request.css?v=2.1.0
-
+  <link
+    rel="stylesheet"
+    href="css/fa design styles -->
   <style>
     :root {
       --fa-primary: #173b6c;
@@ -32,12 +34,14 @@
       --fa-surface-soft: #f7f9fc;
       --fa-border: #dce4ee;
       --fa-text: #172033;
-      --fa-text-muted: #667085;
+      --fa-muted: #667085;
       --fa-success: #16835a;
+      --fa-warning: #b26b00;
       --fa-error: #c83737;
       --fa-shadow: 0 24px 60px rgba(15, 39, 71, 0.12);
       --fa-shadow-soft: 0 10px 30px rgba(15, 39, 71, 0.08);
       --fa-radius-large: 24px;
+      --fa-radius-medium: 16px;
       --fa-radius-small: 10px;
     }
 
@@ -53,6 +57,7 @@
 
     body {
       min-height: 100vh;
+      margin: 0;
       background:
         radial-gradient(
           circle at 10% 0%,
@@ -102,15 +107,17 @@
       border-radius: var(--fa-radius-large);
       box-shadow: var(--fa-shadow);
       display: grid;
-      grid-template-columns: minmax(330px, 39%) minmax(0, 61%);
+      grid-template-columns: minmax(340px, 39%) minmax(0, 61%);
     }
 
-    /* Left branding panel */
+    /* ============================================
+       LEFT BRANDING PANEL
+       ============================================ */
 
     .fa-brand-panel {
       position: relative;
-      overflow: hidden;
       min-height: 720px;
+      overflow: hidden;
       padding: 38px;
       color: #ffffff;
       background:
@@ -170,14 +177,14 @@
     }
 
     .fa-logo {
-      width: 122px;
-      height: 72px;
+      width: 128px;
+      height: 76px;
       flex-shrink: 0;
-      padding: 8px 10px;
+      padding: 8px;
       overflow: hidden;
-      border-radius: 12px;
+      border-radius: 13px;
       background: #ffffff;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 9px 25px rgba(0, 0, 0, 0.22);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -190,6 +197,10 @@
       object-fit: contain;
     }
 
+    .fa-brand-identity {
+      min-width: 0;
+    }
+
     .fa-brand-identity strong {
       display: block;
       font-size: 15px;
@@ -199,8 +210,8 @@
     .fa-brand-identity span {
       display: block;
       max-width: 190px;
-      margin-top: 3px;
-      color: rgba(255, 255, 255, 0.68);
+      margin-top: 4px;
+      color: rgba(255, 255, 255, 0.7);
       font-size: 11px;
       line-height: 1.45;
     }
@@ -208,7 +219,7 @@
     .fa-brand-content {
       margin-top: auto;
       margin-bottom: auto;
-      padding: 50px 0;
+      padding: 48px 0;
     }
 
     .fa-module-badge {
@@ -218,17 +229,17 @@
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.86);
+      color: rgba(255, 255, 255, 0.88);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 1.1px;
+      letter-spacing: 1.05px;
       text-transform: uppercase;
     }
 
     .fa-brand-content h1 {
       max-width: 420px;
       font-size: clamp(32px, 4vw, 47px);
-      font-weight: 700;
+      font-weight: 750;
       line-height: 1.1;
       letter-spacing: -1.4px;
     }
@@ -241,7 +252,7 @@
     .fa-brand-description {
       max-width: 410px;
       margin-top: 20px;
-      color: rgba(255, 255, 255, 0.74);
+      color: rgba(255, 255, 255, 0.76);
       font-size: 14px;
       line-height: 1.75;
     }
@@ -256,13 +267,13 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      color: rgba(255, 255, 255, 0.86);
+      color: rgba(255, 255, 255, 0.88);
       font-size: 13px;
     }
 
     .fa-feature-icon {
-      width: 29px;
-      height: 29px;
+      width: 30px;
+      height: 30px;
       flex-shrink: 0;
       border-radius: 9px;
       background: rgba(255, 255, 255, 0.1);
@@ -270,15 +281,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 750;
     }
 
     .fa-security-panel {
       padding: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.13);
       border-radius: 14px;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(10px);
       display: flex;
       align-items: flex-start;
@@ -305,18 +316,20 @@
     .fa-security-panel span {
       display: block;
       margin-top: 4px;
-      color: rgba(255, 255, 255, 0.64);
+      color: rgba(255, 255, 255, 0.65);
       font-size: 11px;
       line-height: 1.5;
     }
 
     .fa-brand-footer {
       margin-top: 20px;
-      color: rgba(255, 255, 255, 0.45);
+      color: rgba(255, 255, 255, 0.48);
       font-size: 10.5px;
     }
 
-    /* Right application panel */
+    /* ============================================
+       RIGHT APPLICATION PANEL
+       ============================================ */
 
     .fa-application-panel {
       min-width: 0;
@@ -343,7 +356,7 @@
     .fa-app-heading small {
       display: block;
       margin-bottom: 3px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 1px;
@@ -364,6 +377,9 @@
       color: var(--fa-primary);
       font-size: 12px;
       font-weight: 650;
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
     }
 
     .fa-signout:hover {
@@ -371,7 +387,9 @@
       background: var(--fa-surface-soft);
     }
 
-    /* Progress stepper */
+    /* ============================================
+       STEPPER
+       ============================================ */
 
     .fa-progress-wrapper {
       padding: 26px 38px 0;
@@ -445,7 +463,9 @@
       color: #ffffff;
     }
 
-    /* Screen content */
+    /* ============================================
+       SCREEN
+       ============================================ */
 
     .fa-screen-container {
       width: min(640px, 100%);
@@ -505,7 +525,7 @@
     .fa-lead {
       max-width: 530px;
       margin-top: 10px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 14px;
       line-height: 1.65;
     }
@@ -513,6 +533,10 @@
     .fa-form-area {
       margin-top: 30px;
     }
+
+    /* ============================================
+       FORM CONTROLS
+       ============================================ */
 
     .fa-field {
       margin-bottom: 20px;
@@ -575,7 +599,7 @@
 
     .fa-field-hint {
       margin-top: 7px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 10.5px;
       display: flex;
       justify-content: space-between;
@@ -588,7 +612,9 @@
       gap: 16px;
     }
 
-    /* Buttons */
+    /* ============================================
+       ACTION BUTTONS
+       ============================================ */
 
     .fa-btn {
       min-height: 48px;
@@ -611,8 +637,8 @@
       background:
         linear-gradient(
           135deg,
-          var(--fa-primary) 0%,
-          var(--fa-primary-light) 100%
+          var(--fa-primary),
+          var(--fa-primary-light)
         );
       color: #ffffff;
       box-shadow: 0 10px 22px rgba(23, 59, 108, 0.2);
@@ -622,8 +648,8 @@
       background:
         linear-gradient(
           135deg,
-          #12335e 0%,
-          #264f83 100%
+          #12335e,
+          #264f83
         );
       box-shadow: 0 12px 28px rgba(23, 59, 108, 0.26);
     }
@@ -656,20 +682,15 @@
       gap: 12px;
     }
 
-    /* Messages */
+    /* ============================================
+       MESSAGES
+       ============================================ */
 
     .fa-access-note {
       margin-top: 17px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       text-align: center;
       font-size: 10.5px;
-    }
-
-    .fa-access-note svg {
-      width: 12px;
-      height: 12px;
-      margin-right: 4px;
-      vertical-align: -2px;
     }
 
     .fa-msg {
@@ -698,7 +719,9 @@
       color: #885600;
     }
 
-    /* OTP */
+    /* ============================================
+       OTP
+       ============================================ */
 
     .fa-otp-email-card {
       margin-top: 24px;
@@ -706,7 +729,7 @@
       border: 1px solid var(--fa-border);
       border-radius: 12px;
       background: var(--fa-surface-soft);
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 12px;
     }
 
@@ -773,7 +796,7 @@
 
     .fa-otp-meta {
       margin-bottom: 22px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       text-align: center;
       font-size: 11px;
     }
@@ -812,7 +835,9 @@
       color: #98a2b3;
     }
 
-    /* User card */
+    /* ============================================
+       USER CARD
+       ============================================ */
 
     .fa-user-card {
       margin-bottom: 28px;
@@ -861,7 +886,7 @@
       display: block;
       overflow: hidden;
       margin-top: 2px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 10.5px;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -881,7 +906,9 @@
       white-space: nowrap;
     }
 
-    /* Request total */
+    /* ============================================
+       TOTAL SUMMARY
+       ============================================ */
 
     .fa-request-summary {
       margin-top: 7px;
@@ -902,7 +929,7 @@
     }
 
     .fa-request-summary span {
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 11px;
       font-weight: 650;
     }
@@ -914,7 +941,9 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Success screen */
+    /* ============================================
+       SUCCESS SCREEN
+       ============================================ */
 
     .fa-success-screen {
       padding-top: 34px;
@@ -933,11 +962,6 @@
       align-items: center;
       justify-content: center;
       animation: fa-success-enter 0.4s ease;
-    }
-
-    .fa-success-icon svg {
-      width: 38px;
-      height: 38px;
     }
 
     @keyframes fa-success-enter {
@@ -963,7 +987,7 @@
     .fa-reference-card span {
       display: block;
       margin-bottom: 6px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.9px;
@@ -981,12 +1005,14 @@
     .fa-success-note {
       max-width: 480px;
       margin: 0 auto 26px;
-      color: var(--fa-text-muted);
+      color: var(--fa-muted);
       font-size: 12px;
       line-height: 1.65;
     }
 
-    /* Footer */
+    /* ============================================
+       FOOTER
+       ============================================ */
 
     .fa-app-footer {
       padding: 17px 38px;
@@ -998,7 +1024,9 @@
       gap: 15px;
     }
 
-    /* Loader */
+    /* ============================================
+       LOADER
+       ============================================ */
 
     .fa-loader {
       position: fixed;
@@ -1043,7 +1071,9 @@
       font-weight: 650;
     }
 
-    /* Responsive design */
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
 
     @media (max-width: 940px) {
       .fa-page {
@@ -1077,10 +1107,6 @@
       .fa-brand-footer {
         display: none;
       }
-
-      .fa-application-panel {
-        min-height: 620px;
-      }
     }
 
     @media (max-width: 640px) {
@@ -1089,8 +1115,8 @@
       }
 
       .fa-logo {
-        width: 105px;
-        height: 64px;
+        width: 108px;
+        height: 66px;
       }
 
       .fa-brand-content {
@@ -1101,11 +1127,6 @@
         font-size: 29px;
       }
 
-      .fa-brand-description {
-        margin-top: 13px;
-        font-size: 12px;
-      }
-
       .fa-app-header {
         min-height: 72px;
         padding: 18px 20px;
@@ -1113,10 +1134,6 @@
 
       .fa-progress-wrapper {
         padding: 22px 20px 0;
-      }
-
-      .fa-step-label {
-        font-size: 10px;
       }
 
       .fa-screen-container {
@@ -1155,14 +1172,6 @@
         flex-direction: column;
         text-align: center;
       }
-
-      .fa-user-card {
-        align-items: flex-start;
-      }
-
-      .fa-department {
-        max-width: 110px;
-      }
     }
   </style>
 </head>
@@ -1173,6 +1182,7 @@
 
     <div class="fa-app-shell">
 
+      <!-- LEFT BRANDING PANEL -->
       <aside class="fa-brand-panel">
 
         <div class="fa-brand-top">
@@ -1183,6 +1193,7 @@
 
           <div class="fa-brand-identity">
             <strong>Finance Hub</strong>
+
             <span>
               Credit Guarantee Corporation Malaysia Berhad
             </span>
@@ -1210,96 +1221,4 @@
 
             <div class="fa-feature">
               <div class="fa-feature-icon">01</div>
-              <span>Secure email verification</span>
-            </div>
-
-            <div class="fa-feature">
-              <div class="fa-feature-icon">02</div>
-              <span>Structured request information</span>
-            </div>
-
-            <div class="fa-feature">
-              <div class="fa-feature-icon">03</div>
-              <span>Automated Finance notification</span>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="fa-security-panel">
-
-          <div class="fa-security-icon" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <rect
-                x="5"
-                y="10"
-                width="14"
-                height="10"
-                rx="2"
-              ></rect>
-
-              <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-            </svg>
-          </div>
-
-          <div>
-            <strong>Secure internal access</strong>
-
-            <span>
-              Access is restricted to authorised CGC users using email
-              verification.
-            </span>
-          </div>
-
-        </div>
-
-        <div class="fa-brand-footer">
-          CGC Finance Hub · Internal Use Only
-        </div>
-
-      </aside>
-
-      <section class="fa-application-panel">
-
-        <header class="fa-app-header">
-
-          <div class="fa-app-heading">
-            <small>Current module</small>
-            <strong>Fixed Asset Request</strong>
-          </div>
-
-          <button
-            type="button"
-            id="faBtnSignOut"
-            class="fa-signout fa-hide"
-          >
-            Sign out
-          </button>
-
-        </header>
-
-        <div class="fa-progress-wrapper">
-
-          <nav
-            class="fa-stepper"
-            aria-label="Application progress"
-          >
-
-            <div
-              class="fa-step fa-step-active"
-              data-step="1"
-            >
-              <span class="fa-step-number">1</span>
-              <span class="fa-step-label">Verification</span>
-            </div>
-
-            <div
-     
+              <span>Secure email verification</
