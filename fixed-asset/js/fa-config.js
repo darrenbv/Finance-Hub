@@ -25,7 +25,7 @@ const FA_CONFIG = {
   /* ---- OTP behaviour ---- */
 
   otpLength : 6,
-  otpValidSeconds : 300,
+  otpValidSeconds : 60,
   resendCooldown : 60,
   sessionMinutes : 30,
   sessionKey : "fa_session",
