@@ -1,0 +1,56 @@
+/* ============================================================
+   fa-request.css : Fixed Asset request form & success screen
+   ============================================================ */
+
+.fa-screen{ animation:faFadeIn .3s ease; }
+@keyframes faFadeIn{
+  from{ opacity:0; transform:translateY(8px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+
+/* ---------------- TOTAL SUMMARY ---------------- */
+.fa-summary{
+  display:flex; align-items:center; justify-content:space-between;
+  background:linear-gradient(135deg,#F4F7FB 0%,#E9EFF7 100%);
+  border:1px solid var(--fa-line);
+  border-left:4px solid var(--fa-gold);
+  padding:14px 16px; border-radius:9px; margin-top:6px;
+}
+.fa-summary span{ font-size:12.5px; color:var(--fa-muted); font-weight:600; }
+.fa-summary strong{
+  font-size:19px; color:var(--fa-navy);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------------- SUCCESS SCREEN ---------------- */
+.fa-tick{
+  width:68px; height:68px; margin:0 auto 16px;
+  border-radius:50%; background:#E8F5EC; color:var(--fa-ok);
+  font-size:33px; display:flex; align-items:center; justify-content:center;
+  animation:faPop .4s cubic-bezier(.17,.89,.32,1.28);
+}
+@keyframes faPop{
+  from{ transform:scale(.4); opacity:0; }
+  to  { transform:scale(1);  opacity:1; }
+}
+
+.fa-refno{
+  font-family:Consolas, "Courier New", monospace;
+  font-size:23px; font-weight:700; letter-spacing:.5px;
+  color:var(--fa-navy);
+  background:#F4F7FB;
+  border:2px dashed var(--fa-navy);
+  padding:15px; border-radius:9px;
+  margin:12px 0 18px; word-break:break-all;
+}
+
+.fa-note{
+  font-size:12.5px; color:var(--fa-muted);
+  margin-bottom:22px; max-width:440px;
+  margin-left:auto; margin-right:auto;
+}
+
+@media (max-width:600px){
+  .fa-refno{ font-size:18px; }
+  .fa-summary strong{ font-size:17px; }
+}
