@@ -81,7 +81,10 @@ const FA_REQUEST = (function () {
     try {
       const res = await FA_API.verifyOtp(currentEmail, code);
 
-      if (res.status === "VALID"){
+      if (
+    res.status === "VALID" ||
+    res.status === "verified"
+){
         FA_OTP.stopTimers();
         session = FA_OTP.saveSession(res);
         await enterApp();
