@@ -1,194 +1,1938 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fixed Asset Number Request | CGC Finance Hub</title>
+  <meta charset="UTF-8">
 
-<link rel="stylesheet" href="css/fa-theme.css?v=1.0.2">
-<link rel="stylesheet" href="css/fa-components.css?v=1.0.2">
-<link rel="stylesheet" href="css/fa-request.css?v=1.0.2">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="CGC Finance Hub Fixed Asset Number Request"
+  >
+
+  <title>Fixed Asset Number Request | CGC Finance Hub</title>
+
+  <!-- Existing external CSS files -->
+  css/fa-theme.css?v=2.0.0
+
+  css/fa-components.css?v=2.0.0
+
+  css/fa-request.css?v=2.0.0
+
+  <!--
+    Critical page styling is included here to ensure the redesigned
+    interface renders correctly even if an external stylesheet is cached.
+  -->
+  <style>
+    :root {
+      --fa-primary: #173b6c;
+      --fa-primary-dark: #0d294d;
+      --fa-primary-light: #2d5c97;
+      --fa-accent: #f3b61f;
+      --fa-accent-light: #fff4cf;
+      --fa-background: #f3f6fa;
+      --fa-surface: #ffffff;
+      --fa-surface-soft: #f7f9fc;
+      --fa-border: #dce4ee;
+      --fa-text: #172033;
+      --fa-text-muted: #667085;
+      --fa-success: #16835a;
+      --fa-warning: #b26b00;
+      --fa-error: #c83737;
+      --fa-shadow:
+        0 24px 60px rgba(15, 39, 71, 0.12);
+      --fa-shadow-soft:
+        0 10px 30px rgba(15, 39, 71, 0.08);
+      --fa-radius-large: 24px;
+      --fa-radius-medium: 16px;
+      --fa-radius-small: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at 10% 0%,
+          rgba(45, 92, 151, 0.12),
+          transparent 34%
+        ),
+        radial-gradient(
+          circle at 100% 100%,
+          rgba(243, 182, 31, 0.1),
+          transparent 32%
+        ),
+        var(--fa-background);
+      color: var(--fa-text);
+      font-family:
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .fa-hide {
+      display: none !important;
+    }
+
+    .fa-page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 28px;
+    }
+
+    .fa-app-shell {
+      width: min(1180px, 100%);
+      min-height: calc(100vh - 56px);
+      margin: 0 auto;
+      overflow: hidden;
+      background: var(--fa-surface);
+      border: 1px solid rgba(220, 228, 238, 0.9);
+      border-radius: var(--fa-radius-large);
+      box-shadow: var(--fa-shadow);
+      display: grid;
+      grid-template-columns: minmax(310px, 39%) minmax(0, 61%);
+    }
+
+    /* =========================================================
+       LEFT BRAND PANEL
+       ========================================================= */
+
+    .fa-brand-panel {
+      position: relative;
+      overflow: hidden;
+      min-height: 720px;
+      padding: 38px;
+      color: #ffffff;
+      background:
+        linear-gradient(
+          155deg,
+          #173b6c 0%,
+          #12345f 52%,
+          #0b2545 100%
+        );
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fa-brand-panel::before {
+      content: "";
+      position: absolute;
+      top: -110px;
+      right: -100px;
+      width: 330px;
+      height: 330px;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          circle,
+          rgba(243, 182, 31, 0.28) 0%,
+          rgba(243, 182, 31, 0.05) 58%,
+          transparent 70%
+        );
+    }
+
+    .fa-brand-panel::after {
+      content: "";
+      position: absolute;
+      bottom: -160px;
+      left: -110px;
+      width: 430px;
+      height: 430px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 45px rgba(255, 255, 255, 0.025),
+        0 0 0 90px rgba(255, 255, 255, 0.018);
+    }
+
+    .fa-brand-top,
+    .fa-brand-content,
+    .fa-security-panel,
+    .fa-brand-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .fa-brand-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .fa-logo {
+      width: 68px;
+      height: 52px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--fa-primary);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .fa-brand-identity strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .fa-brand-identity span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 12px;
+    }
+
+    .fa-brand-content {
+      margin-top: auto;
+      margin-bottom: auto;
+      padding: 50px 0;
+    }
+
+    .fa-module-badge {
+      width: fit-content;
+      margin-bottom: 22px;
+      padding: 8px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .fa-brand-content h1 {
+      max-width: 420px;
+      font-size: clamp(32px, 4vw, 47px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -1.4px;
+    }
+
+    .fa-brand-content h1 span {
+      display: block;
+      color: var(--fa-accent);
+    }
+
+    .fa-brand-description {
+      max-width: 410px;
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .fa-feature-list {
+      display: grid;
+      gap: 13px;
+      margin-top: 30px;
+    }
+
+    .fa-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 13px;
+    }
+
+    .fa-feature-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--fa-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .fa-security-panel {
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .fa-security-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: rgba(243, 182, 31, 0.14);
+      color: var(--fa-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fa-security-panel strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .fa-security-panel span {
+      display: block;
+      margin-top: 4px;
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .fa-brand-footer {
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 10.5px;
+    }
+
+    /* =========================================================
+       RIGHT APPLICATION PANEL
+       ========================================================= */
+
+    .fa-application-panel {
+      min-width: 0;
+      background:
+        linear-gradient(
+          180deg,
+          #ffffff 0%,
+          #fbfcfe 100%
+        );
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fa-app-header {
+      min-height: 88px;
+      padding: 24px 38px;
+      border-bottom: 1px solid var(--fa-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .fa-app-heading small {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--fa-text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .fa-app-heading strong {
+      color: var(--fa-primary);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .fa-signout {
+      padding: 9px 14px;
+      border: 1px solid var(--fa-border);
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--fa-primary);
+      font-size: 12px;
+      font-weight: 650;
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .fa-signout:hover {
+      border-color: var(--fa-primary);
+      background: var(--fa-surface-soft);
+    }
+
+    /* =========================================================
+       PROGRESS STEPPER
+       ========================================================= */
+
+    .fa-progress-wrapper {
+      padding: 26px 38px 0;
+    }
+
+    .fa-stepper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      position: relative;
+    }
+
+    .fa-stepper::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: calc(16.66% + 18px);
+      right: calc(16.66% + 18px);
+      height: 2px;
+      background: var(--fa-border);
+    }
+
+    .fa-step {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #98a2b3;
+      text-align: center;
+    }
+
+    .fa-step-number {
+      width: 38px;
+      height: 38px;
+      margin-bottom: 8px;
+      border: 2px solid var(--fa-border);
+      border-radius: 50%;
+      background: #ffffff;
+      color: #98a2b3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.25s ease;
+    }
+
+    .fa-step-label {
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .fa-step.fa-step-active {
+      color: var(--fa-primary);
+    }
+
+    .fa-step.fa-step-active .fa-step-number {
+      border-color: var(--fa-primary);
+      background: var(--fa-primary);
+      color: #ffffff;
+      box-shadow:
+        0 0 0 5px rgba(23, 59, 108, 0.11);
+    }
+
+    .fa-step.fa-step-done {
+      color: var(--fa-success);
+    }
+
+    .fa-step.fa-step-done .fa-step-number {
+      border-color: var(--fa-success);
+      background: var(--fa-success);
+      color: #ffffff;
+    }
+
+    /* =========================================================
+       SCREEN CONTENT
+       ========================================================= */
+
+    .fa-screen-container {
+      width: min(640px, 100%);
+      margin: 0 auto;
+      padding: 46px 38px 42px;
+      flex: 1;
+    }
+
+    .fa-screen {
+      animation: faScreenEnter 0.35s ease;
+    }
+
+    @keyframes faScreenEnter {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fa-screen-icon {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 22px;
+      border-radius: 16px;
+      background:
+        linear-gradient(
+          145deg,
+          #edf3fa,
+          #f7f9fc
+        );
+      color: var(--fa-primary);
+      box-shadow:
+        inset 0 0 0 1px rgba(23, 59, 108, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fa-screen-icon svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .fa-title {
+      color: var(--fa-text);
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+    }
+
+    .fa-lead {
+      max-width: 530px;
+      margin-top: 10px;
+      color: var(--fa-text-muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .fa-form-area {
+      margin-top: 30px;
+    }
+
+    .fa-field {
+      margin-bottom: 20px;
+    }
+
+    .fa-field label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .fa-required {
+      color: var(--fa-error);
+    }
+
+    .fa-control-wrapper {
+      position: relative;
+    }
+
+    .fa-field input,
+    .fa-field select,
+    .fa-field textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid var(--fa-border);
+      border-radius: var(--fa-radius-small);
+      outline: none;
+      background: #ffffff;
+      color: var(--fa-text);
+      font-size: 14px;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .fa-field textarea {
+      min-height: 108px;
+      resize: vertical;
+    }
+
+    .fa-field input::placeholder,
+    .fa-field textarea::placeholder {
+      color: #98a2b3;
+    }
+
+    .fa-field input:focus,
+    .fa-field select:focus,
+    .fa-field textarea:focus {
+      border-color: var(--fa-primary-light);
+      box-shadow:
+        0 0 0 4px rgba(45, 92, 151, 0.11);
+    }
+
+    .fa-field input.fa-bad,
+    .fa-field select.fa-bad,
+    .fa-field textarea.fa-bad {
+      border-color: var(--fa-error);
+      box-shadow:
+        0 0 0 4px rgba(200, 55, 55, 0.09);
+    }
+
+    .fa-field-hint {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 7px;
+      color: var(--fa-text-muted);
+      font-size: 10.5px;
+    }
+
+    .fa-field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    /* =========================================================
+       BUTTONS
+       ========================================================= */
+
+    .fa-btn {
+      min-height: 48px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: var(--fa-radius-small);
+      font-size: 13px;
+      font-weight: 700;
+      transition:
+        transform 0.15s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .fa-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .fa-btn-primary {
+      background:
+        linear-gradient(
+          135deg,
+          var(--fa-primary) 0%,
+          var(--fa-primary-light) 100%
+        );
+      color: #ffffff;
+      box-shadow:
+        0 10px 22px rgba(23, 59, 108, 0.2);
+    }
+
+    .fa-btn-primary:hover:not(:disabled) {
+      background:
+        linear-gradient(
+          135deg,
+          #12335e 0%,
+          #264f83 100%
+        );
+      box-shadow:
+        0 12px 28px rgba(23, 59, 108, 0.26);
+    }
+
+    .fa-btn-secondary {
+      border: 1px solid var(--fa-border);
+      background: #ffffff;
+      color: #344054;
+    }
+
+    .fa-btn-secondary:hover:not(:disabled) {
+      border-color: #b9c6d7;
+      background: var(--fa-surface-soft);
+    }
+
+    .fa-btn-block {
+      width: 100%;
+    }
+
+    .fa-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      box-shadow: none;
+    }
+
+    .fa-form-actions {
+      margin-top: 28px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* =========================================================
+       INFORMATION AND MESSAGES
+       ========================================================= */
+
+    .fa-access-note {
+      margin-top: 17px;
+      color: var(--fa-text-muted);
+      text-align: center;
+      font-size: 10.5px;
+    }
+
+    .fa-access-note svg {
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+      vertical-align: -2px;
+    }
+
+    .fa-msg {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .fa-msg-error {
+      border: 1px solid #f1c5c5;
+      background: #fff3f3;
+      color: #9f2929;
+    }
+
+    .fa-msg-ok {
+      border: 1px solid #b8dfcf;
+      background: #effaf5;
+      color: #126b4b;
+    }
+
+    .fa-msg-warn {
+      border: 1px solid #f0d59d;
+      background: #fff9ec;
+      color: #885600;
+    }
+
+    /* =========================================================
+       OTP
+       ========================================================= */
+
+    .fa-otp-email-card {
+      margin-top: 24px;
+      padding: 14px 16px;
+      border: 1px solid var(--fa-border);
+      border-radius: 12px;
+      background: var(--fa-surface-soft);
+      color: var(--fa-text-muted);
+      font-size: 12px;
+    }
+
+    .fa-otp-email-card strong {
+      color: var(--fa-primary);
+    }
+
+    .fa-otp-group {
+      margin: 28px 0 15px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(42px, 58px));
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .fa-otp-box {
+      width: 100%;
+      height: 62px;
+      border: 1px solid var(--fa-border);
+      border-radius: 12px;
+      outline: none;
+      background: #ffffff;
+      color: var(--fa-primary);
+      text-align: center;
+      font-size: 25px;
+      font-weight: 750;
+      transition:
+        transform 0.15s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .fa-otp-box:focus {
+      border-color: var(--fa-primary-light);
+      box-shadow:
+        0 0 0 4px rgba(45, 92, 151, 0.11);
+      transform: translateY(-2px);
+    }
+
+    .fa-otp-box.fa-filled {
+      border-color: var(--fa-primary);
+      background: #f8fbff;
+    }
+
+    .fa-otp-box.fa-bad {
+      border-color: var(--fa-error);
+      background: #fff4f4;
+      animation: faShake 0.3s ease;
+    }
+
+    @keyframes faShake {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      75% {
+        transform: translateX(5px);
+      }
+    }
+
+    .fa-otp-meta {
+      margin-bottom: 22px;
+      color: var(--fa-text-muted);
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .fa-otp-meta strong {
+      color: var(--fa-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fa-otp-meta.fa-expired strong {
+      color: var(--fa-error);
+    }
+
+    .fa-subactions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .fa-link {
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      color: var(--fa-primary);
+      font-size: 11.5px;
+      font-weight: 650;
+    }
+
+    .fa-link:hover:not(:disabled) {
+      text-decoration: underline;
+    }
+
+    .fa-link:disabled {
+      cursor: not-allowed;
+      color: #98a2b3;
+    }
+
+    /* =========================================================
+       SIGNED-IN USER PANEL
+       ========================================================= */
+
+    .fa-user-card {
+      margin-bottom: 28px;
+      padding: 14px;
+      border: 1px solid var(--fa-border);
+      border-radius: 14px;
+      background: var(--fa-surface-soft);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fa-avatar {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          145deg,
+          var(--fa-primary),
+          var(--fa-primary-light)
+        );
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 750;
+    }
+
+    .fa-user-details {
+      min-width: 0;
+    }
+
+    .fa-user-details strong {
+      display: block;
+      overflow: hidden;
+      color: #344054;
+      font-size: 12.5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .fa-user-details small {
+      display: block;
+      overflow: hidden;
+      margin-top: 2px;
+      color: var(--fa-text-muted);
+      font-size: 10.5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .fa-department {
+      max-width: 180px;
+      margin-left: auto;
+      overflow: hidden;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eaf1f9;
+      color: var(--fa-primary);
+      font-size: 10px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* =========================================================
+       SUMMARY
+       ========================================================= */
+
+    .fa-request-summary {
+      margin-top: 7px;
+      padding: 16px 17px;
+      border: 1px solid var(--fa-border);
+      border-left: 4px solid var(--fa-accent);
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          135deg,
+          #f8fafc,
+          #f1f5fa
+        );
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .fa-request-summary span {
+      color: var(--fa-text-muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .fa-request-summary strong {
+      color: var(--fa-primary);
+      font-size: 18px;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================================================
+       SUCCESS
+       ========================================================= */
+
+    .fa-success-screen {
+      padding-top: 34px;
+      text-align: center;
+    }
+
+    .fa-success-icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 22px;
+      border: 1px solid #b9dfd1;
+      border-radius: 24px;
+      background: #ecf9f4;
+      color: var(--fa-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: faSuccessEnter 0.4s ease;
+    }
+
+    .fa-success-icon svg {
+      width: 38px;
+      height: 38px;
+    }
+
+    @keyframes faSuccessEnter {
+      from {
+        opacity: 0;
+        transform: scale(0.75);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .fa-reference-card {
+      margin: 26px auto 20px;
+      padding: 18px;
+      border: 1px dashed var(--fa-primary-light);
+      border-radius: 14px;
+      background: #f6f9fd;
+    }
+
+    .fa-reference-card span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--fa-text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+    }
+
+    .fa-reference-card strong {
+      color: var(--fa-primary);
+      font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+      word-break: break-word;
+    }
+
+    .fa-success-note {
+      max-width: 480px;
+      margin: 0 auto 26px;
+      color: var(--fa-text-muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    /* =========================================================
+       APPLICATION FOOTER
+       ========================================================= */
+
+    .fa-app-footer {
+      padding: 17px 38px;
+      border-top: 1px solid var(--fa-border);
+      color: #98a2b3;
+      font-size: 9.5px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    /* =========================================================
+       LOADER
+       ========================================================= */
+
+    .fa-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(245, 248, 252, 0.88);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fa-loader-card {
+      min-width: 190px;
+      padding: 24px;
+      border: 1px solid var(--fa-border);
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: var(--fa-shadow-soft);
+      text-align: center;
+    }
+
+    .fa-spinner {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 13px;
+      border: 4px solid #e4eaf1;
+      border-top-color: var(--fa-primary);
+      border-radius: 50%;
+      animation: faSpin 0.75s linear infinite;
+    }
+
+    @keyframes faSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .fa-loader-card span {
+      color: var(--fa-primary);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 940px) {
+      .fa-page {
+        padding: 0;
+      }
+
+      .fa-app-shell {
+        min-height: 100vh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        grid-template-columns: 1fr;
+      }
+
+      .fa-brand-panel {
+        min-height: auto;
+        padding: 24px;
+      }
+
+      .fa-brand-content {
+        margin: 35px 0 28px;
+        padding: 0;
+      }
+
+      .fa-brand-content h1 {
+        font-size: 34px;
+      }
+
+      .fa-feature-list,
+      .fa-security-panel,
+      .fa-brand-footer {
+        display: none;
+      }
+
+      .fa-application-panel {
+        min-height: 620px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .fa-brand-panel {
+        padding: 20px;
+      }
+
+      .fa-brand-content {
+        margin: 28px 0 20px;
+      }
+
+      .fa-brand-content h1 {
+        font-size: 29px;
+      }
+
+      .fa-brand-description {
+        margin-top: 13px;
+        font-size: 12px;
+      }
+
+      .fa-app-header {
+        min-height: 72px;
+        padding: 18px 20px;
+      }
+
+      .fa-progress-wrapper {
+        padding: 22px 20px 0;
+      }
+
+      .fa-step-label {
+        font-size: 10px;
+      }
+
+      .fa-screen-container {
+        padding: 34px 20px 36px;
+      }
+
+      .fa-title {
+        font-size: 23px;
+      }
+
+      .fa-field-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .fa-otp-group {
+        grid-template-columns: repeat(6, minmax(34px, 1fr));
+        gap: 6px;
+      }
+
+      .fa-otp-box {
+        height: 54px;
+        font-size: 21px;
+      }
+
+      .fa-form-actions {
+        flex-direction: column-reverse;
+      }
+
+      .fa-form-actions .fa-btn {
+        width: 100%;
+      }
+
+      .fa-app-footer {
+        padding: 15px 20px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .fa-user-card {
+        align-items: flex-start;
+      }
+
+      .fa-department {
+        max-width: 110px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="fa-shell">
+  <div class="fa-page">
 
-  <!-- ================= HEADER ================= -->
-  <header class="fa-brand">
-    <div class="fa-brand-mark">CGC</div>
-    <div class="fa-brand-text">
-      <h1>Fixed Asset Number Request</h1>
-      <p>Credit Guarantee Corporation Malaysia Berhad</p>
+    <div class="fa-app-shell">
+
+      <!-- =====================================================
+           LEFT BRANDING PANEL
+           ===================================================== -->
+
+      <aside class="fa-brand-panel">
+
+        <div class="fa-brand-top">
+
+          <div class="fa-logo" aria-label="CGC">
+            CGC
+          </div>
+
+          <div class="fa-brand-identity">
+            <strong>Finance Hub</strong>
+            <span>Credit Guarantee Corporation Malaysia Berhad</span>
+          </div>
+
+        </div>
+
+        <div class="fa-brand-content">
+
+          <div class="fa-module-badge">
+            Finance Operations
+          </div>
+
+          <h1>
+            Fixed Asset
+            <span>Number Request</span>
+          </h1>
+
+          <p class="fa-brand-description">
+            Submit and track fixed asset number requests through a secure,
+            guided and streamlined digital process.
+          </p>
+
+          <div class="fa-feature-list">
+
+            <div class="fa-feature">
+              <div class="fa-feature-icon">01</div>
+              <span>Secure email verification</span>
+            </div>
+
+            <div class="fa-feature">
+              <div class="fa-feature-icon">02</div>
+              <span>Structured request information</span>
+            </div>
+
+            <div class="fa-feature">
+              <div class="fa-feature-icon">03</div>
+              <span>Automated Finance notification</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="fa-security-panel">
+
+          <div class="fa-security-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+              <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+            </svg>
+          </div>
+
+          <div>
+            <strong>Secure internal access</strong>
+            <span>
+              Access is restricted to authorised CGC users using email
+              verification.
+            </span>
+          </div>
+
+        </div>
+
+        <div class="fa-brand-footer">
+          CGC Finance Hub · Internal Use Only
+        </div>
+
+      </aside>
+
+      <!-- =====================================================
+           RIGHT APPLICATION PANEL
+           ===================================================== -->
+
+      <section class="fa-application-panel">
+
+        <header class="fa-app-header">
+
+          <div class="fa-app-heading">
+            <small>Current module</small>
+            <strong>Fixed Asset Request</strong>
+          </div>
+
+          <button
+            type="button"
+            id="faBtnSignOut"
+            class="fa-signout fa-hide"
+          >
+            Sign out
+          </button>
+
+        </header>
+
+        <!-- ================= PROGRESS ================= -->
+
+        <div class="fa-progress-wrapper">
+
+          <nav
+            class="fa-stepper"
+            aria-label="Application progress"
+          >
+
+            <div
+              class="fa-step fa-step-active"
+              data-step="1"
+            >
+              <span class="fa-step-number">1</span>
+              <span class="fa-step-label">Verification</span>
+            </div>
+
+            <div
+              class="fa-step"
+              data-step="2"
+            >
+              <span class="fa-step-number">2</span>
+              <span class="fa-step-label">Request Details</span>
+            </div>
+
+            <div
+              class="fa-step"
+              data-step="3"
+            >
+              <span class="fa-step-number">3</span>
+              <span class="fa-step-label">Completed</span>
+            </div>
+
+          </nav>
+
+        </div>
+
+        <main class="fa-screen-container">
+
+          <!-- =================================================
+               SCREEN 1: EMAIL
+               ================================================= -->
+
+          <section
+            id="faScreenEmail"
+            class="fa-screen"
+          >
+
+            <div class="fa-screen-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                <path d="m3 7 9 6 9-6"></path>
+              </svg>
+            </div>
+
+            <h2 class="fa-title">
+              Verify your email
+            </h2>
+
+            <p class="fa-lead">
+              Enter your CGC email address. A six-digit one-time password
+              will be sent to the registered inbox.
+            </p>
+
+            <div class="fa-form-area">
+
+              <div class="fa-field">
+
+                <label for="faEmail">
+                  CGC email address
+                  <span class="fa-required">*</span>
+                </label>
+
+                <div class="fa-control-wrapper">
+                  <input
+                    type="email"
+                    id="faEmail"
+                    placeholder="name@cgc.com.my"
+                    autocomplete="email"
+                    spellcheck="false"
+                    inputmode="email"
+                  >
+                </div>
+
+                <div class="fa-field-hint">
+                  <span>Use the official CGC email address.</span>
+                </div>
+
+              </div>
+
+              <div
+                id="faEmailMsg"
+                class="fa-msg fa-hide"
+                role="alert"
+              ></div>
+
+              <button
+                type="button"
+                id="faBtnRequestOtp"
+                class="fa-btn fa-btn-primary fa-btn-block"
+              >
+                Request verification code
+              </button>
+
+              <p class="fa-access-note">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                </svg>
+
+                Access is restricted to authorised CGC staff.
+              </p>
+
+            </div>
+
+          </section>
+
+          <!-- =================================================
+               SCREEN 2: OTP
+               ================================================= -->
+
+          <section
+            id="faScreenOtp"
+            class="fa-screen fa-hide"
+          >
+
+            <div class="fa-screen-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M12 2 4 5v6c0 5.2 3.4 9 8 11 4.6-2 8-5.8 8-11V5l-8-3Z"></path>
+                <path d="m9 12 2 2 4-5"></path>
+              </svg>
+            </div>
+
+            <h2 class="fa-title">
+              Enter verification code
+            </h2>
+
+            <p class="fa-lead">
+              Enter the six-digit code sent to the registered email address.
+            </p>
+
+            <div class="fa-otp-email-card">
+              Verification code sent to
+              <strong id="faMaskedEmail"></strong>
+            </div>
+
+            <div
+              class="fa-otp-group"
+              id="faOtpGroup"
+              aria-label="Six-digit verification code"
+            >
+
+              <input
+                type="text"
+                maxlength="1"
+                inputmode="numeric"
+                class="fa-otp-box"
+                autocomplete="one-time-code"
+                aria-label="Verification code digit 1"
+              >
+
+              <input
+                type="text"
+                maxlength="1"
+                inputmode="numeric"
+                class="fa-otp-box"
+                aria-label="Verification code digit 2"
+              >
+
+              <input
+                type="text"
+                maxlength="1"
+                inputmode="numeric"
+                class="fa-otp-box"
+                aria-label="Verification code digit 3"
+              >
+
+              <input
+                type="text"
+                maxlength="1"
+                inputmode="numeric"
+                class="fa-otp-box"
+                aria-label="Verification code digit 4"
+              >
+
+              <input
+                type="text"
+                maxlength="1"
+                inputmode="numeric"
+                class="fa-otp-box"
+                aria-label="Verification code digit 5"
+              >
+
+              <input
+                type="text"
+                maxlength="1"
+                inputmode="numeric"
+                class="fa-otp-box"
+                aria-label="Verification code digit 6"
+              >
+
+            </div>
+
+            <div
+              class="fa-otp-meta"
+              id="faCountdown"
+            >
+              Code expires in
+              <strong id="faTimer">05:00</strong>
+            </div>
+
+            <div
+              id="faOtpMsg"
+              class="fa-msg fa-hide"
+              role="alert"
+            ></div>
+
+            <button
+              type="button"
+              id="faBtnVerify"
+              class="fa-btn fa-btn-primary fa-btn-block"
+            >
+              Verify and continue
+            </button>
+
+            <div class="fa-subactions">
+
+              <button
+                type="button"
+                id="faBtnResend"
+                class="fa-link"
+                disabled
+              >
+                Resend code
+                (<span id="faResendTimer">60</span>s)
+              </button>
+
+              <button
+                type="button"
+                id="faBtnChangeEmail"
+                class="fa-link"
+              >
+                Change email address
+              </button>
+
+            </div>
+
+          </section>
+
+          <!-- =================================================
+               SCREEN 3: REQUEST FORM
+               ================================================= -->
+
+          <section
+            id="faScreenForm"
+            class="fa-screen fa-hide"
+          >
+
+            <div class="fa-user-card">
+
+              <div
+                class="fa-avatar"
+                id="faAvatar"
+              ></div>
+
+              <div class="fa-user-details">
+                <strong id="faUserName"></strong>
+                <small id="faUserEmail"></small>
+              </div>
+
+              <span
+                class="fa-department"
+                id="faUserDept"
+              ></span>
+
+            </div>
+
+            <div class="fa-screen-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M9 4h6"></path>
+                <path d="M9 2h6v4H9z"></path>
+                <rect x="5" y="4" width="14" height="18" rx="2"></rect>
+                <path d="M8 11h8M8 15h8"></path>
+              </svg>
+            </div>
+
+            <h2 class="fa-title">
+              Request details
+            </h2>
+
+            <p class="fa-lead">
+              Complete the required information. Finance will use the
+              submitted details to create the fixed asset record in SAP
+              S/4HANA.
+            </p>
+
+            <form
+              id="faForm"
+              class="fa-form-area"
+              novalidate
+            >
+
+              <div class="fa-field">
+
+                <label for="faCategory">
+                  Request category
+                  <span class="fa-required">*</span>
+                </label>
+
+                <select id="faCategory">
+                  <option value="">
+                    Select request category
+                  </option>
+
+                  <option value="FAS">
+                    FAS
+                  </option>
+
+                  <option value="IT">
+                    IT
+                  </option>
+                </select>
+
+                <div class="fa-field-hint">
+                  <span>
+                    Select the applicable category provided by Finance.
+                  </span>
+                </div>
+
+              </div>
+
+              <div class="fa-field">
+
+                <label for="faAssetDetails">
+                  Particulars or details of asset
+                  <span class="fa-required">*</span>
+                </label>
+
+                <textarea
+                  id="faAssetDetails"
+                  maxlength="500"
+                  placeholder="Provide a clear description of the asset"
+                ></textarea>
+
+                <div class="fa-field-hint">
+                  <span>
+                    Include sufficient details for Finance processing.
+                  </span>
+
+                  <span>
+                    <span id="faCharCount">0</span>/500
+                  </span>
+                </div>
+
+              </div>
+
+              <div class="fa-field-grid">
+
+                <div class="fa-field">
+
+                  <label for="faAssetClass">
+                    Asset class
+                    <span class="fa-required">*</span>
+                  </label>
+
+                  <select id="faAssetClass">
+                    <option value="">
+                      Loading asset classes
+                    </option>
+                  </select>
+
+                </div>
+
+                <div class="fa-field">
+
+                  <label for="faAssetType">
+                    Asset type
+                    <span class="fa-required">*</span>
+                  </label>
+
+                  <select id="faAssetType">
+                    <option value="">
+                      Loading asset types
+                    </option>
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div class="fa-field-grid">
+
+                <div class="fa-field">
+
+                  <label for="faQuantity">
+                    Quantity
+                    <span class="fa-required">*</span>
+                  </label>
+
+                  <select id="faQuantity">
+                    <option value="">
+                      Select quantity
+                    </option>
+                  </select>
+
+                </div>
+
+                <div class="fa-field">
+
+                  <label for="faAmount">
+                    Amount (RM)
+                    <span class="fa-required">*</span>
+                  </label>
+
+                  <input
+                    type="number"
+                    id="faAmount"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    inputmode="decimal"
+                  >
+
+                </div>
+
+              </div>
+
+              <div class="fa-field">
+
+                <label for="faLocation">
+                  Location
+                  <span class="fa-required">*</span>
+                </label>
+
+                <select id="faLocation">
+                  <option value="">
+                    Loading locations
+                  </option>
+                </select>
+
+              </div>
+
+              <div
+                class="fa-request-summary"
+                id="faSummary"
+              >
+                <span>Estimated total</span>
+                <strong id="faTotal">RM 0.00</strong>
+              </div>
+
+              <div
+                id="faFormMsg"
+                class="fa-msg fa-hide"
+                role="alert"
+              ></div>
+
+              <div class="fa-form-actions">
+
+                <button
+                  type="button"
+                  id="faBtnClear"
+                  class="fa-btn fa-btn-secondary"
+                >
+                  Clear form
+                </button>
+
+                <button
+                  type="submit"
+                  id="faBtnSubmit"
+                  class="fa-btn fa-btn-primary"
+                >
+                  Submit request
+                </button>
+
+              </div>
+
+            </form>
+
+          </section>
+
+          <!-- =================================================
+               SCREEN 4: SUCCESS
+               ================================================= -->
+
+          <section
+            id="faScreenDone"
+            class="fa-screen fa-success-screen fa-hide"
+          >
+
+            <div class="fa-success-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg>
+            </div>
+
+            <h2 class="fa-title">
+              Request submitted successfully
+            </h2>
+
+            <p class="fa-lead">
+              The request has been recorded and submitted to Finance for
+              processing.
+            </p>
+
+            <div class="fa-reference-card">
+              <span>Request reference number</span>
+              <strong id="faRefNo"></strong>
+            </div>
+
+            <p class="fa-success-note">
+              Finance has been notified. An email notification will be sent
+              after the fixed asset number has been created and verified in
+              SAP S/4HANA.
+            </p>
+
+            <button
+              type="button"
+              id="faBtnAnother"
+              class="fa-btn fa-btn-primary"
+            >
+              Submit another request
+            </button>
+
+          </section>
+
+        </main>
+
+        <footer class="fa-app-footer">
+
+          <span>CGC Finance Hub · Internal Use Only</span>
+
+          <span>
+            Fixed Asset Module ·
+            <span id="faVersion">v2.0.0</span>
+          </span>
+
+        </footer>
+
+      </section>
+
     </div>
-    <button id="faBtnSignOut" class="fa-signout fa-hide">Sign out</button>
-  </header>
 
-  <!-- ================= STEPPER ================= -->
-  <nav class="fa-stepper">
-    <div class="fa-step fa-step-active" data-step="1"><span>1</span><label>Verify</label></div>
-    <div class="fa-step" data-step="2"><span>2</span><label>Request</label></div>
-    <div class="fa-step" data-step="3"><span>3</span><label>Done</label></div>
-  </nav>
+  </div>
 
-  <main class="fa-card">
+  <!-- =======================================================
+       LOADING OVERLAY
+       ======================================================= -->
 
-    <!-- ============ SCREEN 1 : EMAIL ============ -->
-    <section id="faScreenEmail" class="fa-screen">
-      <h2 class="fa-title">Secure Access</h2>
-      <p class="fa-lead">Enter your CGC email address. A one-time password will be sent to your inbox.</p>
+  <div
+    id="faLoader"
+    class="fa-loader fa-hide"
+    aria-live="polite"
+    aria-busy="true"
+  >
 
-      <div class="fa-field">
-        <label for="faEmail">CGC Email Address <em>*</em></label>
-        <input type="email" id="faEmail" placeholder="name@cgc.com.my" autocomplete="email" spellcheck="false">
-      </div>
+    <div class="fa-loader-card">
 
-      <div id="faEmailMsg" class="fa-msg fa-hide"></div>
+      <div class="fa-spinner"></div>
 
-      <button id="faBtnRequestOtp" class="fa-btn fa-btn-primary fa-btn-block">
-        Send One-Time Password
-      </button>
+      <span id="faLoaderText">
+        Processing...
+      </span>
 
-      <p class="fa-fineprint">Access is restricted to authorised CGC staff.</p>
-    </section>
+    </div>
 
-    <!-- ============ SCREEN 2 : OTP ============ -->
-    <section id="faScreenOtp" class="fa-screen fa-hide">
-      <h2 class="fa-title">Enter Verification Code</h2>
-      <p class="fa-lead">We sent a 6-digit code to <strong id="faMaskedEmail"></strong></p>
+  </div>
 
-      <div class="fa-otp-group" id="faOtpGroup">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box" autocomplete="one-time-code">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-      </div>
+  <!--
+    Script order is important:
+    configuration → UI → API → OTP → request controller
+  -->
 
-      <div class="fa-countdown" id="faCountdown">
-        Code expires in <strong id="faTimer">05:00</strong>
-      </div>
-
-      <div id="faOtpMsg" class="fa-msg fa-hide"></div>
-
-      <button id="faBtnVerify" class="fa-btn fa-btn-primary fa-btn-block">
-        Verify &amp; Continue
-      </button>
-
-      <div class="fa-subactions">
-        <button id="faBtnResend" class="fa-link" disabled>
-          Resend code (<span id="faResendTimer">60</span>s)
-        </button>
-        <button id="faBtnChangeEmail" class="fa-link">Change email</button>
-      </div>
-    </section>
-
-    <!-- ============ SCREEN 3 : FORM ============ -->
-    <section id="faScreenForm" class="fa-screen fa-hide">
-
-      <div class="fa-who">
-        <div class="fa-avatar" id="faAvatar"></div>
-        <div class="fa-who-text">
-          <strong id="faUserName"></strong>
-          <small id="faUserEmail"></small>
-        </div>
-        <span class="fa-chip" id="faUserDept"></span>
-      </div>
-
-      <h2 class="fa-title">New Fixed Asset Number Request</h2>
-      <p class="fa-lead">Complete all mandatory fields. Finance will create the asset record in SAP S/4HANA.</p>
-
-      <form id="faForm" novalidate>
-
-        <div class="fa-field">
-          <label for="faCategory">Request Category <em>*</em></label>
-          <select id="faCategory">
-            <option value="">&mdash; Select &mdash;</option>
-            <option value="FAS">FAS</option>
-            <option value="IT">IT</option>
-          </select>
-          <small class="fa-hint">Select FAS, or IT for non-IT items as advised by Finance.</small>
-        </div>
-
-        <div class="fa-field">
-          <label for="faAssetDetails">Particulars / Details of Asset <em>*</em></label>
-          <textarea id="faAssetDetails" rows="3" maxlength="500"
-                    placeholder="Describe the asset to be purchased"></textarea>
-          <small class="fa-hint"><span id="faCharCount">0</span>/500 characters</small>
-        </div>
-
-        <div class="fa-field">
-          <label for="faAssetClass">Asset Class <em>*</em></label>
-          <select id="faAssetClass"><option value="">&mdash; Loading &mdash;</option></select>
-        </div>
-
-        <div class="fa-field">
-          <label for="faAssetType">Asset Type <em>*</em></label>
-          <select id="faAssetType"><option value="">&mdash; Loading &mdash;</option></select>
-        </div>
-
-        <div class="fa-grid2">
-          <div class="fa-field">
-            <label for="faQuantity">Quantity <em>*</em></label>
-            <select id="faQuantity"><option value="">&mdash; Select &mdash;</option></select>
-          </div>
-          <div class="fa-field">
-            <label for="faAmount">Amount (RM) <em>*</em></label>
-            <input type="number" id="faAmount" min="0" step="0.01" placeholder="0.00">
-          </div>
-        </div>
-
-        <div class="fa-field">
-          <label for="faLocation">Location <em>*</em></label>
-          <select id="faLocation"><option value="">&mdash; Loading &mdash;</option></select>
-        </div>
-
-        <div class="fa-summary" id="faSummary">
-          <span>Estimated Total</span>
-          <strong id="faTotal">RM 0.00</strong>
-        </div>
-
-        <div id="faFormMsg" class="fa-msg fa-hide"></div>
-
-        <div class="fa-actions">
-          <button type="button" id="faBtnClear" class="fa-btn fa-btn-ghost">Clear</button>
-          <button type="submit" id="faBtnSubmit" class="fa-btn fa-btn-primary">Submit Request</button>
-        </div>
-
-      </form>
-    </section>
-
-    <!-- ============ SCREEN 4 : SUCCESS ============ -->
-    <section id="faScreenDone" class="fa-screen fa-hide fa-center">
-      <div class="fa-tick">&#10004;</div>
-      <h2 class="fa-title">Request Submitted</h2>
-      <p class="fa-lead">Your reference number is</p>
-      <div class="fa-refno" id="faRefNo"></div>
-      <p class="fa-note">
-        Finance has been notified. You will receive an email once the Fixed Asset
-        number has been created and verified in SAP S/4HANA.
-      </p>
-      <button id="faBtnAnother" class="fa-btn fa-btn-primary">Submit Another Request</button>
-    </section>
-
-  </main>
-
-  <footer class="fa-foot">
-    CGC Finance Hub &middot; Internal Use Only &middot; <span id="faVersion"></span>
-  </footer>
-
-</div>
-
-<div id="faLoader" class="fa-loader fa-hide">
-  <div class="fa-spinner"></div>
-  <span id="faLoaderText">Processing&hellip;</span>
-</div>
-
-<script src="js/fa-config.js?v=1.0.2"></script>
-<script src="js/fa-ui.js?v=1.0.2"></script>
-<script src="js/fa-api.js?v=1.0.2"></script>
-<script src="js/fa-otp.js?v=1.0.2"></script>
-<script src="js/fa-request.js?v=1.0.2"></script>
+  js/fa-config.js?v=2.0.0script>
+  js/fa-ui.js?v=2.0.0script>
+  js/fa-api.js?v=2.0.0script>
+  js/fa-otp.js?v=2.0.0script>
+  js/fa-request.js?v=2.0.0script>
 
 </body>
 </html>
