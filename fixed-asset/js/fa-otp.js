@@ -19,17 +19,18 @@ const FA_OTP = (function () {
 
     const session = {
 
-      verified: true,
+      verified : true,
 
-      status: data.status || "verified",
+      status   : data.status || "verified",
 
-      email: verifiedEmail,
+      email    : verifiedEmail,
 
-      user: data.user || {
-        email: verifiedEmail
-      },
+      /* Display name captured from Get user profile (V2) */
+      name     : data.name || "",
 
-      expires:
+      user     : data.user || { email: verifiedEmail },
+
+      expires  :
         Date.now() +
         (FA_CONFIG.sessionMinutes * 60000)
 
@@ -46,9 +47,7 @@ const FA_OTP = (function () {
   function getSession(){
 
     const raw =
-      sessionStorage.getItem(
-        FA_CONFIG.sessionKey
-      );
+      sessionStorage.getItem(FA_CONFIG.sessionKey);
 
     if (!raw){
       return null;
@@ -56,195 +55,151 @@ const FA_OTP = (function () {
 
     try {
 
-      const session =
-        JSON.parse(raw);
+      const session = JSON.parse(raw);
 
-      /*
-        Your PC_VerifyOTP response does NOT return a token.
-
-        Therefore we validate:
-        1. OTP was successfully verified
-        2. Session expiry exists
-        3. Session has not expired
-      */
-
+      /* PC_VerifyOTP returns no token, so the session is
+         validated on the verified flag and expiry only. */
       if (
         session.verified !== true ||
         !session.expires ||
         Date.now() > session.expires
       ){
-
         clearSession();
-
         return null;
       }
 
       return session;
 
     } catch (e) {
-
       clearSession();
-
       return null;
-
     }
   }
 
   function clearSession(){
+    sessionStorage.removeItem(FA_CONFIG.sessionKey);
+  }
 
-    sessionStorage.removeItem(
-      FA_CONFIG.sessionKey
-    );
+  /* ---------------- PROFILE (from PC_SendOTP) ---------------- */
+
+  function saveProfile(name, email){
+
+    if (name){
+      sessionStorage.setItem("fa_profile_name", name);
+    }
+
+    if (email){
+      sessionStorage.setItem("fa_profile_email", email);
+    }
+  }
+
+  function getProfileName(){
+    return sessionStorage.getItem("fa_profile_name") || "";
+  }
+
+  function getProfileEmail(){
+    return sessionStorage.getItem("fa_profile_email") || "";
+  }
+
+  function clearProfile(){
+    sessionStorage.removeItem("fa_profile_name");
+    sessionStorage.removeItem("fa_profile_email");
   }
 
   /* ---------------- INPUT BEHAVIOUR ---------------- */
 
   function bindBoxes(onComplete){
 
-    boxes =
-      Array.prototype.slice.call(
-        document.querySelectorAll(
-          ".fa-otp-box"
-        )
-      );
+    boxes = Array.prototype.slice.call(
+      document.querySelectorAll(".fa-otp-box")
+    );
 
     boxes.forEach(function (box, i) {
 
-      box.addEventListener(
-        "input",
-        function () {
+      box.addEventListener("input", function () {
 
-          box.value =
-            box.value.replace(/\D/g, "");
+        box.value = box.value.replace(/\D/g, "");
 
-          box.classList.toggle(
-            "fa-filled",
-            box.value !== ""
-          );
+        box.classList.toggle("fa-filled", box.value !== "");
+        box.classList.remove("fa-bad");
 
-          box.classList.remove(
-            "fa-bad"
-          );
-
-          if (
-            box.value &&
-            i < boxes.length - 1
-          ){
-            boxes[i + 1].focus();
-          }
-
-          if (
-            getCode().length ===
-              FA_CONFIG.otpLength &&
-            typeof onComplete === "function"
-          ){
-            onComplete();
-          }
+        if (box.value && i < boxes.length - 1){
+          boxes[i + 1].focus();
         }
-      );
 
-      box.addEventListener(
-        "keydown",
-        function (e) {
-
-          if (
-            e.key === "Backspace" &&
-            !box.value &&
-            i > 0
-          ){
-            boxes[i - 1].focus();
-          }
-
-          if (
-            e.key === "ArrowLeft" &&
-            i > 0
-          ){
-            boxes[i - 1].focus();
-          }
-
-          if (
-            e.key === "ArrowRight" &&
-            i < boxes.length - 1
-          ){
-            boxes[i + 1].focus();
-          }
+        if (
+          getCode().length === FA_CONFIG.otpLength &&
+          typeof onComplete === "function"
+        ){
+          onComplete();
         }
-      );
+      });
 
-      box.addEventListener(
-        "focus",
-        function () {
-          box.select();
+      box.addEventListener("keydown", function (e) {
+
+        if (e.key === "Backspace" && !box.value && i > 0){
+          boxes[i - 1].focus();
         }
-      );
 
-      box.addEventListener(
-        "paste",
-        function (e) {
-
-          e.preventDefault();
-
-          const digits =
-            (
-              e.clipboardData.getData("text") ||
-              ""
-            ).replace(/\D/g, "");
-
-          if (!digits){
-            return;
-          }
-
-          digits
-            .split("")
-            .slice(0, boxes.length)
-            .forEach(function (d, k) {
-
-              boxes[k].value = d;
-
-              boxes[k].classList.add(
-                "fa-filled"
-              );
-
-              boxes[k].classList.remove(
-                "fa-bad"
-              );
-
-            });
-
-          const last =
-            Math.min(
-              digits.length,
-              boxes.length
-            ) - 1;
-
-          if (last >= 0){
-            boxes[last].focus();
-          }
-
-          if (
-            getCode().length ===
-              FA_CONFIG.otpLength &&
-            typeof onComplete === "function"
-          ){
-            onComplete();
-          }
+        if (e.key === "ArrowLeft" && i > 0){
+          boxes[i - 1].focus();
         }
-      );
+
+        if (e.key === "ArrowRight" && i < boxes.length - 1){
+          boxes[i + 1].focus();
+        }
+      });
+
+      box.addEventListener("focus", function () {
+        box.select();
+      });
+
+      box.addEventListener("paste", function (e) {
+
+        e.preventDefault();
+
+        const digits =
+          (e.clipboardData.getData("text") || "")
+          .replace(/\D/g, "");
+
+        if (!digits){
+          return;
+        }
+
+        digits
+          .split("")
+          .slice(0, boxes.length)
+          .forEach(function (d, k) {
+            boxes[k].value = d;
+            boxes[k].classList.add("fa-filled");
+            boxes[k].classList.remove("fa-bad");
+          });
+
+        const last =
+          Math.min(digits.length, boxes.length) - 1;
+
+        if (last >= 0){
+          boxes[last].focus();
+        }
+
+        if (
+          getCode().length === FA_CONFIG.otpLength &&
+          typeof onComplete === "function"
+        ){
+          onComplete();
+        }
+      });
 
     });
   }
 
   function getCode(){
-
     return boxes
-      .map(function (b) {
-        return b.value;
-      })
+      .map(function (b) { return b.value; })
       .join("");
   }
 
   function focusFirst(){
-
     if (boxes.length){
       boxes[0].focus();
     }
@@ -255,26 +210,14 @@ const FA_OTP = (function () {
     boxes.forEach(function (b) {
 
       b.value = "";
-
-      b.classList.remove(
-        "fa-filled"
-      );
+      b.classList.remove("fa-filled");
 
       if (markInvalid){
-
-        b.classList.add(
-          "fa-bad"
-        );
-
+        b.classList.add("fa-bad");
         setTimeout(function () {
-
-          b.classList.remove(
-            "fa-bad"
-          );
-
+          b.classList.remove("fa-bad");
         }, 520);
       }
-
     });
 
     focusFirst();
@@ -286,57 +229,36 @@ const FA_OTP = (function () {
 
     clearInterval(expiryTimer);
 
-    let left =
-      FA_CONFIG.otpValidSeconds;
+    let left = FA_CONFIG.otpValidSeconds;
 
-    const label =
-      document.getElementById(
-        "faTimer"
-      );
-
-    const wrap =
-      document.getElementById(
-        "faCountdown"
-      );
+    const label = document.getElementById("faTimer");
+    const wrap  = document.getElementById("faCountdown");
 
     if (wrap){
-      wrap.classList.remove(
-        "fa-expired"
-      );
+      wrap.classList.remove("fa-expired");
     }
 
     function tick(){
 
       const m =
-        String(
-          Math.floor(left / 60)
-        ).padStart(2, "0");
+        String(Math.floor(left / 60)).padStart(2, "0");
 
       const s =
-        String(
-          left % 60
-        ).padStart(2, "0");
+        String(left % 60).padStart(2, "0");
 
       if (label){
-        label.textContent =
-          m + ":" + s;
+        label.textContent = m + ":" + s;
       }
 
       if (left <= 0){
 
-        clearInterval(
-          expiryTimer
-        );
+        clearInterval(expiryTimer);
 
         if (wrap){
-          wrap.classList.add(
-            "fa-expired"
-          );
+          wrap.classList.add("fa-expired");
         }
 
-        if (
-          typeof onExpire === "function"
-        ){
+        if (typeof onExpire === "function"){
           onExpire();
         }
 
@@ -348,26 +270,16 @@ const FA_OTP = (function () {
 
     tick();
 
-    expiryTimer =
-      setInterval(
-        tick,
-        1000
-      );
+    expiryTimer = setInterval(tick, 1000);
   }
 
   function startResendCooldown(){
 
-    clearInterval(
-      resendTimer
-    );
+    clearInterval(resendTimer);
 
-    let left =
-      FA_CONFIG.resendCooldown;
+    let left = FA_CONFIG.resendCooldown;
 
-    const btn =
-      document.getElementById(
-        "faBtnResend"
-      );
+    const btn = document.getElementById("faBtnResend");
 
     if (!btn){
       return;
@@ -376,56 +288,36 @@ const FA_OTP = (function () {
     btn.disabled = true;
 
     btn.innerHTML =
-      'Resend code (' +
-      '<span id="faResendTimer">' +
+      'Resend code (<span id="faResendTimer">' +
       left +
       '</span>s)';
 
-    resendTimer =
-      setInterval(
-        function () {
+    resendTimer = setInterval(function () {
 
-          left--;
+      left--;
 
-          const span =
-            document.getElementById(
-              "faResendTimer"
-            );
+      const span =
+        document.getElementById("faResendTimer");
 
-          if (span){
-            span.textContent = left;
-          }
+      if (span){
+        span.textContent = left;
+      }
 
-          if (left <= 0){
+      if (left <= 0){
+        clearInterval(resendTimer);
+        btn.disabled = false;
+        btn.textContent = "Resend code";
+      }
 
-            clearInterval(
-              resendTimer
-            );
-
-            btn.disabled = false;
-
-            btn.textContent =
-              "Resend code";
-
-          }
-
-        },
-        1000
-      );
+    }, 1000);
   }
 
   function stopTimers(){
-
-    clearInterval(
-      expiryTimer
-    );
-
-    clearInterval(
-      resendTimer
-    );
+    clearInterval(expiryTimer);
+    clearInterval(resendTimer);
   }
 
-  /* ---------------- PUBLIC METHODS ---------------- */
+  /* ---------------- PUBLIC ---------------- */
 
   return {
 
@@ -440,7 +332,12 @@ const FA_OTP = (function () {
 
     saveSession,
     getSession,
-    clearSession
+    clearSession,
+
+    saveProfile,
+    getProfileName,
+    getProfileEmail,
+    clearProfile
 
   };
 
