@@ -19,6 +19,11 @@ const FA_REQUEST = (function () {
     "faLocation"
   ];
 
+  /* Always resolves to a usable email address. */
+  function activeEmail(){
+    return (session && session.email) || currentEmail || "";
+  }
+
   /* ---------------- STEP 1 : REQUEST OTP ---------------- */
 
   async function requestOtp(isResend){
@@ -106,11 +111,15 @@ const FA_REQUEST = (function () {
 
         FA_OTP.stopTimers();
 
-        /* The flow returns email but no token, so pass the
-           entered email along as a fallback.               */
+        /* The flow returns email but no token, so the
+           entered email is kept as the fallback.      */
+        const verifiedEmail = res.email || currentEmail;
+
+        currentEmail = verifiedEmail;
+
         session = FA_OTP.saveSession({
           status : res.status,
-          email  : res.email || currentEmail,
+          email  : verifiedEmail,
           user   : res.user
         });
 
@@ -159,7 +168,7 @@ const FA_REQUEST = (function () {
     try {
 
       const user = (session && session.user) || {};
-      const displayEmail = session.email || currentEmail;
+      const displayEmail = activeEmail();
       const displayName  = user.name || displayEmail;
 
       el("faUserName").textContent  = displayName;
@@ -173,7 +182,7 @@ const FA_REQUEST = (function () {
 
       /* No token is issued by the flow, so the verified
          email is sent as the caller identity.          */
-      const data = await FA_API.getMasterData(session.email);
+      const data = await FA_API.getMasterData(activeEmail());
 
       FA_UI.fillSelect("faAssetClass", data.assetClasses, "code", "description");
       FA_UI.fillSelect("faAssetType",  data.assetTypes,  "code", "description");
@@ -287,12 +296,20 @@ const FA_REQUEST = (function () {
       return setTimeout(signOut, 2000);
     }
 
+    const submitterEmail = activeEmail();
+
+    if (!submitterEmail){
+      FA_UI.message("faFormMsg", "error",
+        "Your email could not be identified. Please verify your email again.");
+      return setTimeout(signOut, 2000);
+    }
+
     el("faBtnSubmit").disabled = true;
     FA_UI.loader(true, "Submitting your request\u2026");
 
     try {
 
-      const res = await FA_API.submitRequest(session.email, form);
+      const res = await FA_API.submitRequest(submitterEmail, form);
 
       if (res.status === "INVALID_SESSION"){
         FA_UI.message("faFormMsg", "error",
