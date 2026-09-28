@@ -220,17 +220,20 @@ const FA_REQUEST = (function () {
     e.preventDefault();
     FA_UI.message("faFormMsg", null, null);
 
+    /* 1. Validate the form FIRST so that incomplete
+          fields never trigger a session message.      */
+    const form = readForm();
+    const problem = validate(form);
+    if (problem){
+      return FA_UI.message("faFormMsg", "error", problem);
+    }
+
+    /* 2. Only check the session once the form is complete. */
     session = FA_OTP.getSession();
     if (!session){
       FA_UI.message("faFormMsg", "error",
         "Your session has expired. Please verify your email again.");
       return setTimeout(signOut, 2000);
-    }
-
-    const form = readForm();
-    const problem = validate(form);
-    if (problem){
-      return FA_UI.message("faFormMsg", "error", problem);
     }
 
     el("faBtnSubmit").disabled = true;
