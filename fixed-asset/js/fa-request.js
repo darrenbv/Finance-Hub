@@ -19,9 +19,23 @@ const FA_REQUEST = (function () {
     "faLocation"
   ];
 
+  /* Statuses returned by PC_SendOTP that mean the code was sent. */
+  const OTP_SENT_STATUSES = [
+    "SUCCESS", "SENT", "OK", "CREATED"
+  ];
+
+  /* Statuses that mean the email is not a valid CGC account. */
+  const NOT_REGISTERED_STATUSES = [
+    "UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"
+  ];
+
   /* Always resolves to a usable email address. */
   function activeEmail(){
     return (session && session.email) || currentEmail || "";
+  }
+
+  function statusOf(res){
+    return String((res && res.status) || "").toUpperCase();
   }
 
   /* ---------------- STEP 1 : REQUEST OTP ---------------- */
@@ -51,16 +65,31 @@ const FA_REQUEST = (function () {
     try {
 
       const res = await FA_API.requestOtp(email);
+      const status = statusOf(res);
 
-      if (res.status === "LOCKED"){
+      /* Account temporarily locked. */
+      if (status === "LOCKED"){
         return FA_UI.message(target, "error",
-          res.message || "This account is temporarily locked. Please try again later.");
+          res.message ||
+          "This account is temporarily locked. Please try again later.");
       }
 
-      if (res.status === "NOT_FOUND"){
+      /* Email is not a recognised CGC account. */
+      if (NOT_REGISTERED_STATUSES.indexOf(status) !== -1){
         return FA_UI.message(target, "error",
-          res.message || "This email address is not registered for this service.");
+          res.message ||
+          "This email address is not registered in the CGC directory.");
       }
+
+      /* Anything not explicitly a success is treated as a failure,
+         so the OTP screen is never shown when no code was sent.  */
+      if (OTP_SENT_STATUSES.indexOf(status) === -1){
+        return FA_UI.message(target, "error",
+          res.message ||
+          "Unable to send the verification code. Please try again.");
+      }
+
+      /* ---- Success: show the OTP screen ---- */
 
       el("faMaskedEmail").textContent =
         res.maskedEmail || FA_UI.maskEmail(email);
@@ -73,6 +102,8 @@ const FA_REQUEST = (function () {
       });
 
       FA_OTP.startResendCooldown();
+
+      el("faBtnVerify").disabled = false;
 
       FA_UI.showScreen("faScreenOtp");
       setTimeout(FA_OTP.focusFirst, 260);
@@ -106,8 +137,9 @@ const FA_REQUEST = (function () {
     try {
 
       const res = await FA_API.verifyOtp(currentEmail, code);
+      const status = statusOf(res);
 
-      if (res.status === "VALID" || res.status === "verified"){
+      if (status === "VALID" || status === "VERIFIED"){
 
         FA_OTP.stopTimers();
 
@@ -125,19 +157,25 @@ const FA_REQUEST = (function () {
 
         await enterApp();
 
-      } else if (res.status === "EXPIRED"){
+      } else if (status === "EXPIRED"){
 
         FA_OTP.clearBoxes(true);
         FA_UI.message("faOtpMsg", "warn",
           res.message || "This code has expired. Please request a new one.");
 
-      } else if (res.status === "LOCKED"){
+      } else if (status === "LOCKED"){
 
         FA_OTP.stopTimers();
         FA_OTP.clearBoxes(true);
         el("faBtnVerify").disabled = true;
         FA_UI.message("faOtpMsg", "error",
           res.message || "Too many incorrect attempts. Access has been locked.");
+
+      } else if (status === "NO_CODE"){
+
+        FA_OTP.clearBoxes(true);
+        FA_UI.message("faOtpMsg", "warn",
+          res.message || "No active code found. Please request a new one.");
 
       } else {
 
@@ -311,7 +349,7 @@ const FA_REQUEST = (function () {
 
       const res = await FA_API.submitRequest(submitterEmail, form);
 
-      if (res.status === "INVALID_SESSION"){
+      if (statusOf(res) === "INVALID_SESSION"){
         FA_UI.message("faFormMsg", "error",
           "Your session is no longer valid. Please verify your email again.");
         return setTimeout(signOut, 2000);
