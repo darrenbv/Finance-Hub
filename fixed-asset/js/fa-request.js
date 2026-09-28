@@ -19,23 +19,51 @@ const FA_REQUEST = (function () {
     "faLocation"
   ];
 
-  /* Statuses returned by PC_SendOTP that mean the code was sent. */
+  /* Statuses from PC_SendOTP meaning the code was sent. */
   const OTP_SENT_STATUSES = [
     "SUCCESS", "SENT", "OK", "CREATED"
   ];
 
-  /* Statuses that mean the email is not a valid CGC account. */
+  /* Statuses meaning the email is not a valid CGC account. */
   const NOT_REGISTERED_STATUSES = [
     "UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"
   ];
 
-  /* Always resolves to a usable email address. */
   function activeEmail(){
     return (session && session.email) || currentEmail || "";
   }
 
   function statusOf(res){
     return String((res && res.status) || "").toUpperCase();
+  }
+
+  /* Resolve the best available display name. */
+  function resolveName(){
+
+    const user = (session && session.user) || {};
+
+    return (session && session.name) ||
+           FA_OTP.getProfileName() ||
+           user.name ||
+           "";
+  }
+
+  function initials(name){
+
+    const parts = String(name).trim().split(/\s+/);
+
+    if (parts.length === 0 || !parts[0]){
+      return "?";
+    }
+
+    if (parts.length === 1){
+      return parts[0].charAt(0).toUpperCase();
+    }
+
+    return (
+      parts[0].charAt(0) +
+      parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
   }
 
   /* ---------------- STEP 1 : REQUEST OTP ---------------- */
@@ -67,29 +95,30 @@ const FA_REQUEST = (function () {
       const res = await FA_API.requestOtp(email);
       const status = statusOf(res);
 
-      /* Account temporarily locked. */
       if (status === "LOCKED"){
         return FA_UI.message(target, "error",
           res.message ||
           "This account is temporarily locked. Please try again later.");
       }
 
-      /* Email is not a recognised CGC account. */
       if (NOT_REGISTERED_STATUSES.indexOf(status) !== -1){
         return FA_UI.message(target, "error",
           res.message ||
           "This email address is not registered in the CGC directory.");
       }
 
-      /* Anything not explicitly a success is treated as a failure,
-         so the OTP screen is never shown when no code was sent.  */
+      /* Only a recognised success may open the OTP screen. */
       if (OTP_SENT_STATUSES.indexOf(status) === -1){
         return FA_UI.message(target, "error",
           res.message ||
           "Unable to send the verification code. Please try again.");
       }
 
-      /* ---- Success: show the OTP screen ---- */
+      /* Capture the profile returned by Get user profile (V2). */
+      FA_OTP.saveProfile(
+        res.name || "",
+        res.email || email
+      );
 
       el("faMaskedEmail").textContent =
         res.maskedEmail || FA_UI.maskEmail(email);
@@ -143,15 +172,17 @@ const FA_REQUEST = (function () {
 
         FA_OTP.stopTimers();
 
-        /* The flow returns email but no token, so the
-           entered email is kept as the fallback.      */
-        const verifiedEmail = res.email || currentEmail;
+        const verifiedEmail =
+          res.email ||
+          FA_OTP.getProfileEmail() ||
+          currentEmail;
 
         currentEmail = verifiedEmail;
 
         session = FA_OTP.saveSession({
           status : res.status,
           email  : verifiedEmail,
+          name   : res.name || FA_OTP.getProfileName(),
           user   : res.user
         });
 
@@ -206,20 +237,31 @@ const FA_REQUEST = (function () {
     try {
 
       const user = (session && session.user) || {};
-      const displayEmail = activeEmail();
-      const displayName  = user.name || displayEmail;
 
-      el("faUserName").textContent  = displayName;
-      el("faUserEmail").textContent = displayEmail;
-      el("faUserDept").textContent  = user.department || "\u2014";
-      el("faAvatar").textContent    = displayName.charAt(0).toUpperCase();
+      const displayEmail =
+        activeEmail() || FA_OTP.getProfileEmail();
+
+      const fullName = resolveName();
+
+      /* Show the full name as the heading and the email
+         beneath it, so the address is never repeated.  */
+      if (fullName){
+        el("faUserName").textContent  = "Welcome, " + fullName;
+        el("faUserEmail").textContent = displayEmail;
+        el("faAvatar").textContent    = initials(fullName);
+      } else {
+        el("faUserName").textContent  = "Welcome";
+        el("faUserEmail").textContent = displayEmail;
+        el("faAvatar").textContent    =
+          displayEmail.charAt(0).toUpperCase();
+      }
+
+      el("faUserDept").textContent = user.department || "\u2014";
 
       el("faBtnSignOut").classList.remove("fa-hide");
 
       FA_UI.showScreen("faScreenForm");
 
-      /* No token is issued by the flow, so the verified
-         email is sent as the caller identity.          */
       const data = await FA_API.getMasterData(activeEmail());
 
       FA_UI.fillSelect("faAssetClass", data.assetClasses, "code", "description");
@@ -316,8 +358,8 @@ const FA_REQUEST = (function () {
     e.preventDefault();
     FA_UI.message("faFormMsg", null, null);
 
-    /* 1. Validate first so incomplete fields never
-          produce a session message.                */
+    /* Validate first so incomplete fields never produce
+       a session message.                               */
     const form = readForm();
     const problem = validate(form);
 
@@ -325,7 +367,6 @@ const FA_REQUEST = (function () {
       return FA_UI.message("faFormMsg", "error", problem);
     }
 
-    /* 2. Only then confirm the session. */
     session = FA_OTP.getSession();
 
     if (!session){
@@ -429,6 +470,7 @@ const FA_REQUEST = (function () {
 
     FA_OTP.stopTimers();
     FA_OTP.clearSession();
+    FA_OTP.clearProfile();
 
     session = null;
     currentEmail = "";
@@ -484,12 +526,9 @@ const FA_REQUEST = (function () {
       el("faCharCount").textContent = this.value.length;
     });
 
-    /* Quantity is a number input, so "input" also fires
-       when the spinner arrows are used.                */
     el("faQuantity").addEventListener("input", updateTotal);
     el("faAmount").addEventListener("input", updateTotal);
 
-    /* Clear the red highlight once a field is corrected */
     REQUIRED_FIELDS.forEach(function (id) {
 
       const node = el(id);
