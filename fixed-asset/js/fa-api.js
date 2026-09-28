@@ -59,19 +59,34 @@ const FA_API = (function () {
     });
   }
 
-  function submitRequest(token, form){
-    return post(FA_CONFIG.submitUrl, {
+function submitRequest(email, form){
+
+  return post(
+    FA_CONFIG.submitUrl,
+    {
+
       moduleCode      : FA_CONFIG.moduleCode,
-      token           : token,
+
+      email           : email,
+
       requestCategory : form.requestCategory,
+
       assetDetails    : form.assetDetails,
+
       assetClassCode  : form.assetClassCode,
+
       assetTypeCode   : form.assetTypeCode,
+
       quantity        : form.quantity,
+
       amount          : form.amount,
+
       locationCode    : form.locationCode
-    });
-  }
+
+    }
+  );
+
+}
 
   return { requestOtp, verifyOtp, getMasterData, submitRequest };
 
