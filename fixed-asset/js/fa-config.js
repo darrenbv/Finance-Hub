@@ -14,7 +14,7 @@ const FA_CONFIG = {
 
   verifyOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ",
 
-  masterDataUrl : "PASTE_FLOW_C_MASTER_DATA_URL",
+  masterDataUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/08/workflows/7322454bc1fd4672acc2d8d823bf7325/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=OjAR23Z_cgX6YS_QbBw-VGBm70xtWpBmKUi63LwAQ-4",
 
   submitUrl : "PASTE_FLOW_D_SUBMIT_REQUEST_URL",
 
