@@ -8,6 +8,16 @@ const FA_REQUEST = (function () {
   let currentEmail = "";
   let session = null;
 
+  const REQUIRED_FIELDS = [
+    "faCategory",
+    "faAssetDetails",
+    "faAssetClass",
+    "faAssetType",
+    "faQuantity",
+    "faAmount",
+    "faLocation"
+  ];
+
   /* ---------------- STEP 1 : REQUEST OTP ---------------- */
 
   async function requestOtp(isResend){
@@ -81,10 +91,7 @@ const FA_REQUEST = (function () {
     try {
       const res = await FA_API.verifyOtp(currentEmail, code);
 
-      if (
-    res.status === "VALID" ||
-    res.status === "verified"
-){
+      if (res.status === "VALID" || res.status === "verified"){
         FA_OTP.stopTimers();
         session = FA_OTP.saveSession(res);
         await enterApp();
@@ -135,6 +142,7 @@ const FA_REQUEST = (function () {
       FA_UI.showScreen("faScreenForm");
 
       const data = await FA_API.getMasterData(session.token);
+
       FA_UI.fillSelect("faAssetClass", data.assetClasses, "code", "description");
       FA_UI.fillSelect("faAssetType",  data.assetTypes,  "code", "description");
       FA_UI.fillSelect("faLocation",   data.locations,   "code", "name");
@@ -163,15 +171,37 @@ const FA_REQUEST = (function () {
   }
 
   function validate(f){
+
+    const amountRaw = el("faAmount").value;
+    const amountEmpty = (amountRaw === null || String(amountRaw).trim() === "");
+
     const rules = [
-      ["faCategory",     !f.requestCategory,                 "Please select a request category."],
-      ["faAssetDetails", !f.assetDetails,                    "Please enter the asset particulars."],
-      ["faAssetClass",   !f.assetClassCode,                  "Please select an asset class."],
-      ["faAssetType",    !f.assetTypeCode,                   "Please select an asset type."],
-      ["faQuantity",     !f.quantity,                        "Please select a quantity."],
-      ["faAmount",       isNaN(f.amount) || f.amount <= 0,   "Please enter a valid amount."],
-      ["faAmount",       f.amount > FA_CONFIG.maxAmount,     "The amount entered exceeds the permitted limit."],
-      ["faLocation",     !f.locationCode,                    "Please select a location."]
+      ["faCategory",     !f.requestCategory,
+        "Please select a request category."],
+
+      ["faAssetDetails", !f.assetDetails,
+        "Please enter the asset particulars."],
+
+      ["faAssetClass",   !f.assetClassCode,
+        "Please select an asset class."],
+
+      ["faAssetType",    !f.assetTypeCode,
+        "Please select an asset type."],
+
+      ["faQuantity",     !f.quantity || isNaN(f.quantity),
+        "Please select a quantity."],
+
+      ["faAmount",       amountEmpty,
+        "Please enter the amount."],
+
+      ["faAmount",       isNaN(f.amount) || f.amount <= 0,
+        "Please enter a valid amount greater than zero."],
+
+      ["faAmount",       f.amount > FA_CONFIG.maxAmount,
+        "The amount entered exceeds the permitted limit."],
+
+      ["faLocation",     !f.locationCode,
+        "Please select a location."]
     ];
 
     FA_UI.clearBad();
@@ -182,6 +212,7 @@ const FA_REQUEST = (function () {
         return rules[i][2];
       }
     }
+
     return null;
   }
 
@@ -230,11 +261,53 @@ const FA_REQUEST = (function () {
   function updateTotal(){
     const qty = parseInt(el("faQuantity").value, 10);
     const amt = parseFloat(el("faAmount").value);
+
     el("faTotal").textContent = (!isNaN(amt) && amt > 0) ? FA_UI.money(amt) : "RM 0.00";
+
+    const label = el("faSummary").querySelector("span");
     if (!isNaN(qty) && !isNaN(amt) && amt > 0){
-      el("faSummary").querySelector("span").textContent =
+      label.textContent =
         "Estimated Total (" + qty + " unit" + (qty > 1 ? "s" : "") + ")";
+    } else {
+      label.textContent = "Estimated Total";
     }
+  }
+
+  function clearFormState(){
+    el("faForm").reset();
+
+    FA_UI.resetSelect("faAssetClass", "\u2014 Select \u2014");
+    FA_UI.resetSelect("faAssetType",  "\u2014 Select \u2014");
+    FA_UI.resetSelect("faLocation",   "\u2014 Select \u2014");
+    FA_UI.resetSelect("faQuantity",   "\u2014 Select \u2014");
+
+    el("faCharCount").textContent = "0";
+    el("faTotal").textContent = "RM 0.00";
+    el("faSummary").querySelector("span").textContent = "Estimated Total";
+
+    FA_UI.clearBad();
+    FA_UI.message("faFormMsg", null, null);
+  }
+
+  function resetSelectionsOnly(){
+    el("faForm").reset();
+
+    [
+      "faAssetClass",
+      "faAssetType",
+      "faLocation",
+      "faQuantity"
+    ].forEach(function (id) {
+      const sel = el(id);
+      if (sel) sel.selectedIndex = 0;
+    });
+
+    el("faCharCount").textContent = "0";
+    el("faTotal").textContent = "RM 0.00";
+    el("faSummary").querySelector("span").textContent = "Estimated Total";
+
+    FA_UI.clearBad();
+    FA_UI.message("faFormMsg", null, null);
   }
 
   function signOut(){
@@ -243,15 +316,13 @@ const FA_REQUEST = (function () {
     session = null;
     currentEmail = "";
 
-    el("faForm").reset();
+    clearFormState();
+
     el("faEmail").value = "";
     el("faBtnVerify").disabled = false;
     el("faBtnSignOut").classList.add("fa-hide");
-    el("faCharCount").textContent = "0";
-    el("faTotal").textContent = "RM 0.00";
 
     FA_UI.clearMessages();
-    FA_UI.clearBad();
     FA_UI.showScreen("faScreenEmail");
   }
 
@@ -264,6 +335,7 @@ const FA_REQUEST = (function () {
     FA_OTP.bindBoxes(verifyOtp);
 
     el("faBtnRequestOtp").addEventListener("click", function () { requestOtp(false); });
+
     el("faEmail").addEventListener("keydown", function (e) {
       if (e.key === "Enter"){ e.preventDefault(); requestOtp(false); }
     });
@@ -274,20 +346,11 @@ const FA_REQUEST = (function () {
     el("faBtnSignOut").addEventListener("click", signOut);
 
     el("faForm").addEventListener("submit", submitForm);
-    el("faBtnClear").addEventListener("click", function () {
-      el("faForm").reset();
-      el("faCharCount").textContent = "0";
-      el("faTotal").textContent = "RM 0.00";
-      FA_UI.clearBad();
-      FA_UI.message("faFormMsg", null, null);
-    });
+
+    el("faBtnClear").addEventListener("click", resetSelectionsOnly);
 
     el("faBtnAnother").addEventListener("click", function () {
-      el("faForm").reset();
-      el("faCharCount").textContent = "0";
-      el("faTotal").textContent = "RM 0.00";
-      FA_UI.clearBad();
-      FA_UI.message("faFormMsg", null, null);
+      resetSelectionsOnly();
       FA_UI.showScreen("faScreenForm");
     });
 
@@ -297,6 +360,19 @@ const FA_REQUEST = (function () {
 
     el("faQuantity").addEventListener("change", updateTotal);
     el("faAmount").addEventListener("input", updateTotal);
+
+    /* Clear the red highlight as soon as the user fixes a field */
+    REQUIRED_FIELDS.forEach(function (id) {
+      const node = el(id);
+      if (!node) return;
+
+      const evt = (node.tagName === "SELECT") ? "change" : "input";
+
+      node.addEventListener(evt, function () {
+        node.classList.remove("fa-bad");
+        FA_UI.message("faFormMsg", null, null);
+      });
+    });
 
     session = FA_OTP.getSession();
     if (session){
