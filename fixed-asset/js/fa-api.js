@@ -7,10 +7,13 @@ const FA_API = (function () {
   async function post(url, payload){
 
     if (!url || url.indexOf("PASTE_") === 0){
-      throw new Error("This service is not configured yet. Please contact the Automation team.");
+      throw new Error(
+        "This service is not configured yet. Please contact the Automation team."
+      );
     }
 
     let response;
+
     try {
       response = await fetch(url, {
         method  : "POST",
@@ -18,11 +21,15 @@ const FA_API = (function () {
         body    : JSON.stringify(payload || {})
       });
     } catch (e) {
-      throw new Error("Network error. Please check your connection and try again.");
+      throw new Error(
+        "Network error. Please check your connection and try again."
+      );
     }
 
     const text = await response.text();
+
     let data;
+
     try {
       data = text ? JSON.parse(text) : {};
     } catch (e) {
@@ -30,10 +37,15 @@ const FA_API = (function () {
     }
 
     if (!response.ok && !data.status){
-      throw new Error(data.message || ("Request failed (" + response.status + ")"));
+      throw new Error(
+        data.message || ("Request failed (" + response.status + ")")
+      );
     }
+
     return data;
   }
+
+  /* ---------------- SEND OTP ---------------- */
 
   function requestOtp(email){
     return post(FA_CONFIG.requestOtpUrl, {
@@ -42,6 +54,8 @@ const FA_API = (function () {
       email      : email
     });
   }
+
+  /* ---------------- VERIFY OTP ---------------- */
 
   function verifyOtp(email, code){
     return post(FA_CONFIG.verifyOtpUrl, {
@@ -52,41 +66,37 @@ const FA_API = (function () {
     });
   }
 
-  function getMasterData(token){
+  /* ---------------- MASTER DATA ----------------
+     The verify flow returns no token, so the
+     verified email is sent as the caller identity.
+     ---------------------------------------------- */
+
+  function getMasterData(email){
     return post(FA_CONFIG.masterDataUrl, {
       moduleCode : FA_CONFIG.moduleCode,
-      token      : token
+      email      : email
     });
   }
 
-function submitRequest(email, form){
+  /* ---------------- SUBMIT REQUEST ----------------
+     "email" is now included in the body so that
+     RequestorEmail and CreatedBy can be populated
+     in SharePoint.
+     ------------------------------------------------ */
 
-  return post(
-    FA_CONFIG.submitUrl,
-    {
-
+  function submitRequest(email, form){
+    return post(FA_CONFIG.submitUrl, {
       moduleCode      : FA_CONFIG.moduleCode,
-
       email           : email,
-
       requestCategory : form.requestCategory,
-
       assetDetails    : form.assetDetails,
-
       assetClassCode  : form.assetClassCode,
-
       assetTypeCode   : form.assetTypeCode,
-
       quantity        : form.quantity,
-
       amount          : form.amount,
-
       locationCode    : form.locationCode
-
-    }
-  );
-
-}
+    });
+  }
 
   return { requestOtp, verifyOtp, getMasterData, submitRequest };
 
