@@ -12,7 +12,8 @@ const FA_UI = (function () {
   function loader(show, text){
     const box = el("faLoader");
     if (!box) return;
-    el("faLoaderText").textContent = text || "Processing\u2026";
+    const label = el("faLoaderText");
+    if (label) label.textContent = text || "Processing\u2026";
     box.classList.toggle("fa-hide", !show);
   }
 
@@ -61,29 +62,58 @@ const FA_UI = (function () {
     document.querySelectorAll(".fa-bad").forEach(n => n.classList.remove("fa-bad"));
   }
 
+  /* ---------------- DROPDOWNS ----------------
+     The placeholder uses disabled + hidden so that:
+       - the field starts empty (validation still fires)
+       - "Select" does NOT appear in the open dropdown list
+     -------------------------------------------- */
+
+  function placeholderOption(){
+    return '<option value="" selected disabled hidden>\u2014 Select \u2014</option>';
+  }
+
   function fillSelect(id, items, valueKey, textKey){
     const sel = el(id);
     if (!sel) return;
-    sel.innerHTML = '<option value="">\u2014 Select \u2014</option>';
+
+    sel.innerHTML = placeholderOption();
+
     (items || []).forEach(item => {
       const opt = document.createElement("option");
       opt.value = item[valueKey];
       opt.textContent = item[valueKey] + " \u2014 " + item[textKey];
       sel.appendChild(opt);
     });
+
+    sel.selectedIndex = 0;
   }
 
   function fillNumberSelect(id, numbers){
     const sel = el(id);
     if (!sel) return;
-    sel.innerHTML = '<option value="">\u2014 Select \u2014</option>';
+
+    sel.innerHTML = placeholderOption();
+
     (numbers || []).forEach(n => {
       const opt = document.createElement("option");
       opt.value = n;
       opt.textContent = n;
       sel.appendChild(opt);
     });
+
+    sel.selectedIndex = 0;
   }
+
+  function resetSelect(id, loadingText){
+    const sel = el(id);
+    if (!sel) return;
+    sel.innerHTML =
+      '<option value="" selected disabled hidden>' +
+      (loadingText || "\u2014 Select \u2014") +
+      '</option>';
+  }
+
+  /* ---------------- FORMATTERS ---------------- */
 
   function money(value){
     if (isNaN(value)) return "RM 0.00";
@@ -104,7 +134,8 @@ const FA_UI = (function () {
 
   return {
     el, loader, message, clearMessages, showScreen,
-    markBad, clearBad, fillSelect, fillNumberSelect,
+    markBad, clearBad,
+    fillSelect, fillNumberSelect, resetSelect,
     money, maskEmail
   };
 
