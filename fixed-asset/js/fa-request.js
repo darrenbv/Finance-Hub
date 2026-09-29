@@ -14,20 +14,14 @@ const FA_REQUEST = (function () {
     "faAssetDetails",
     "faAssetClass",
     "faAssetType",
-    "faQuantity",
     "faAmount",
+    "faQuantity",
     "faLocation"
   ];
 
-  /* Statuses from PC_SendOTP meaning the code was sent. */
-  const OTP_SENT_STATUSES = [
-    "SUCCESS", "SENT", "OK", "CREATED"
-  ];
+  const OTP_SENT_STATUSES = ["SUCCESS", "SENT", "OK", "CREATED"];
 
-  /* Statuses meaning the email is not a valid CGC account. */
-  const NOT_REGISTERED_STATUSES = [
-    "UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"
-  ];
+  const NOT_REGISTERED_STATUSES = ["UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"];
 
   function activeEmail(){
     return (session && session.email) || currentEmail || "";
@@ -37,11 +31,8 @@ const FA_REQUEST = (function () {
     return String((res && res.status) || "").toUpperCase();
   }
 
-  /* Resolve the best available display name. */
   function resolveName(){
-
     const user = (session && session.user) || {};
-
     return (session && session.name) ||
            FA_OTP.getProfileName() ||
            user.name ||
@@ -49,21 +40,26 @@ const FA_REQUEST = (function () {
   }
 
   function initials(name){
-
     const parts = String(name).trim().split(/\s+/);
+    if (!parts.length || !parts[0]) return "?";
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
 
-    if (parts.length === 0 || !parts[0]){
-      return "?";
+  /* Total = amount per unit x quantity */
+  function calcTotal(){
+    const qty = parseInt(el("faQuantity").value, 10);
+    const amt = parseFloat(el("faAmount").value);
+
+    if (isNaN(qty) || qty <= 0 || isNaN(amt) || amt <= 0){
+      return { qty: qty, amt: amt, total: 0 };
     }
 
-    if (parts.length === 1){
-      return parts[0].charAt(0).toUpperCase();
-    }
-
-    return (
-      parts[0].charAt(0) +
-      parts[parts.length - 1].charAt(0)
-    ).toUpperCase();
+    return {
+      qty   : qty,
+      amt   : amt,
+      total : Math.round(qty * amt * 100) / 100
+    };
   }
 
   /* ---------------- STEP 1 : REQUEST OTP ---------------- */
@@ -77,8 +73,7 @@ const FA_REQUEST = (function () {
     const target = isResend ? "faOtpMsg" : "faEmailMsg";
 
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
-      return FA_UI.message(target, "error",
-        "Please enter a valid email address.");
+      return FA_UI.message(target, "error", "Please enter a valid email address.");
     }
 
     if (!email.endsWith("@" + FA_CONFIG.allowedDomain)){
@@ -97,37 +92,27 @@ const FA_REQUEST = (function () {
 
       if (status === "LOCKED"){
         return FA_UI.message(target, "error",
-          res.message ||
-          "This account is temporarily locked. Please try again later.");
+          res.message || "This account is temporarily locked. Please try again later.");
       }
 
       if (NOT_REGISTERED_STATUSES.indexOf(status) !== -1){
         return FA_UI.message(target, "error",
-          res.message ||
-          "This email address is not registered in the CGC directory.");
+          res.message || "This email address is not registered in the CGC directory.");
       }
 
-      /* Only a recognised success may open the OTP screen. */
       if (OTP_SENT_STATUSES.indexOf(status) === -1){
         return FA_UI.message(target, "error",
-          res.message ||
-          "Unable to send the verification code. Please try again.");
+          res.message || "Unable to send the verification code. Please try again.");
       }
 
-      /* Capture the profile returned by Get user profile (V2). */
-      FA_OTP.saveProfile(
-        res.name || "",
-        res.email || email
-      );
+      FA_OTP.saveProfile(res.name || "", res.email || email);
 
-      el("faMaskedEmail").textContent =
-        res.maskedEmail || FA_UI.maskEmail(email);
+      el("faMaskedEmail").textContent = res.maskedEmail || FA_UI.maskEmail(email);
 
       FA_OTP.clearBoxes(false);
 
       FA_OTP.startExpiry(function () {
-        FA_UI.message("faOtpMsg", "warn",
-          "Your code has expired. Please request a new one.");
+        FA_UI.message("faOtpMsg", "warn", "Your code has expired. Please request a new one.");
       });
 
       FA_OTP.startResendCooldown();
@@ -138,8 +123,7 @@ const FA_REQUEST = (function () {
       setTimeout(FA_OTP.focusFirst, 260);
 
       if (isResend){
-        FA_UI.message("faOtpMsg", "ok",
-          "A new verification code has been sent to your inbox.");
+        FA_UI.message("faOtpMsg", "ok", "A new verification code has been sent to your inbox.");
       }
 
     } catch (e) {
@@ -172,10 +156,7 @@ const FA_REQUEST = (function () {
 
         FA_OTP.stopTimers();
 
-        const verifiedEmail =
-          res.email ||
-          FA_OTP.getProfileEmail() ||
-          currentEmail;
+        const verifiedEmail = res.email || FA_OTP.getProfileEmail() || currentEmail;
 
         currentEmail = verifiedEmail;
 
@@ -212,13 +193,11 @@ const FA_REQUEST = (function () {
 
         FA_OTP.clearBoxes(true);
 
-        const left =
-          (res.attemptsLeft !== undefined && res.attemptsLeft !== null)
-            ? " " + res.attemptsLeft + " attempt(s) remaining."
-            : "";
+        const left = (res.attemptsLeft !== undefined && res.attemptsLeft !== null)
+          ? " " + res.attemptsLeft + " attempt(s) remaining."
+          : "";
 
-        FA_UI.message("faOtpMsg", "error",
-          "Incorrect verification code." + left);
+        FA_UI.message("faOtpMsg", "error", "Incorrect verification code." + left);
       }
 
     } catch (e) {
@@ -237,14 +216,9 @@ const FA_REQUEST = (function () {
     try {
 
       const user = (session && session.user) || {};
-
-      const displayEmail =
-        activeEmail() || FA_OTP.getProfileEmail();
-
+      const displayEmail = activeEmail() || FA_OTP.getProfileEmail();
       const fullName = resolveName();
 
-      /* Show the full name as the heading and the email
-         beneath it, so the address is never repeated.  */
       if (fullName){
         el("faUserName").textContent  = "Welcome, " + fullName;
         el("faUserEmail").textContent = displayEmail;
@@ -252,12 +226,10 @@ const FA_REQUEST = (function () {
       } else {
         el("faUserName").textContent  = "Welcome";
         el("faUserEmail").textContent = displayEmail;
-        el("faAvatar").textContent    =
-          displayEmail.charAt(0).toUpperCase();
+        el("faAvatar").textContent    = displayEmail.charAt(0).toUpperCase();
       }
 
       el("faUserDept").textContent = user.department || "\u2014";
-
       el("faBtnSignOut").classList.remove("fa-hide");
 
       FA_UI.showScreen("faScreenForm");
@@ -268,12 +240,12 @@ const FA_REQUEST = (function () {
       FA_UI.fillSelect("faAssetType",  data.assetTypes,  "code", "description");
       FA_UI.fillSelect("faLocation",   data.locations,   "code", "name");
 
-      /* Quantity is a number input, not a dropdown. */
+      el("faAmount").value   = "";
       el("faQuantity").value = "";
+      updateTotal();
 
     } catch (e) {
-      FA_UI.message("faFormMsg", "error",
-        "Unable to load the dropdown data. " + e.message);
+      FA_UI.message("faFormMsg", "error", "Unable to load the dropdown data. " + e.message);
     } finally {
       FA_UI.loader(false);
     }
@@ -282,6 +254,9 @@ const FA_REQUEST = (function () {
   /* ---------------- STEP 4 : SUBMIT ---------------- */
 
   function readForm(){
+
+    const t = calcTotal();
+
     return {
       requestCategory : el("faCategory").value,
       assetDetails    : el("faAssetDetails").value.trim(),
@@ -289,20 +264,15 @@ const FA_REQUEST = (function () {
       assetTypeCode   : el("faAssetType").value,
       quantity        : parseInt(el("faQuantity").value, 10),
       amount          : parseFloat(el("faAmount").value),
+      totalAmount     : t.total,
       locationCode    : el("faLocation").value
     };
   }
 
   function validate(f){
 
-    const quantityRaw = el("faQuantity").value;
-    const amountRaw   = el("faAmount").value;
-
-    const quantityEmpty =
-      quantityRaw === null || String(quantityRaw).trim() === "";
-
-    const amountEmpty =
-      amountRaw === null || String(amountRaw).trim() === "";
+    const amountEmpty   = String(el("faAmount").value || "").trim() === "";
+    const quantityEmpty = String(el("faQuantity").value || "").trim() === "";
 
     const rules = [
 
@@ -318,6 +288,12 @@ const FA_REQUEST = (function () {
       ["faAssetType",    !f.assetTypeCode,
         "Please select an asset type."],
 
+      ["faAmount",       amountEmpty,
+        "Please enter the amount per unit."],
+
+      ["faAmount",       isNaN(f.amount) || f.amount <= 0,
+        "Please enter a valid amount per unit greater than zero."],
+
       ["faQuantity",     quantityEmpty,
         "Please enter the quantity."],
 
@@ -327,14 +303,8 @@ const FA_REQUEST = (function () {
       ["faQuantity",     !Number.isInteger(f.quantity),
         "Quantity must be a whole number."],
 
-      ["faAmount",       amountEmpty,
-        "Please enter the amount."],
-
-      ["faAmount",       isNaN(f.amount) || f.amount <= 0,
-        "Please enter a valid amount greater than zero."],
-
-      ["faAmount",       f.amount > FA_CONFIG.maxAmount,
-        "The amount entered exceeds the permitted limit."],
+      ["faAmount",       f.totalAmount > FA_CONFIG.maxAmount,
+        "The total amount exceeds the permitted limit."],
 
       ["faLocation",     !f.locationCode,
         "Please select a location."]
@@ -358,8 +328,6 @@ const FA_REQUEST = (function () {
     e.preventDefault();
     FA_UI.message("faFormMsg", null, null);
 
-    /* Validate first so incomplete fields never produce
-       a session message.                               */
     const form = readForm();
     const problem = validate(form);
 
@@ -409,22 +377,28 @@ const FA_REQUEST = (function () {
 
   /* ---------------- HELPERS ---------------- */
 
+  /* Shows amount per unit x quantity as the accumulated total. */
   function updateTotal(){
 
-    const qty = parseInt(el("faQuantity").value, 10);
-    const amt = parseFloat(el("faAmount").value);
-
-    el("faTotal").textContent =
-      (!isNaN(amt) && amt > 0) ? FA_UI.money(amt) : "RM 0.00";
-
+    const t = calcTotal();
     const label = el("faSummary").querySelector("span");
 
-    if (!isNaN(qty) && qty > 0 && !isNaN(amt) && amt > 0){
+    el("faTotal").textContent = FA_UI.money(t.total);
+
+    if (t.total > 0){
       label.textContent =
-        "Estimated Total (" + qty + " unit" + (qty > 1 ? "s" : "") + ")";
+        "Total amount (" + t.qty + " \u00d7 " + FA_UI.money(t.amt) + ")";
     } else {
-      label.textContent = "Estimated Total";
+      label.textContent = "Total amount";
     }
+  }
+
+  function resetTotals(){
+    el("faAmount").value   = "";
+    el("faQuantity").value = "";
+    el("faCharCount").textContent = "0";
+    el("faTotal").textContent = "RM 0.00";
+    el("faSummary").querySelector("span").textContent = "Total amount";
   }
 
   function clearFormState(){
@@ -435,12 +409,7 @@ const FA_REQUEST = (function () {
     FA_UI.resetSelect("faAssetType",  "\u2014 Select \u2014");
     FA_UI.resetSelect("faLocation",   "\u2014 Select \u2014");
 
-    el("faQuantity").value = "";
-    el("faAmount").value   = "";
-
-    el("faCharCount").textContent = "0";
-    el("faTotal").textContent = "RM 0.00";
-    el("faSummary").querySelector("span").textContent = "Estimated Total";
+    resetTotals();
 
     FA_UI.clearBad();
     FA_UI.message("faFormMsg", null, null);
@@ -450,17 +419,12 @@ const FA_REQUEST = (function () {
 
     el("faForm").reset();
 
-    ["faAssetClass","faAssetType","faLocation"].forEach(function (id) {
+    ["faAssetClass", "faAssetType", "faLocation"].forEach(function (id) {
       const sel = el(id);
       if (sel) sel.selectedIndex = 0;
     });
 
-    el("faQuantity").value = "";
-    el("faAmount").value   = "";
-
-    el("faCharCount").textContent = "0";
-    el("faTotal").textContent = "RM 0.00";
-    el("faSummary").querySelector("span").textContent = "Estimated Total";
+    resetTotals();
 
     FA_UI.clearBad();
     FA_UI.message("faFormMsg", null, null);
@@ -526,8 +490,9 @@ const FA_REQUEST = (function () {
       el("faCharCount").textContent = this.value.length;
     });
 
-    el("faQuantity").addEventListener("input", updateTotal);
+    /* Recalculate whenever either value changes (typing or spinner) */
     el("faAmount").addEventListener("input", updateTotal);
+    el("faQuantity").addEventListener("input", updateTotal);
 
     REQUIRED_FIELDS.forEach(function (id) {
 
