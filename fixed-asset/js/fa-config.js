@@ -6,10 +6,10 @@ const FA_CONFIG = {
 
   moduleCode : "FA",
   moduleName : "Fixed Asset Number Request",
-  appVersion : "v4.2.0",
+  appVersion : "v4.3.0",
 
   /* ---- Power Automate HTTP trigger URLs ----
-     Keep your existing URLs. Plain URL only, inside the quotes. */
+     Plain URL only, inside the quotes. */
 
   requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
 
@@ -20,6 +20,9 @@ const FA_CONFIG = {
   submitUrl     : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/17/workflows/939c0c03bb19420e93f498d9d393256e/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=MSHOZQZffVGR0ltB70eWbDtQe4yNHejUCLAm87zwqSQ",
 
   myRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/cde80967fbc04fd99133353ed8f7a576/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_70gqTbXzyiFuR1RysioFuD_51zM5N7Hm-ADmEAx_TA",
+
+  /* New flow: FIN - FA - Upload BCA (built next) */
+  bcaUploadUrl  : "PASTE_FIN_FA_UPLOAD_BCA_URL",
 
   /* ---- Access control ---- */
 
@@ -37,10 +40,13 @@ const FA_CONFIG = {
 
   maxAmount : 100000000,
 
-  /* ---- BCA upload ---- */
+  /* ---- BCA uploads ----
+     No limit on the number of files.
+     Each file is uploaded separately, so only
+     the size of an individual file is limited. */
 
-  bcaRequired          : false,   /* true = must upload before submitting */
-  bcaMaxSizeMB         : 10,
+  bcaRequired          : false,   /* true = at least one file is required */
+  bcaMaxSizeMB         : 25,      /* per file */
   bcaAllowedExtensions : ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"]
 
 };
