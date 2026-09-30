@@ -9,6 +9,9 @@ const FA_REQUEST = (function () {
   let currentEmail = "";
   let session = null;
 
+  /* Asset class code -> { description, limit } */
+  let classLimits = {};
+
   const REQUIRED_FIELDS = [
     "faCategory",
     "faAssetDetails",
@@ -44,6 +47,123 @@ const FA_REQUEST = (function () {
     if (!parts.length || !parts[0]) return "?";
     if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
     return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  /* ============================================================
+     ASSET CLASS LIMITS
+     Read from the bracket at the end of the class description:
+       (<=1.3K)   -> up to 1,300
+       (1.3K-5K)  -> above 1,300 and up to 5,000
+       (>150K)    -> above 150,000
+       no bracket -> no limit
+     ============================================================ */
+
+  function toNumber(text){
+    const m = String(text).trim().match(/^([\d.,]+)\s*([KkMm]?)$/);
+    if (!m) return NaN;
+
+    let n = parseFloat(m[1].replace(/,/g, ""));
+    const unit = m[2].toUpperCase();
+
+    if (unit === "K") n = n * 1000;
+    if (unit === "M") n = n * 1000000;
+
+    return n;
+  }
+
+  function parseLimit(description){
+
+    const bracket = String(description || "").match(/\(([^)]*)\)\s*$/);
+    if (!bracket) return null;
+
+    const t = bracket[1].replace(/\s+/g, "");
+    let m;
+
+    /* Single bound: <=X, <X, >=X, >X */
+    m = t.match(/^(<=|<|>=|>)(.+)$/);
+    if (m){
+      const v = toNumber(m[2]);
+      if (isNaN(v)) return null;
+
+      if (m[1] === "<=") return { max: v, maxInc: true };
+      if (m[1] === "<")  return { max: v, maxInc: false };
+      if (m[1] === ">=") return { min: v, minInc: true };
+      return { min: v, minInc: false };
+    }
+
+    /* Range: A-B  (above A, up to and including B) */
+    m = t.match(/^(.+?)-(.+)$/);
+    if (m){
+      const a = toNumber(m[1]);
+      const b = toNumber(m[2]);
+      if (isNaN(a) || isNaN(b)) return null;
+      return { min: a, minInc: false, max: b, maxInc: true };
+    }
+
+    /* Bracket text that is not a limit, e.g. "(IA)" */
+    return null;
+  }
+
+  function describeLimit(limit){
+
+    const parts = [];
+
+    if (limit.min !== undefined){
+      parts.push((limit.minInc ? "at least " : "above ") + FA_UI.money(limit.min));
+    }
+
+    if (limit.max !== undefined){
+      parts.push((limit.maxInc ? "up to " : "below ") + FA_UI.money(limit.max));
+    }
+
+    return parts.join(" and ");
+  }
+
+  /* Returns an error message, or null when the amount is allowed. */
+  function limitError(){
+
+    const code = el("faAssetClass").value;
+    const amt  = parseFloat(el("faAmount").value);
+
+    if (!code || isNaN(amt) || amt <= 0) return null;
+
+    const entry = classLimits[code];
+    if (!entry || !entry.limit) return null;
+
+    const l = entry.limit;
+
+    const tooLow =
+      l.min !== undefined &&
+      (l.minInc ? amt < l.min : amt <= l.min);
+
+    const tooHigh =
+      l.max !== undefined &&
+      (l.maxInc ? amt > l.max : amt >= l.max);
+
+    if (!tooLow && !tooHigh) return null;
+
+    return "Amount per unit " + FA_UI.money(amt) +
+           " is outside the limit for asset class " + code +
+           " (" + describeLimit(l) + " per unit). " +
+           "Please correct the amount or select the appropriate asset class.";
+  }
+
+  /* Live check: warns, highlights and blocks Submit. */
+  function checkLimitLive(){
+
+    const err = limitError();
+
+    if (err){
+      el("faAmount").classList.add("fa-bad");
+      el("faBtnSubmit").disabled = true;
+      FA_UI.message("faFormMsg", "warn", err);
+    } else {
+      el("faBtnSubmit").disabled = false;
+      const box = el("faFormMsg");
+      if (box && box.classList.contains("fa-msg-warn")){
+        FA_UI.message("faFormMsg", null, null);
+      }
+    }
   }
 
   /* Total = amount per unit x quantity */
@@ -236,6 +356,15 @@ const FA_REQUEST = (function () {
 
       const data = await FA_API.getMasterData(activeEmail());
 
+      /* Build the limit table from the class descriptions */
+      classLimits = {};
+      (data.assetClasses || []).forEach(function (c) {
+        classLimits[c.code] = {
+          description : c.description,
+          limit       : parseLimit(c.description)
+        };
+      });
+
       FA_UI.fillSelect("faAssetClass", data.assetClasses, "code", "description");
       FA_UI.fillSelect("faAssetType",  data.assetTypes,  "code", "description");
       FA_UI.fillSelect("faLocation",   data.locations,   "code", "name");
@@ -243,6 +372,7 @@ const FA_REQUEST = (function () {
       el("faAmount").value   = "";
       el("faQuantity").value = "";
       updateTotal();
+      el("faBtnSubmit").disabled = false;
 
     } catch (e) {
       FA_UI.message("faFormMsg", "error", "Unable to load the dropdown data. " + e.message);
@@ -273,6 +403,7 @@ const FA_REQUEST = (function () {
 
     const amountEmpty   = String(el("faAmount").value || "").trim() === "";
     const quantityEmpty = String(el("faQuantity").value || "").trim() === "";
+    const classLimitMsg = limitError();
 
     const rules = [
 
@@ -293,6 +424,9 @@ const FA_REQUEST = (function () {
 
       ["faAmount",       isNaN(f.amount) || f.amount <= 0,
         "Please enter a valid amount per unit greater than zero."],
+
+      ["faAmount",       classLimitMsg !== null,
+        classLimitMsg],
 
       ["faQuantity",     quantityEmpty,
         "Please enter the quantity."],
@@ -377,7 +511,6 @@ const FA_REQUEST = (function () {
 
   /* ---------------- HELPERS ---------------- */
 
-  /* Shows amount per unit x quantity as the accumulated total. */
   function updateTotal(){
 
     const t = calcTotal();
@@ -399,6 +532,7 @@ const FA_REQUEST = (function () {
     el("faCharCount").textContent = "0";
     el("faTotal").textContent = "RM 0.00";
     el("faSummary").querySelector("span").textContent = "Total amount";
+    el("faBtnSubmit").disabled = false;
   }
 
   function clearFormState(){
@@ -438,6 +572,7 @@ const FA_REQUEST = (function () {
 
     session = null;
     currentEmail = "";
+    classLimits = {};
 
     clearFormState();
 
@@ -490,10 +625,10 @@ const FA_REQUEST = (function () {
       el("faCharCount").textContent = this.value.length;
     });
 
-    /* Recalculate whenever either value changes (typing or spinner) */
     el("faAmount").addEventListener("input", updateTotal);
     el("faQuantity").addEventListener("input", updateTotal);
 
+    /* Clear the red highlight once a field is corrected */
     REQUIRED_FIELDS.forEach(function (id) {
 
       const node = el(id);
@@ -506,6 +641,11 @@ const FA_REQUEST = (function () {
         FA_UI.message("faFormMsg", null, null);
       });
     });
+
+    /* Registered AFTER the listeners above so the limit
+       warning is not wiped out by the highlight reset.  */
+    el("faAssetClass").addEventListener("change", checkLimitLive);
+    el("faAmount").addEventListener("input", checkLimitLive);
 
     session = FA_OTP.getSession();
 
