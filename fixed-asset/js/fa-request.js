@@ -38,8 +38,6 @@ const FA_REQUEST = (function () {
 
   const NOT_REGISTERED_STATUSES = ["UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"];
 
-  const STATUS_ORDER = ["Pending", "Approved", "Rejected", "Verified"];
-
   /* ---------------- GENERAL HELPERS ---------------- */
 
   function activeEmail(){
@@ -319,11 +317,24 @@ const FA_REQUEST = (function () {
      MY REQUESTS
      ============================================================ */
 
+  /* "New" (older records) and blank are both shown as Pending */
+  function normalizeStatus(status){
+
+    const s = String(status || "").trim().toLowerCase();
+
+    if (s === "" || s === "new" || s === "pending") return "Pending";
+    if (s === "approved") return "Approved";
+    if (s === "rejected") return "Rejected";
+    if (s === "verified") return "Verified";
+
+    return String(status);
+  }
+
   function statusClass(status){
-    switch (String(status || "").toLowerCase()){
-      case "approved" : return "fa-st-approved";
-      case "rejected" : return "fa-st-rejected";
-      case "verified" : return "fa-st-verified";
+    switch (normalizeStatus(status)){
+      case "Approved" : return "fa-st-approved";
+      case "Rejected" : return "fa-st-rejected";
+      case "Verified" : return "fa-st-verified";
       default         : return "fa-st-pending";
     }
   }
@@ -348,7 +359,7 @@ const FA_REQUEST = (function () {
     const counts = { Pending: 0, Approved: 0, Rejected: 0, Verified: 0 };
 
     myRequests.forEach(function (r) {
-      const s = r.status || "Pending";
+      const s = normalizeStatus(r.status);
       if (counts[s] !== undefined) counts[s]++;
     });
 
@@ -362,9 +373,12 @@ const FA_REQUEST = (function () {
   }
 
   function metaItem(label, value){
+
+    const shown =
+      (value === "" || value === null || value === undefined) ? "\u2014" : value;
+
     return '<div><small>' + escapeHtml(label) + '</small><b>' +
-           escapeHtml(value === "" || value === null || value === undefined ? "\u2014" : value) +
-           '</b></div>';
+           escapeHtml(shown) + '</b></div>';
   }
 
   function renderMyRequests(){
@@ -372,6 +386,12 @@ const FA_REQUEST = (function () {
     const list   = el("faReqList");
     const search = String(el("faReqSearch").value || "").trim().toLowerCase();
     const filter = el("faReqFilter").value;
+
+    if (!myRequests.length){
+      list.innerHTML =
+        '<div class="fa-empty">You have not submitted any requests yet.</div>';
+      return;
+    }
 
     const rows = myRequests.filter(function (r) {
 
@@ -381,16 +401,10 @@ const FA_REQUEST = (function () {
         String(r.assetDetails  || "").toLowerCase().indexOf(search) !== -1;
 
       const matchesStatus =
-        !filter || (r.status || "Pending") === filter;
+        !filter || normalizeStatus(r.status) === filter;
 
       return matchesSearch && matchesStatus;
     });
-
-    if (!myRequests.length){
-      list.innerHTML =
-        '<div class="fa-empty">You have not submitted any requests yet.</div>';
-      return;
-    }
 
     if (!rows.length){
       list.innerHTML =
@@ -400,14 +414,13 @@ const FA_REQUEST = (function () {
 
     list.innerHTML = rows.map(function (r) {
 
-      const status = r.status || "Pending";
-      const qty    = parseInt(r.quantity, 10);
-      const amt    = parseFloat(r.amount);
-      const total  = (!isNaN(qty) && !isNaN(amt)) ? qty * amt : NaN;
+      const status = normalizeStatus(r.status);
 
-      const qtyText = (!isNaN(qty) && !isNaN(amt))
-        ? qty + " \u00d7 " + FA_UI.money(amt)
-        : "\u2014";
+      const qty = parseInt(r.quantity, 10);
+      const amt = parseFloat(r.amount);
+
+      const qtyText = isNaN(qty) ? "" : String(qty);
+      const amtText = isNaN(amt) ? "" : FA_UI.money(amt);
 
       let remark = "";
 
@@ -430,12 +443,12 @@ const FA_REQUEST = (function () {
             ? '<div class="fa-req-desc">' + escapeHtml(r.assetDetails) + '</div>'
             : '') +
           '<div class="fa-req-meta">' +
-            metaItem("Category",     r.requestCategory) +
-            metaItem("Asset class",  r.assetClassCode) +
-            metaItem("Asset type",   r.assetTypeCode) +
-            metaItem("Location",     r.locationCode) +
-            metaItem("Quantity",     qtyText) +
-            metaItem("Total amount", isNaN(total) ? "" : FA_UI.money(total)) +
+            metaItem("Category",        r.requestCategory) +
+            metaItem("Asset class",     r.assetClassCode) +
+            metaItem("Asset type",      r.assetTypeCode) +
+            metaItem("Quantity",        qtyText) +
+            metaItem("Amount per unit", amtText) +
+            metaItem("Location",        r.locationCode) +
           '</div>' +
           remark +
         '</article>';
