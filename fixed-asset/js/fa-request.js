@@ -24,6 +24,9 @@ const FA_REQUEST = (function () {
   /* Value saved to SharePoint when asset type does not apply */
   const NOT_APPLICABLE_CODE = "N/A";
 
+  /* Must match the Status choices in the FA_Requests list */
+  const STATUS_LIST = ["Submitted", "Pending", "Approved", "Rejected"];
+
   const REQUIRED_FIELDS = [
     "faCategory",
     "faAssetDetails",
@@ -315,27 +318,21 @@ const FA_REQUEST = (function () {
 
   /* ============================================================
      MY REQUESTS
+     Status is shown exactly as stored in the SharePoint
+     Status column: Submitted, Pending, Approved, Rejected.
      ============================================================ */
 
-  /* "New" (older records) and blank are both shown as Pending */
-  function normalizeStatus(status){
-
-    const s = String(status || "").trim().toLowerCase();
-
-    if (s === "" || s === "new" || s === "pending") return "Pending";
-    if (s === "approved") return "Approved";
-    if (s === "rejected") return "Rejected";
-    if (s === "verified") return "Verified";
-
-    return String(status);
+  function rawStatus(status){
+    return String(status === null || status === undefined ? "" : status).trim();
   }
 
   function statusClass(status){
-    switch (normalizeStatus(status)){
-      case "Approved" : return "fa-st-approved";
-      case "Rejected" : return "fa-st-rejected";
-      case "Verified" : return "fa-st-verified";
-      default         : return "fa-st-pending";
+    switch (rawStatus(status).toLowerCase()){
+      case "submitted" : return "fa-st-submitted";
+      case "pending"   : return "fa-st-pending";
+      case "approved"  : return "fa-st-approved";
+      case "rejected"  : return "fa-st-rejected";
+      default          : return "fa-st-other";
     }
   }
 
@@ -354,19 +351,21 @@ const FA_REQUEST = (function () {
     }
   }
 
+  /* Each card counts only records whose Status matches exactly */
   function updateCounts(){
 
-    const counts = { Pending: 0, Approved: 0, Rejected: 0, Verified: 0 };
+    const counts = {};
+    STATUS_LIST.forEach(function (s) { counts[s] = 0; });
 
     myRequests.forEach(function (r) {
-      const s = normalizeStatus(r.status);
+      const s = rawStatus(r.status);
       if (counts[s] !== undefined) counts[s]++;
     });
 
-    el("faCountPending").textContent  = counts.Pending;
-    el("faCountApproved").textContent = counts.Approved;
-    el("faCountRejected").textContent = counts.Rejected;
-    el("faCountVerified").textContent = counts.Verified;
+    STATUS_LIST.forEach(function (s) {
+      const node = el("faCount" + s);
+      if (node) node.textContent = counts[s];
+    });
 
     el("faTabMineCount").textContent = myRequests.length;
     el("faTabMineCount").classList.toggle("fa-hide", myRequests.length === 0);
@@ -401,7 +400,7 @@ const FA_REQUEST = (function () {
         String(r.assetDetails  || "").toLowerCase().indexOf(search) !== -1;
 
       const matchesStatus =
-        !filter || normalizeStatus(r.status) === filter;
+        !filter || rawStatus(r.status) === filter;
 
       return matchesSearch && matchesStatus;
     });
@@ -414,7 +413,7 @@ const FA_REQUEST = (function () {
 
     list.innerHTML = rows.map(function (r) {
 
-      const status = normalizeStatus(r.status);
+      const status = rawStatus(r.status);
 
       const qty = parseInt(r.quantity, 10);
       const amt = parseFloat(r.amount);
@@ -425,7 +424,7 @@ const FA_REQUEST = (function () {
       let remark = "";
 
       if (r.remarks){
-        remark = (status === "Rejected")
+        remark = (status.toLowerCase() === "rejected")
           ? '<div class="fa-req-remark"><b>Reason:</b> ' + escapeHtml(r.remarks) + '</div>'
           : '<div class="fa-req-note"><b>Remarks:</b> ' + escapeHtml(r.remarks) + '</div>';
       }
@@ -437,7 +436,9 @@ const FA_REQUEST = (function () {
               '<div class="fa-req-no">' + escapeHtml(r.requestNumber || "(pending)") + '</div>' +
               '<div class="fa-req-date">Submitted ' + escapeHtml(formatDate(r.submittedDate)) + '</div>' +
             '</div>' +
-            '<span class="fa-badge-status ' + statusClass(status) + '">' + escapeHtml(status) + '</span>' +
+            (status
+              ? '<span class="fa-badge-status ' + statusClass(status) + '">' + escapeHtml(status) + '</span>'
+              : '') +
           '</div>' +
           (r.assetDetails
             ? '<div class="fa-req-desc">' + escapeHtml(r.assetDetails) + '</div>'
@@ -956,93 +957,4 @@ const FA_REQUEST = (function () {
       requestOtp(false);
     });
 
-    el("faEmail").addEventListener("keydown", function (e) {
-      if (e.key === "Enter"){
-        e.preventDefault();
-        requestOtp(false);
-      }
-    });
-
-    el("faBtnVerify").addEventListener("click", verifyOtp);
-
-    el("faBtnResend").addEventListener("click", function () {
-      requestOtp(true);
-    });
-
-    el("faBtnChangeEmail").addEventListener("click", signOut);
-    el("faBtnSignOut").addEventListener("click", signOut);
-
-    /* Tabs */
-    el("faTabNew").addEventListener("click", function () { switchTab("new"); });
-    el("faTabMine").addEventListener("click", function () { switchTab("mine"); });
-
-    /* My requests toolbar */
-    el("faReqSearch").addEventListener("input", renderMyRequests);
-    el("faReqFilter").addEventListener("change", renderMyRequests);
-    el("faBtnRefresh").addEventListener("click", function () {
-      loadMyRequests(false);
-    });
-
-    /* Form */
-    el("faForm").addEventListener("submit", submitForm);
-
-    el("faBtnClear").addEventListener("click", resetSelectionsOnly);
-
-    /* Success screen */
-    el("faBtnAnother").addEventListener("click", function () {
-      resetSelectionsOnly();
-      FA_UI.showScreen("faScreenForm");
-      switchTab("new");
-    });
-
-    el("faBtnViewMine").addEventListener("click", function () {
-      resetSelectionsOnly();
-      FA_UI.showScreen("faScreenForm");
-      switchTab("mine");
-    });
-
-    el("faAssetDetails").addEventListener("input", function () {
-      el("faCharCount").textContent = this.value.length;
-    });
-
-    el("faAmount").addEventListener("input", updateTotal);
-    el("faQuantity").addEventListener("input", updateTotal);
-
-    REQUIRED_FIELDS.forEach(function (id) {
-
-      const node = el(id);
-      if (!node) return;
-
-      const evt = (node.tagName === "SELECT") ? "change" : "input";
-
-      node.addEventListener(evt, function () {
-        node.classList.remove("fa-bad");
-        FA_UI.message("faFormMsg", null, null);
-      });
-    });
-
-    el("faAssetClass").addEventListener("change", function () {
-      filterAssetTypes();
-      checkLimitLive();
-    });
-
-    el("faAmount").addEventListener("input", checkLimitLive);
-
-    resetAssetTypes();
-
-    session = FA_OTP.getSession();
-
-    if (session){
-      currentEmail = session.email || "";
-      enterApp();
-    } else {
-      FA_UI.showScreen("faScreenEmail");
-      el("faEmail").focus();
-    }
-  }
-
-  return { init };
-
-})();
-
-document.addEventListener("DOMContentLoaded", FA_REQUEST.init);
+    el("faEmail").addEventListener
