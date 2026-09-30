@@ -41,6 +41,37 @@ const FA_REQUEST = (function () {
 
   const NOT_REGISTERED_STATUSES = ["UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"];
 
+  /* ---------------- SAFE DOM HELPERS ----------------
+     These skip silently when an element is not in the
+     HTML, so one missing element never breaks the page.
+     -------------------------------------------------- */
+
+  function setText(id, text){
+    const node = el(id);
+    if (node) node.textContent = text;
+  }
+
+  function setValue(id, value){
+    const node = el(id);
+    if (node) node.value = value;
+  }
+
+  function toggleClass(id, cls, on){
+    const node = el(id);
+    if (node) node.classList.toggle(cls, on);
+  }
+
+  function onEvent(id, evt, handler){
+    const node = el(id);
+    if (node) node.addEventListener(evt, handler);
+  }
+
+  function summaryLabel(text){
+    const box = el("faSummary");
+    const span = box ? box.querySelector("span") : null;
+    if (span) span.textContent = text;
+  }
+
   /* ---------------- GENERAL HELPERS ---------------- */
 
   function activeEmail(){
@@ -340,11 +371,11 @@ const FA_REQUEST = (function () {
 
     const isNew = (tab === "new");
 
-    el("faTabNew").classList.toggle("fa-tab-active", isNew);
-    el("faTabMine").classList.toggle("fa-tab-active", !isNew);
+    toggleClass("faTabNew",  "fa-tab-active", isNew);
+    toggleClass("faTabMine", "fa-tab-active", !isNew);
 
-    el("faPanelNew").classList.toggle("fa-hide", !isNew);
-    el("faPanelMine").classList.toggle("fa-hide", isNew);
+    toggleClass("faPanelNew",  "fa-hide", !isNew);
+    toggleClass("faPanelMine", "fa-hide", isNew);
 
     if (!isNew){
       loadMyRequests(false);
@@ -363,12 +394,12 @@ const FA_REQUEST = (function () {
     });
 
     STATUS_LIST.forEach(function (s) {
-      const node = el("faCount" + s);
-      if (node) node.textContent = counts[s];
+      setText("faCount" + s, counts[s]);
     });
 
-    el("faTabMineCount").textContent = myRequests.length;
-    el("faTabMineCount").classList.toggle("fa-hide", myRequests.length === 0);
+    /* Tab badge is optional: skipped if not in the HTML */
+    setText("faTabMineCount", myRequests.length);
+    toggleClass("faTabMineCount", "fa-hide", myRequests.length === 0);
   }
 
   function metaItem(label, value){
@@ -382,9 +413,14 @@ const FA_REQUEST = (function () {
 
   function renderMyRequests(){
 
-    const list   = el("faReqList");
-    const search = String(el("faReqSearch").value || "").trim().toLowerCase();
-    const filter = el("faReqFilter").value;
+    const list = el("faReqList");
+    if (!list) return;
+
+    const searchBox = el("faReqSearch");
+    const filterBox = el("faReqFilter");
+
+    const search = String((searchBox && searchBox.value) || "").trim().toLowerCase();
+    const filter = (filterBox && filterBox.value) || "";
 
     if (!myRequests.length){
       list.innerHTML =
@@ -536,7 +572,7 @@ const FA_REQUEST = (function () {
 
       FA_OTP.saveProfile(res.name || "", res.email || email);
 
-      el("faMaskedEmail").textContent = res.maskedEmail || FA_UI.maskEmail(email);
+      setText("faMaskedEmail", res.maskedEmail || FA_UI.maskEmail(email));
 
       FA_OTP.clearBoxes(false);
 
@@ -649,17 +685,17 @@ const FA_REQUEST = (function () {
       const fullName = resolveName();
 
       if (fullName){
-        el("faUserName").textContent  = "Welcome, " + fullName;
-        el("faUserEmail").textContent = displayEmail;
-        el("faAvatar").textContent    = initials(fullName);
+        setText("faUserName",  "Welcome, " + fullName);
+        setText("faUserEmail", displayEmail);
+        setText("faAvatar",    initials(fullName));
       } else {
-        el("faUserName").textContent  = "Welcome";
-        el("faUserEmail").textContent = displayEmail;
-        el("faAvatar").textContent    = displayEmail.charAt(0).toUpperCase();
+        setText("faUserName",  "Welcome");
+        setText("faUserEmail", displayEmail);
+        setText("faAvatar",    displayEmail.charAt(0).toUpperCase());
       }
 
-      el("faUserDept").textContent = user.department || "\u2014";
-      el("faBtnSignOut").classList.remove("fa-hide");
+      setText("faUserDept", user.department || "\u2014");
+      toggleClass("faBtnSignOut", "fa-hide", false);
 
       FA_UI.showScreen("faScreenForm");
       switchTab("new");
@@ -690,8 +726,8 @@ const FA_REQUEST = (function () {
 
       FA_UI.fillSelect("faLocation", data.locations, "code", "name");
 
-      el("faAmount").value   = "";
-      el("faQuantity").value = "";
+      setValue("faAmount", "");
+      setValue("faQuantity", "");
       updateTotal();
       el("faBtnSubmit").disabled = false;
 
@@ -841,7 +877,7 @@ const FA_REQUEST = (function () {
         return setTimeout(signOut, 2000);
       }
 
-      el("faRefNo").textContent = res.requestNumber || "(pending)";
+      setText("faRefNo", res.requestNumber || "(pending)");
       FA_UI.showScreen("faScreenDone");
 
       /* Refresh the request list in the background */
@@ -860,24 +896,22 @@ const FA_REQUEST = (function () {
   function updateTotal(){
 
     const t = calcTotal();
-    const label = el("faSummary").querySelector("span");
 
-    el("faTotal").textContent = FA_UI.money(t.total);
+    setText("faTotal", FA_UI.money(t.total));
 
     if (t.total > 0){
-      label.textContent =
-        "Total amount (" + t.qty + " \u00d7 " + FA_UI.money(t.amt) + ")";
+      summaryLabel("Total amount (" + t.qty + " \u00d7 " + FA_UI.money(t.amt) + ")");
     } else {
-      label.textContent = "Total amount";
+      summaryLabel("Total amount");
     }
   }
 
   function resetTotals(){
-    el("faAmount").value   = "";
-    el("faQuantity").value = "";
-    el("faCharCount").textContent = "0";
-    el("faTotal").textContent = "RM 0.00";
-    el("faSummary").querySelector("span").textContent = "Total amount";
+    setValue("faAmount", "");
+    setValue("faQuantity", "");
+    setText("faCharCount", "0");
+    setText("faTotal", "RM 0.00");
+    summaryLabel("Total amount");
     el("faBtnSubmit").disabled = false;
   }
 
@@ -925,19 +959,21 @@ const FA_REQUEST = (function () {
 
     clearFormState();
 
-    el("faReqList").innerHTML = "";
-    el("faReqSearch").value = "";
-    el("faReqFilter").value = "";
+    const list = el("faReqList");
+    if (list) list.innerHTML = "";
+
+    setValue("faReqSearch", "");
+    setValue("faReqFilter", "");
     updateCounts();
 
-    el("faTabNew").classList.add("fa-tab-active");
-    el("faTabMine").classList.remove("fa-tab-active");
-    el("faPanelNew").classList.remove("fa-hide");
-    el("faPanelMine").classList.add("fa-hide");
+    toggleClass("faTabNew",    "fa-tab-active", true);
+    toggleClass("faTabMine",   "fa-tab-active", false);
+    toggleClass("faPanelNew",  "fa-hide", false);
+    toggleClass("faPanelMine", "fa-hide", true);
 
-    el("faEmail").value = "";
+    setValue("faEmail", "");
     el("faBtnVerify").disabled = false;
-    el("faBtnSignOut").classList.add("fa-hide");
+    toggleClass("faBtnSignOut", "fa-hide", true);
 
     FA_UI.clearMessages();
     FA_UI.message("faListMsg", null, null);
@@ -948,13 +984,102 @@ const FA_REQUEST = (function () {
 
   function init(){
 
-    el("faVersion").textContent = FA_CONFIG.appVersion;
+    setText("faVersion", FA_CONFIG.appVersion);
 
     FA_OTP.bindBoxes(verifyOtp);
 
     /* OTP */
-    el("faBtnRequestOtp").addEventListener("click", function () {
+    onEvent("faBtnRequestOtp", "click", function () {
       requestOtp(false);
     });
 
-    el("faEmail").addEventListener
+    onEvent("faEmail", "keydown", function (e) {
+      if (e.key === "Enter"){
+        e.preventDefault();
+        requestOtp(false);
+      }
+    });
+
+    onEvent("faBtnVerify", "click", verifyOtp);
+
+    onEvent("faBtnResend", "click", function () {
+      requestOtp(true);
+    });
+
+    onEvent("faBtnChangeEmail", "click", signOut);
+    onEvent("faBtnSignOut",     "click", signOut);
+
+    /* Tabs */
+    onEvent("faTabNew",  "click", function () { switchTab("new"); });
+    onEvent("faTabMine", "click", function () { switchTab("mine"); });
+
+    /* My requests toolbar */
+    onEvent("faReqSearch",  "input",  renderMyRequests);
+    onEvent("faReqFilter",  "change", renderMyRequests);
+    onEvent("faBtnRefresh", "click",  function () {
+      loadMyRequests(false);
+    });
+
+    /* Form */
+    onEvent("faForm",     "submit", submitForm);
+    onEvent("faBtnClear", "click",  resetSelectionsOnly);
+
+    /* Success screen */
+    onEvent("faBtnAnother", "click", function () {
+      resetSelectionsOnly();
+      FA_UI.showScreen("faScreenForm");
+      switchTab("new");
+    });
+
+    onEvent("faBtnViewMine", "click", function () {
+      resetSelectionsOnly();
+      FA_UI.showScreen("faScreenForm");
+      switchTab("mine");
+    });
+
+    onEvent("faAssetDetails", "input", function () {
+      setText("faCharCount", this.value.length);
+    });
+
+    onEvent("faAmount",   "input", updateTotal);
+    onEvent("faQuantity", "input", updateTotal);
+
+    REQUIRED_FIELDS.forEach(function (id) {
+
+      const node = el(id);
+      if (!node) return;
+
+      const evt = (node.tagName === "SELECT") ? "change" : "input";
+
+      node.addEventListener(evt, function () {
+        node.classList.remove("fa-bad");
+        FA_UI.message("faFormMsg", null, null);
+      });
+    });
+
+    onEvent("faAssetClass", "change", function () {
+      filterAssetTypes();
+      checkLimitLive();
+    });
+
+    onEvent("faAmount", "input", checkLimitLive);
+
+    resetAssetTypes();
+
+    session = FA_OTP.getSession();
+
+    if (session){
+      currentEmail = session.email || "";
+      enterApp();
+    } else {
+      FA_UI.showScreen("faScreenEmail");
+      const emailBox = el("faEmail");
+      if (emailBox) emailBox.focus();
+    }
+  }
+
+  return { init };
+
+})();
+
+document.addEventListener("DOMContentLoaded", FA_REQUEST.init);
