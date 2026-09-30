@@ -22,7 +22,7 @@ const FA_CONFIG = {
   myRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/cde80967fbc04fd99133353ed8f7a576/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_70gqTbXzyiFuR1RysioFuD_51zM5N7Hm-ADmEAx_TA",
 
   /* New flow: FIN - FA - Upload BCA (built next) */
-  bcaUploadUrl  : "PASTE_FIN_FA_UPLOAD_BCA_URL",
+  bcaUploadUrl  : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/a9e8e727b42c4d3fb8e6ee8a1579cc03/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=v7MhPDdKrWlUwa6Z6cinuN6yVZ2wrkpH4DQ64H1JJ6g",
 
   /* ---- Access control ---- */
 
