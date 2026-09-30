@@ -15,6 +15,12 @@ const FA_REQUEST = (function () {
   /* Full asset type list from Flow C, filtered per asset class */
   let masterAssetTypes = [];
 
+  /* True when the selected asset class has no applicable asset type */
+  let assetTypeNotApplicable = false;
+
+  /* Value saved to SharePoint when asset type does not apply */
+  const NOT_APPLICABLE_CODE = "N/A";
+
   const REQUIRED_FIELDS = [
     "faCategory",
     "faAssetDetails",
@@ -56,7 +62,8 @@ const FA_REQUEST = (function () {
      ASSET TYPE FILTERING
      AllowedAssetClasses comes from SharePoint as:
        [ { "Id": 2, "Value": "1020" }, ... ]
-     Plain strings are also accepted as a fallback.
+     Asset types without a TypeDescription are treated as
+     "not applicable" and the Asset Type box is greyed out.
      ============================================================ */
 
   function allowedClassesOf(assetType){
@@ -72,15 +79,41 @@ const FA_REQUEST = (function () {
     }).filter(function (v) { return v !== ""; });
   }
 
+  function hasDescription(assetType){
+    return String((assetType && assetType.description) || "").trim() !== "";
+  }
+
+  /* Greys out or re-enables the Asset Type box */
+  function setAssetTypeEnabled(enabled){
+
+    const sel = el("faAssetType");
+    if (!sel) return;
+
+    sel.disabled = !enabled;
+
+    if (enabled){
+      sel.style.background = "";
+      sel.style.color = "";
+      sel.style.cursor = "";
+    } else {
+      sel.style.background = "#eef1f5";
+      sel.style.color = "#98a2b3";
+      sel.style.cursor = "not-allowed";
+      sel.classList.remove("fa-bad");
+    }
+  }
+
   function resetAssetTypes(){
 
     const sel = el("faAssetType");
     if (!sel) return;
 
+    assetTypeNotApplicable = false;
+
     sel.innerHTML =
       '<option value="" selected disabled hidden>Select an asset class first</option>';
 
-    sel.disabled = true;
+    setAssetTypeEnabled(false);
   }
 
   function filterAssetTypes(){
@@ -93,31 +126,33 @@ const FA_REQUEST = (function () {
       return;
     }
 
+    /* Only types with a TypeDescription are selectable */
     const filtered = masterAssetTypes
       .filter(function (t) {
-        return allowedClassesOf(t).indexOf(String(selectedClass)) !== -1;
+        return allowedClassesOf(t).indexOf(String(selectedClass)) !== -1 &&
+               hasDescription(t);
       })
       .map(function (t) {
-        return {
-          code        : t.code,
-          description : t.description || t.code
-        };
+        return { code: t.code, description: t.description };
       });
 
+    /* No applicable type (e.g. 8010, 9000, 9010): grey out */
     if (!filtered.length){
+
+      assetTypeNotApplicable = true;
+
       sel.innerHTML =
-        '<option value="" selected disabled hidden>No asset type available for this class</option>';
-      sel.disabled = true;
-      FA_UI.message("faFormMsg", "warn",
-        "No asset type is configured for asset class " + selectedClass +
-        ". Please contact Finance.");
+        '<option value="" selected>Not applicable for this asset class</option>';
+
+      setAssetTypeEnabled(false);
       return;
     }
 
-    sel.disabled = false;
-    sel.classList.remove("fa-bad");
+    assetTypeNotApplicable = false;
 
     FA_UI.fillSelect("faAssetType", filtered, "code", "description");
+    setAssetTypeEnabled(true);
+    sel.classList.remove("fa-bad");
 
     /* Auto-select when only one asset type applies (e.g. 3000 -> RENO) */
     if (filtered.length === 1){
@@ -149,7 +184,6 @@ const FA_REQUEST = (function () {
 
   function parseLimit(description){
 
-    /* Flow C may return &lt; / &gt; instead of < / > */
     const text = String(description || "")
       .replace(/&lt;/g, "<")
       .replace(/&gt;/g, ">");
@@ -179,7 +213,6 @@ const FA_REQUEST = (function () {
       return { min: a, minInc: false, max: b, maxInc: true };
     }
 
-    /* Bracket text that is not a limit, e.g. "(IA)" */
     return null;
   }
 
@@ -434,7 +467,6 @@ const FA_REQUEST = (function () {
 
       const data = await FA_API.getMasterData(activeEmail());
 
-      /* Limit table from the class descriptions */
       classLimits = {};
       (data.assetClasses || []).forEach(function (c) {
         classLimits[c.code] = {
@@ -443,7 +475,6 @@ const FA_REQUEST = (function () {
         };
       });
 
-      /* Decode &lt; / &gt; so the dropdown shows < and > */
       const assetClasses = (data.assetClasses || []).map(function (c) {
         return {
           code        : c.code,
@@ -455,7 +486,6 @@ const FA_REQUEST = (function () {
 
       FA_UI.fillSelect("faAssetClass", assetClasses, "code", "description");
 
-      /* Asset types are held in memory and filtered on class change */
       masterAssetTypes = Array.isArray(data.assetTypes) ? data.assetTypes : [];
       resetAssetTypes();
 
@@ -483,7 +513,9 @@ const FA_REQUEST = (function () {
       requestCategory : el("faCategory").value,
       assetDetails    : el("faAssetDetails").value.trim(),
       assetClassCode  : el("faAssetClass").value,
-      assetTypeCode   : el("faAssetType").value,
+      assetTypeCode   : assetTypeNotApplicable
+                          ? NOT_APPLICABLE_CODE
+                          : el("faAssetType").value,
       quantity        : parseInt(el("faQuantity").value, 10),
       amount          : parseFloat(el("faAmount").value),
       totalAmount     : t.total,
@@ -491,9 +523,9 @@ const FA_REQUEST = (function () {
     };
   }
 
-  /* Confirms the chosen type is valid for the chosen class */
   function typeMatchesClass(classCode, typeCode){
 
+    if (assetTypeNotApplicable) return true;
     if (!classCode || !typeCode) return true;
 
     const t = masterAssetTypes.filter(function (x) {
@@ -522,7 +554,8 @@ const FA_REQUEST = (function () {
       ["faAssetClass",   !f.assetClassCode,
         "Please select an asset class."],
 
-      ["faAssetType",    !f.assetTypeCode,
+      /* Asset type is only mandatory when it applies */
+      ["faAssetType",    !assetTypeNotApplicable && !f.assetTypeCode,
         "Please select an asset type."],
 
       ["faAssetType",    !typeMatchesClass(f.assetClassCode, f.assetTypeCode),
@@ -739,7 +772,6 @@ const FA_REQUEST = (function () {
     el("faAmount").addEventListener("input", updateTotal);
     el("faQuantity").addEventListener("input", updateTotal);
 
-    /* Clear the red highlight once a field is corrected */
     REQUIRED_FIELDS.forEach(function (id) {
 
       const node = el(id);
@@ -753,8 +785,6 @@ const FA_REQUEST = (function () {
       });
     });
 
-    /* Registered after the listeners above so their
-       messages are not wiped by the highlight reset. */
     el("faAssetClass").addEventListener("change", function () {
       filterAssetTypes();
       checkLimitLive();
