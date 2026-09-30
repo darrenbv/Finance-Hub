@@ -21,8 +21,8 @@ const FA_REQUEST = (function () {
   /* Requests submitted by the signed-in user */
   let myRequests = [];
 
-  /* Selected Draft Business Case Approval (BCA) file */
-  let bcaFile = null;
+  /* Selected Draft Business Case Approval (BCA) files */
+  let bcaFiles = [];
 
   /* Value saved to SharePoint when asset type does not apply */
   const NOT_APPLICABLE_CODE = "N/A";
@@ -130,11 +130,11 @@ const FA_REQUEST = (function () {
   }
 
   /* ============================================================
-     BCA FILE UPLOAD
+     BCA FILE UPLOAD : unlimited number of files
      ============================================================ */
 
   function bcaMaxBytes(){
-    return (FA_CONFIG.bcaMaxSizeMB || 10) * 1024 * 1024;
+    return (FA_CONFIG.bcaMaxSizeMB || 25) * 1024 * 1024;
   }
 
   function bcaAllowed(){
@@ -149,12 +149,13 @@ const FA_REQUEST = (function () {
   }
 
   function formatSize(bytes){
+    if (!bytes) return "0 B";
     if (bytes < 1024) return bytes + " B";
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
     return (bytes / (1024 * 1024)).toFixed(2) + " MB";
   }
 
-  /* Removes characters that SharePoint does not allow in file names */
+  /* Removes characters SharePoint does not allow in file names */
   function safeFileName(name){
     return String(name || "BCA")
       .replace(/[~"#%&*:<>?\/\\{|}]/g, "_")
@@ -162,65 +163,155 @@ const FA_REQUEST = (function () {
       .trim();
   }
 
+  /* Makes duplicate names unique: Report.pdf -> Report (2).pdf */
+  function uniqueNames(files){
+
+    const used = {};
+
+    return files.map(function (f) {
+
+      const clean = safeFileName(f.name);
+      const ext   = fileExtension(clean);
+      const base  = ext ? clean.slice(0, -(ext.length + 1)) : clean;
+
+      let name = clean;
+      let n = 2;
+
+      while (used[name.toLowerCase()]){
+        name = base + " (" + n + ")" + (ext ? "." + ext : "");
+        n++;
+      }
+
+      used[name.toLowerCase()] = true;
+      return name;
+    });
+  }
+
+  function totalBcaSize(){
+    return bcaFiles.reduce(function (sum, f) { return sum + f.size; }, 0);
+  }
+
+  function fileKey(file){
+    return [file.name, file.size, file.lastModified].join("|");
+  }
+
   function renderBca(){
 
-    const has = !!bcaFile;
+    const has = bcaFiles.length > 0;
 
     toggleClass("faBcaEmpty",    "fa-hide", has);
     toggleClass("faBcaSelected", "fa-hide", !has);
     toggleClass("faBcaZone",     "fa-has-file", has);
 
-    if (has){
-      setText("faBcaExt",  (fileExtension(bcaFile.name) || "FILE").toUpperCase());
-      setText("faBcaName", bcaFile.name);
-      setText("faBcaSize", formatSize(bcaFile.size) + " \u00b7 ready to upload");
-    }
+    setText("faBcaCount",
+      bcaFiles.length + " file" + (bcaFiles.length === 1 ? "" : "s") + " selected");
+
+    setText("faBcaTotalSize", formatSize(totalBcaSize()) + " total");
+
+    const list = el("faBcaFileList");
+    if (!list) return;
+
+    list.innerHTML = bcaFiles.map(function (file, index) {
+
+      const ext = (fileExtension(file.name) || "FILE").toUpperCase();
+
+      return '' +
+        '<div class="fa-upload-file-row">' +
+          '<div class="fa-file-icon">' + escapeHtml(ext) + '</div>' +
+          '<div class="fa-file-info">' +
+            '<strong title="' + escapeHtml(file.name) + '">' + escapeHtml(file.name) + '</strong>' +
+            '<small>' + escapeHtml(formatSize(file.size)) + '</small>' +
+          '</div>' +
+          '<button type="button" class="fa-file-remove-one" data-bca-index="' + index + '"' +
+            ' aria-label="Remove ' + escapeHtml(file.name) + '">&times;</button>' +
+        '</div>';
+
+    }).join("");
+
+    list.querySelectorAll("[data-bca-index]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const i = parseInt(btn.getAttribute("data-bca-index"), 10);
+        if (!isNaN(i) && i >= 0 && i < bcaFiles.length){
+          bcaFiles.splice(i, 1);
+          renderBca();
+        }
+      });
+    });
   }
 
   function clearBca(){
-    bcaFile = null;
+    bcaFiles = [];
     setValue("faBcaFile", "");
     toggleClass("faBcaZone", "fa-bad", false);
     renderBca();
   }
 
-  /* Validates and stores the chosen file */
-  function handleBcaFile(file){
+  function validateBcaFile(file){
 
-    if (!file) return;
-
-    const ext = fileExtension(file.name);
-
-    if (bcaAllowed().indexOf(ext) === -1){
-      FA_UI.message("faFormMsg", "error",
-        "\"" + file.name + "\" is not a supported file type. Please upload a " +
-        bcaAllowed().join(", ").toUpperCase() + " file.");
-      toggleClass("faBcaZone", "fa-bad", true);
-      return;
+    if (bcaAllowed().indexOf(fileExtension(file.name)) === -1){
+      return "\"" + file.name + "\" is not a supported file type.";
     }
 
     if (file.size === 0){
-      FA_UI.message("faFormMsg", "error",
-        "The selected file is empty. Please choose another file.");
-      toggleClass("faBcaZone", "fa-bad", true);
-      return;
+      return "\"" + file.name + "\" is empty.";
     }
 
     if (file.size > bcaMaxBytes()){
-      FA_UI.message("faFormMsg", "error",
-        "The selected file is " + formatSize(file.size) +
-        ". The maximum allowed size is " + (FA_CONFIG.bcaMaxSizeMB || 10) + " MB.");
-      toggleClass("faBcaZone", "fa-bad", true);
-      return;
+      return "\"" + file.name + "\" is " + formatSize(file.size) +
+             ". Each file must be " + (FA_CONFIG.bcaMaxSizeMB || 25) + " MB or smaller.";
     }
 
-    bcaFile = file;
+    return null;
+  }
+
+  /* Adds files to the list. No limit on how many. */
+  function handleBcaFiles(fileList){
+
+    const incoming = Array.prototype.slice.call(fileList || []);
+    if (!incoming.length) return;
+
+    const errors = [];
+    const keys = {};
+
+    bcaFiles.forEach(function (f) { keys[fileKey(f)] = true; });
+
+    incoming.forEach(function (file) {
+
+      const error = validateBcaFile(file);
+
+      if (error){
+        errors.push(error);
+        return;
+      }
+
+      const key = fileKey(file);
+
+      if (keys[key]){
+        errors.push("\"" + file.name + "\" is already in the list.");
+        return;
+      }
+
+      keys[key] = true;
+      bcaFiles.push(file);
+    });
+
     toggleClass("faBcaZone", "fa-bad", false);
-    FA_UI.message("faFormMsg", null, null);
+
+    if (errors.length){
+      FA_UI.message("faFormMsg", "warn",
+        "Some files were not added: " + errors.join(" ") +
+        " Accepted types: " + bcaAllowed().join(", ").toUpperCase() + ".");
+    } else {
+      const box = el("faFormMsg");
+      if (box && box.classList.contains("fa-msg-warn") &&
+          box.textContent.indexOf("Some files were not added") === 0){
+        FA_UI.message("faFormMsg", null, null);
+      }
+    }
+
     renderBca();
   }
 
-  /* Reads the file and returns the base64 content only */
   function readAsBase64(file){
     return new Promise(function (resolve, reject) {
       const reader = new FileReader();
@@ -230,10 +321,86 @@ const FA_REQUEST = (function () {
         resolve(comma >= 0 ? result.substring(comma + 1) : result);
       };
       reader.onerror = function () {
-        reject(new Error("Unable to read the selected BCA file. Please try again."));
+        reject(new Error("Unable to read \"" + file.name + "\"."));
       };
       reader.readAsDataURL(file);
     });
+  }
+
+  /* Uploads every file one by one after the request is created.
+     Returns { uploaded: [...names], failed: [...names] }. */
+  async function uploadAllBca(itemId, requestNumber){
+
+    const result = { uploaded: [], failed: [] };
+    const names  = uniqueNames(bcaFiles);
+    const total  = bcaFiles.length;
+
+    for (let i = 0; i < total; i++){
+
+      const file = bcaFiles[i];
+
+      FA_UI.loader(true,
+        "Uploading BCA file " + (i + 1) + " of " + total + "\u2026");
+
+      try {
+
+        const content = await readAsBase64(file);
+        const ext = fileExtension(file.name);
+
+        const res = await FA_API.uploadBcaFile({
+          email         : activeEmail(),
+          itemId        : itemId,
+          requestNumber : requestNumber,
+          fileName      : names[i],
+          contentType   : file.type || MIME_TYPES[ext] || "application/octet-stream",
+          fileContent   : content,
+          fileIndex     : i + 1,
+          fileCount     : total
+        });
+
+        const s = statusOf(res);
+
+        if (s === "SUCCESS" || s === "OK" || s === "UPLOADED"){
+          result.uploaded.push(names[i]);
+        } else {
+          result.failed.push(names[i]);
+        }
+
+      } catch (e) {
+        result.failed.push(names[i]);
+      }
+    }
+
+    return result;
+  }
+
+  function showUploadResult(result){
+
+    const box = el("faUploadResult");
+    if (!box) return;
+
+    if (!result || (!result.uploaded.length && !result.failed.length)){
+      box.className = "fa-msg fa-upload-result fa-hide";
+      box.textContent = "";
+      return;
+    }
+
+    if (!result.failed.length){
+      box.className = "fa-msg fa-msg-ok fa-upload-result";
+      box.textContent =
+        result.uploaded.length + " BCA file" +
+        (result.uploaded.length === 1 ? " was" : "s were") +
+        " attached to this request.";
+      return;
+    }
+
+    box.className = "fa-msg fa-msg-warn fa-upload-result";
+    box.textContent =
+      result.uploaded.length + " of " +
+      (result.uploaded.length + result.failed.length) +
+      " BCA files were attached. These could not be uploaded: " +
+      result.failed.join(", ") +
+      ". Your request was still submitted. Please send the missing files to Finance and quote your reference number.";
   }
 
   function setupBca(){
@@ -245,22 +412,24 @@ const FA_REQUEST = (function () {
 
     setText("faBcaHint",
       "PDF, Word, Excel or PowerPoint \u00b7 up to " +
-      (FA_CONFIG.bcaMaxSizeMB || 10) + " MB");
+      (FA_CONFIG.bcaMaxSizeMB || 25) +
+      " MB per file \u00b7 add as many files as needed");
 
     const input = el("faBcaFile");
+
     if (input){
+      input.multiple = true;
       input.setAttribute("accept",
         bcaAllowed().map(function (x) { return "." + x; }).join(","));
 
       input.addEventListener("change", function () {
-        const f = input.files && input.files[0];
-        handleBcaFile(f);
-        /* Reset so the same file can be picked again after removal */
+        handleBcaFiles(input.files);
         input.value = "";
       });
     }
 
     const zone = el("faBcaZone");
+
     if (zone){
 
       ["dragenter", "dragover"].forEach(function (evt) {
@@ -280,18 +449,11 @@ const FA_REQUEST = (function () {
       });
 
       zone.addEventListener("drop", function (e) {
-        const files = e.dataTransfer && e.dataTransfer.files;
-        if (files && files.length){
-          if (files.length > 1){
-            FA_UI.message("faFormMsg", "warn",
-              "Only one BCA file can be uploaded. The first file has been used.");
-          }
-          handleBcaFile(files[0]);
-        }
+        handleBcaFiles(e.dataTransfer && e.dataTransfer.files);
       });
     }
 
-    onEvent("faBcaRemove", "click", clearBca);
+    onEvent("faBcaRemoveAll", "click", clearBca);
 
     renderBca();
   }
@@ -927,7 +1089,8 @@ const FA_REQUEST = (function () {
       quantity        : parseInt(el("faQuantity").value, 10),
       amount          : parseFloat(el("faAmount").value),
       totalAmount     : t.total,
-      locationCode    : el("faLocation").value
+      locationCode    : el("faLocation").value,
+      bcaFileCount    : bcaFiles.length
     };
   }
 
@@ -992,8 +1155,8 @@ const FA_REQUEST = (function () {
       ["faLocation",     !f.locationCode,
         "Please select a location."],
 
-      ["faBcaZone",      !!FA_CONFIG.bcaRequired && !bcaFile,
-        "Please upload the draft Business Case Approval (BCA)."]
+      ["faBcaZone",      !!FA_CONFIG.bcaRequired && bcaFiles.length === 0,
+        "Please upload at least one draft Business Case Approval (BCA) file."]
 
     ];
 
@@ -1038,22 +1201,11 @@ const FA_REQUEST = (function () {
     }
 
     el("faBtnSubmit").disabled = true;
+    FA_UI.loader(true, "Submitting your request\u2026");
 
     try {
 
-      /* Attach the BCA file, if one was chosen */
-      if (bcaFile){
-        FA_UI.loader(true, "Preparing BCA document\u2026");
-
-        const ext = fileExtension(bcaFile.name);
-
-        form.bcaFileName    = safeFileName(bcaFile.name);
-        form.bcaContentType = bcaFile.type || MIME_TYPES[ext] || "application/octet-stream";
-        form.bcaFileContent = await readAsBase64(bcaFile);
-      }
-
-      FA_UI.loader(true, "Submitting your request\u2026");
-
+      /* 1. Create the request */
       const res = await FA_API.submitRequest(submitterEmail, form);
 
       if (statusOf(res) === "INVALID_SESSION"){
@@ -1062,7 +1214,26 @@ const FA_REQUEST = (function () {
         return setTimeout(signOut, 2000);
       }
 
-      setText("faRefNo", res.requestNumber || "(pending)");
+      const requestNumber = res.requestNumber || "";
+      const itemId = res.itemId || res.id || "";
+
+      /* 2. Upload each BCA file separately */
+      let uploadResult = null;
+
+      if (bcaFiles.length){
+
+        if (!itemId){
+          uploadResult = {
+            uploaded : [],
+            failed   : uniqueNames(bcaFiles)
+          };
+        } else {
+          uploadResult = await uploadAllBca(itemId, requestNumber);
+        }
+      }
+
+      setText("faRefNo", requestNumber || "(pending)");
+      showUploadResult(uploadResult);
       FA_UI.showScreen("faScreenDone");
 
       loadMyRequests(true);
@@ -1109,6 +1280,7 @@ const FA_REQUEST = (function () {
 
     resetTotals();
     clearBca();
+    showUploadResult(null);
 
     FA_UI.clearBad();
     FA_UI.message("faFormMsg", null, null);
@@ -1126,6 +1298,7 @@ const FA_REQUEST = (function () {
     resetAssetTypes();
     resetTotals();
     clearBca();
+    showUploadResult(null);
 
     FA_UI.clearBad();
     FA_UI.message("faFormMsg", null, null);
