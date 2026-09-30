@@ -12,6 +12,9 @@ const FA_REQUEST = (function () {
   /* Asset class code -> { description, limit } */
   let classLimits = {};
 
+  /* Full asset type list from Flow C, filtered per asset class */
+  let masterAssetTypes = [];
+
   const REQUIRED_FIELDS = [
     "faCategory",
     "faAssetDetails",
@@ -50,7 +53,80 @@ const FA_REQUEST = (function () {
   }
 
   /* ============================================================
-     ASSET CLASS LIMITS
+     ASSET TYPE FILTERING
+     AllowedAssetClasses comes from SharePoint as:
+       [ { "Id": 2, "Value": "1020" }, ... ]
+     Plain strings are also accepted as a fallback.
+     ============================================================ */
+
+  function allowedClassesOf(assetType){
+
+    const raw = assetType && assetType.allowedAssetClasses;
+    if (!raw) return [];
+
+    const list = Array.isArray(raw) ? raw : [raw];
+
+    return list.map(function (a) {
+      if (a && typeof a === "object") return String(a.Value || "").trim();
+      return String(a || "").trim();
+    }).filter(function (v) { return v !== ""; });
+  }
+
+  function resetAssetTypes(){
+
+    const sel = el("faAssetType");
+    if (!sel) return;
+
+    sel.innerHTML =
+      '<option value="" selected disabled hidden>Select an asset class first</option>';
+
+    sel.disabled = true;
+  }
+
+  function filterAssetTypes(){
+
+    const selectedClass = el("faAssetClass").value;
+    const sel = el("faAssetType");
+
+    if (!selectedClass){
+      resetAssetTypes();
+      return;
+    }
+
+    const filtered = masterAssetTypes
+      .filter(function (t) {
+        return allowedClassesOf(t).indexOf(String(selectedClass)) !== -1;
+      })
+      .map(function (t) {
+        return {
+          code        : t.code,
+          description : t.description || t.code
+        };
+      });
+
+    if (!filtered.length){
+      sel.innerHTML =
+        '<option value="" selected disabled hidden>No asset type available for this class</option>';
+      sel.disabled = true;
+      FA_UI.message("faFormMsg", "warn",
+        "No asset type is configured for asset class " + selectedClass +
+        ". Please contact Finance.");
+      return;
+    }
+
+    sel.disabled = false;
+    sel.classList.remove("fa-bad");
+
+    FA_UI.fillSelect("faAssetType", filtered, "code", "description");
+
+    /* Auto-select when only one asset type applies (e.g. 3000 -> RENO) */
+    if (filtered.length === 1){
+      sel.value = filtered[0].code;
+    }
+  }
+
+  /* ============================================================
+     ASSET CLASS LIMITS (per unit)
      Read from the bracket at the end of the class description:
        (<=1.3K)   -> up to 1,300
        (1.3K-5K)  -> above 1,300 and up to 5,000
@@ -73,13 +149,17 @@ const FA_REQUEST = (function () {
 
   function parseLimit(description){
 
-    const bracket = String(description || "").match(/\(([^)]*)\)\s*$/);
+    /* Flow C may return &lt; / &gt; instead of < / > */
+    const text = String(description || "")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">");
+
+    const bracket = text.match(/\(([^)]*)\)\s*$/);
     if (!bracket) return null;
 
     const t = bracket[1].replace(/\s+/g, "");
     let m;
 
-    /* Single bound: <=X, <X, >=X, >X */
     m = t.match(/^(<=|<|>=|>)(.+)$/);
     if (m){
       const v = toNumber(m[2]);
@@ -91,7 +171,6 @@ const FA_REQUEST = (function () {
       return { min: v, minInc: false };
     }
 
-    /* Range: A-B  (above A, up to and including B) */
     m = t.match(/^(.+?)-(.+)$/);
     if (m){
       const a = toNumber(m[1]);
@@ -119,7 +198,6 @@ const FA_REQUEST = (function () {
     return parts.join(" and ");
   }
 
-  /* Returns an error message, or null when the amount is allowed. */
   function limitError(){
 
     const code = el("faAssetClass").value;
@@ -148,7 +226,6 @@ const FA_REQUEST = (function () {
            "Please correct the amount or select the appropriate asset class.";
   }
 
-  /* Live check: warns, highlights and blocks Submit. */
   function checkLimitLive(){
 
     const err = limitError();
@@ -160,7 +237,8 @@ const FA_REQUEST = (function () {
     } else {
       el("faBtnSubmit").disabled = false;
       const box = el("faFormMsg");
-      if (box && box.classList.contains("fa-msg-warn")){
+      if (box && box.classList.contains("fa-msg-warn") &&
+          box.textContent.indexOf("Amount per unit") === 0){
         FA_UI.message("faFormMsg", null, null);
       }
     }
@@ -356,7 +434,7 @@ const FA_REQUEST = (function () {
 
       const data = await FA_API.getMasterData(activeEmail());
 
-      /* Build the limit table from the class descriptions */
+      /* Limit table from the class descriptions */
       classLimits = {};
       (data.assetClasses || []).forEach(function (c) {
         classLimits[c.code] = {
@@ -365,9 +443,23 @@ const FA_REQUEST = (function () {
         };
       });
 
-      FA_UI.fillSelect("faAssetClass", data.assetClasses, "code", "description");
-      FA_UI.fillSelect("faAssetType",  data.assetTypes,  "code", "description");
-      FA_UI.fillSelect("faLocation",   data.locations,   "code", "name");
+      /* Decode &lt; / &gt; so the dropdown shows < and > */
+      const assetClasses = (data.assetClasses || []).map(function (c) {
+        return {
+          code        : c.code,
+          description : String(c.description || "")
+                          .replace(/&lt;/g, "<")
+                          .replace(/&gt;/g, ">")
+        };
+      });
+
+      FA_UI.fillSelect("faAssetClass", assetClasses, "code", "description");
+
+      /* Asset types are held in memory and filtered on class change */
+      masterAssetTypes = Array.isArray(data.assetTypes) ? data.assetTypes : [];
+      resetAssetTypes();
+
+      FA_UI.fillSelect("faLocation", data.locations, "code", "name");
 
       el("faAmount").value   = "";
       el("faQuantity").value = "";
@@ -399,6 +491,20 @@ const FA_REQUEST = (function () {
     };
   }
 
+  /* Confirms the chosen type is valid for the chosen class */
+  function typeMatchesClass(classCode, typeCode){
+
+    if (!classCode || !typeCode) return true;
+
+    const t = masterAssetTypes.filter(function (x) {
+      return String(x.code) === String(typeCode);
+    })[0];
+
+    if (!t) return false;
+
+    return allowedClassesOf(t).indexOf(String(classCode)) !== -1;
+  }
+
   function validate(f){
 
     const amountEmpty   = String(el("faAmount").value || "").trim() === "";
@@ -418,6 +524,9 @@ const FA_REQUEST = (function () {
 
       ["faAssetType",    !f.assetTypeCode,
         "Please select an asset type."],
+
+      ["faAssetType",    !typeMatchesClass(f.assetClassCode, f.assetTypeCode),
+        "The selected asset type is not valid for the selected asset class."],
 
       ["faAmount",       amountEmpty,
         "Please enter the amount per unit."],
@@ -540,8 +649,8 @@ const FA_REQUEST = (function () {
     el("faForm").reset();
 
     FA_UI.resetSelect("faAssetClass", "\u2014 Select \u2014");
-    FA_UI.resetSelect("faAssetType",  "\u2014 Select \u2014");
     FA_UI.resetSelect("faLocation",   "\u2014 Select \u2014");
+    resetAssetTypes();
 
     resetTotals();
 
@@ -553,11 +662,12 @@ const FA_REQUEST = (function () {
 
     el("faForm").reset();
 
-    ["faAssetClass", "faAssetType", "faLocation"].forEach(function (id) {
+    ["faAssetClass", "faLocation"].forEach(function (id) {
       const sel = el(id);
       if (sel) sel.selectedIndex = 0;
     });
 
+    resetAssetTypes();
     resetTotals();
 
     FA_UI.clearBad();
@@ -573,6 +683,7 @@ const FA_REQUEST = (function () {
     session = null;
     currentEmail = "";
     classLimits = {};
+    masterAssetTypes = [];
 
     clearFormState();
 
@@ -642,10 +753,16 @@ const FA_REQUEST = (function () {
       });
     });
 
-    /* Registered AFTER the listeners above so the limit
-       warning is not wiped out by the highlight reset.  */
-    el("faAssetClass").addEventListener("change", checkLimitLive);
+    /* Registered after the listeners above so their
+       messages are not wiped by the highlight reset. */
+    el("faAssetClass").addEventListener("change", function () {
+      filterAssetTypes();
+      checkLimitLive();
+    });
+
     el("faAmount").addEventListener("input", checkLimitLive);
+
+    resetAssetTypes();
 
     session = FA_OTP.getSession();
 
