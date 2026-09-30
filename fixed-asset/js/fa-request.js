@@ -21,6 +21,9 @@ const FA_REQUEST = (function () {
   /* Requests submitted by the signed-in user */
   let myRequests = [];
 
+  /* Selected Draft Business Case Approval (BCA) file */
+  let bcaFile = null;
+
   /* Value saved to SharePoint when asset type does not apply */
   const NOT_APPLICABLE_CODE = "N/A";
 
@@ -41,10 +44,17 @@ const FA_REQUEST = (function () {
 
   const NOT_REGISTERED_STATUSES = ["UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"];
 
-  /* ---------------- SAFE DOM HELPERS ----------------
-     These skip silently when an element is not in the
-     HTML, so one missing element never breaks the page.
-     -------------------------------------------------- */
+  const MIME_TYPES = {
+    pdf  : "application/pdf",
+    doc  : "application/msword",
+    docx : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xls  : "application/vnd.ms-excel",
+    xlsx : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ppt  : "application/vnd.ms-powerpoint",
+    pptx : "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  };
+
+  /* ---------------- SAFE DOM HELPERS ---------------- */
 
   function setText(id, text){
     const node = el(id);
@@ -97,7 +107,6 @@ const FA_REQUEST = (function () {
     return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
   }
 
-  /* Prevents user-entered text from being rendered as HTML */
   function escapeHtml(value){
     return String(value === null || value === undefined ? "" : value)
       .replace(/&/g, "&amp;")
@@ -118,6 +127,173 @@ const FA_REQUEST = (function () {
       hour   : "2-digit",
       minute : "2-digit"
     });
+  }
+
+  /* ============================================================
+     BCA FILE UPLOAD
+     ============================================================ */
+
+  function bcaMaxBytes(){
+    return (FA_CONFIG.bcaMaxSizeMB || 10) * 1024 * 1024;
+  }
+
+  function bcaAllowed(){
+    return (FA_CONFIG.bcaAllowedExtensions ||
+            ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"])
+      .map(function (x) { return String(x).toLowerCase(); });
+  }
+
+  function fileExtension(name){
+    const m = String(name || "").match(/\.([^.]+)$/);
+    return m ? m[1].toLowerCase() : "";
+  }
+
+  function formatSize(bytes){
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+  }
+
+  /* Removes characters that SharePoint does not allow in file names */
+  function safeFileName(name){
+    return String(name || "BCA")
+      .replace(/[~"#%&*:<>?\/\\{|}]/g, "_")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function renderBca(){
+
+    const has = !!bcaFile;
+
+    toggleClass("faBcaEmpty",    "fa-hide", has);
+    toggleClass("faBcaSelected", "fa-hide", !has);
+    toggleClass("faBcaZone",     "fa-has-file", has);
+
+    if (has){
+      setText("faBcaExt",  (fileExtension(bcaFile.name) || "FILE").toUpperCase());
+      setText("faBcaName", bcaFile.name);
+      setText("faBcaSize", formatSize(bcaFile.size) + " \u00b7 ready to upload");
+    }
+  }
+
+  function clearBca(){
+    bcaFile = null;
+    setValue("faBcaFile", "");
+    toggleClass("faBcaZone", "fa-bad", false);
+    renderBca();
+  }
+
+  /* Validates and stores the chosen file */
+  function handleBcaFile(file){
+
+    if (!file) return;
+
+    const ext = fileExtension(file.name);
+
+    if (bcaAllowed().indexOf(ext) === -1){
+      FA_UI.message("faFormMsg", "error",
+        "\"" + file.name + "\" is not a supported file type. Please upload a " +
+        bcaAllowed().join(", ").toUpperCase() + " file.");
+      toggleClass("faBcaZone", "fa-bad", true);
+      return;
+    }
+
+    if (file.size === 0){
+      FA_UI.message("faFormMsg", "error",
+        "The selected file is empty. Please choose another file.");
+      toggleClass("faBcaZone", "fa-bad", true);
+      return;
+    }
+
+    if (file.size > bcaMaxBytes()){
+      FA_UI.message("faFormMsg", "error",
+        "The selected file is " + formatSize(file.size) +
+        ". The maximum allowed size is " + (FA_CONFIG.bcaMaxSizeMB || 10) + " MB.");
+      toggleClass("faBcaZone", "fa-bad", true);
+      return;
+    }
+
+    bcaFile = file;
+    toggleClass("faBcaZone", "fa-bad", false);
+    FA_UI.message("faFormMsg", null, null);
+    renderBca();
+  }
+
+  /* Reads the file and returns the base64 content only */
+  function readAsBase64(file){
+    return new Promise(function (resolve, reject) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const result = String(reader.result || "");
+        const comma = result.indexOf(",");
+        resolve(comma >= 0 ? result.substring(comma + 1) : result);
+      };
+      reader.onerror = function () {
+        reject(new Error("Unable to read the selected BCA file. Please try again."));
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function setupBca(){
+
+    const required = !!FA_CONFIG.bcaRequired;
+
+    toggleClass("faBcaReq", "fa-hide", !required);
+    toggleClass("faBcaOpt", "fa-hide", required);
+
+    setText("faBcaHint",
+      "PDF, Word, Excel or PowerPoint \u00b7 up to " +
+      (FA_CONFIG.bcaMaxSizeMB || 10) + " MB");
+
+    const input = el("faBcaFile");
+    if (input){
+      input.setAttribute("accept",
+        bcaAllowed().map(function (x) { return "." + x; }).join(","));
+
+      input.addEventListener("change", function () {
+        const f = input.files && input.files[0];
+        handleBcaFile(f);
+        /* Reset so the same file can be picked again after removal */
+        input.value = "";
+      });
+    }
+
+    const zone = el("faBcaZone");
+    if (zone){
+
+      ["dragenter", "dragover"].forEach(function (evt) {
+        zone.addEventListener(evt, function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.add("fa-drag");
+        });
+      });
+
+      ["dragleave", "drop"].forEach(function (evt) {
+        zone.addEventListener(evt, function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.remove("fa-drag");
+        });
+      });
+
+      zone.addEventListener("drop", function (e) {
+        const files = e.dataTransfer && e.dataTransfer.files;
+        if (files && files.length){
+          if (files.length > 1){
+            FA_UI.message("faFormMsg", "warn",
+              "Only one BCA file can be uploaded. The first file has been used.");
+          }
+          handleBcaFile(files[0]);
+        }
+      });
+    }
+
+    onEvent("faBcaRemove", "click", clearBca);
+
+    renderBca();
   }
 
   /* ============================================================
@@ -148,7 +324,6 @@ const FA_REQUEST = (function () {
 
     sel.disabled = !enabled;
 
-    /* Hide the required asterisk when asset type does not apply */
     const star = document.querySelector('label[for="faAssetType"] .fa-required');
     if (star){
       star.style.display = (!enabled && assetTypeNotApplicable) ? "none" : "";
@@ -349,8 +524,6 @@ const FA_REQUEST = (function () {
 
   /* ============================================================
      MY REQUESTS
-     Status is shown exactly as stored in the SharePoint
-     Status column: Submitted, Pending, Approved, Rejected.
      ============================================================ */
 
   function rawStatus(status){
@@ -382,7 +555,6 @@ const FA_REQUEST = (function () {
     }
   }
 
-  /* Each card counts only records whose Status matches exactly */
   function updateCounts(){
 
     const counts = {};
@@ -397,7 +569,6 @@ const FA_REQUEST = (function () {
       setText("faCount" + s, counts[s]);
     });
 
-    /* Tab badge is optional: skipped if not in the HTML */
     setText("faTabMineCount", myRequests.length);
     toggleClass("faTabMineCount", "fa-hide", myRequests.length === 0);
   }
@@ -493,7 +664,6 @@ const FA_REQUEST = (function () {
     }).join("");
   }
 
-  /* silent = true loads in the background without the loader */
   async function loadMyRequests(silent){
 
     const email = activeEmail();
@@ -728,6 +898,7 @@ const FA_REQUEST = (function () {
 
       setValue("faAmount", "");
       setValue("faQuantity", "");
+      clearBca();
       updateTotal();
       el("faBtnSubmit").disabled = false;
 
@@ -737,7 +908,6 @@ const FA_REQUEST = (function () {
       FA_UI.loader(false);
     }
 
-    /* Load the request count in the background */
     loadMyRequests(true);
   }
 
@@ -820,7 +990,10 @@ const FA_REQUEST = (function () {
         "The total amount exceeds the permitted limit."],
 
       ["faLocation",     !f.locationCode,
-        "Please select a location."]
+        "Please select a location."],
+
+      ["faBcaZone",      !!FA_CONFIG.bcaRequired && !bcaFile,
+        "Please upload the draft Business Case Approval (BCA)."]
 
     ];
 
@@ -865,9 +1038,21 @@ const FA_REQUEST = (function () {
     }
 
     el("faBtnSubmit").disabled = true;
-    FA_UI.loader(true, "Submitting your request\u2026");
 
     try {
+
+      /* Attach the BCA file, if one was chosen */
+      if (bcaFile){
+        FA_UI.loader(true, "Preparing BCA document\u2026");
+
+        const ext = fileExtension(bcaFile.name);
+
+        form.bcaFileName    = safeFileName(bcaFile.name);
+        form.bcaContentType = bcaFile.type || MIME_TYPES[ext] || "application/octet-stream";
+        form.bcaFileContent = await readAsBase64(bcaFile);
+      }
+
+      FA_UI.loader(true, "Submitting your request\u2026");
 
       const res = await FA_API.submitRequest(submitterEmail, form);
 
@@ -880,7 +1065,6 @@ const FA_REQUEST = (function () {
       setText("faRefNo", res.requestNumber || "(pending)");
       FA_UI.showScreen("faScreenDone");
 
-      /* Refresh the request list in the background */
       loadMyRequests(true);
 
     } catch (err) {
@@ -924,6 +1108,7 @@ const FA_REQUEST = (function () {
     resetAssetTypes();
 
     resetTotals();
+    clearBca();
 
     FA_UI.clearBad();
     FA_UI.message("faFormMsg", null, null);
@@ -940,6 +1125,7 @@ const FA_REQUEST = (function () {
 
     resetAssetTypes();
     resetTotals();
+    clearBca();
 
     FA_UI.clearBad();
     FA_UI.message("faFormMsg", null, null);
@@ -1063,6 +1249,9 @@ const FA_REQUEST = (function () {
     });
 
     onEvent("faAmount", "input", checkLimitLive);
+
+    /* BCA upload */
+    setupBca();
 
     resetAssetTypes();
 
