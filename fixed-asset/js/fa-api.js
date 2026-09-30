@@ -70,8 +70,8 @@ const FA_API = (function () {
   }
 
   /* ---------------- SUBMIT ----------------
-     The BCA file is sent as base64 text.
-     hasBca = false when no file was uploaded.
+     Form data only. BCA files are uploaded
+     separately afterwards, one per call.
      ---------------------------------------- */
 
   function submitRequest(email, form){
@@ -86,11 +86,23 @@ const FA_API = (function () {
       amount          : form.amount,
       totalAmount     : form.totalAmount,
       locationCode    : form.locationCode,
+      bcaFileCount    : form.bcaFileCount || 0
+    });
+  }
 
-      hasBca          : !!form.bcaFileContent,
-      bcaFileName     : form.bcaFileName    || "",
-      bcaContentType  : form.bcaContentType || "",
-      bcaFileContent  : form.bcaFileContent || ""
+  /* ---------------- UPLOAD ONE BCA FILE ---------------- */
+
+  function uploadBcaFile(file){
+    return post(FA_CONFIG.bcaUploadUrl, {
+      moduleCode    : FA_CONFIG.moduleCode,
+      email         : file.email,
+      itemId        : file.itemId,
+      requestNumber : file.requestNumber,
+      fileName      : file.fileName,
+      contentType   : file.contentType,
+      fileContent   : file.fileContent,
+      fileIndex     : file.fileIndex,
+      fileCount     : file.fileCount
     });
   }
 
@@ -109,6 +121,7 @@ const FA_API = (function () {
     verifyOtp,
     getMasterData,
     submitRequest,
+    uploadBcaFile,
     getMyRequests
   };
 
