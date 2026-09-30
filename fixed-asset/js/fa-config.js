@@ -20,7 +20,7 @@ const FA_CONFIG = {
 
   submitUrl     : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/17/workflows/939c0c03bb19420e93f498d9d393256e/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=MSHOZQZffVGR0ltB70eWbDtQe4yNHejUCLAm87zwqSQ",
 
-  myRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/cde80967fbc04fd99133353ed8f7a576/triggers/manual/paths/invoke?api-version=1",
+  myRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/cde80967fbc04fd99133353ed8f7a576/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_70gqTbXzyiFuR1RysioFuD_51zM5N7Hm-ADmEAx_TA",
 
   /* ---- Access control ---- */
 
