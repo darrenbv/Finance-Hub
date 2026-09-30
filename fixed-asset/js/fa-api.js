@@ -21,9 +21,7 @@ const FA_API = (function () {
         body    : JSON.stringify(payload || {})
       });
     } catch (e) {
-      throw new Error(
-        "Network error. Please check your connection and try again."
-      );
+      throw new Error("Network error. Please check your connection and try again.");
     }
 
     const text = await response.text();
@@ -37,15 +35,13 @@ const FA_API = (function () {
     }
 
     if (!response.ok && !data.status){
-      throw new Error(
-        data.message || ("Request failed (" + response.status + ")")
-      );
+      throw new Error(data.message || ("Request failed (" + response.status + ")"));
     }
 
     return data;
   }
 
-  /* ---------------- SEND OTP ---------------- */
+  /* ---------------- OTP ---------------- */
 
   function requestOtp(email){
     return post(FA_CONFIG.requestOtpUrl, {
@@ -54,8 +50,6 @@ const FA_API = (function () {
       email      : email
     });
   }
-
-  /* ---------------- VERIFY OTP ---------------- */
 
   function verifyOtp(email, code){
     return post(FA_CONFIG.verifyOtpUrl, {
@@ -66,10 +60,7 @@ const FA_API = (function () {
     });
   }
 
-  /* ---------------- MASTER DATA ----------------
-     The verify flow returns no token, so the
-     verified email is sent as the caller identity.
-     ---------------------------------------------- */
+  /* ---------------- MASTER DATA ---------------- */
 
   function getMasterData(email){
     return post(FA_CONFIG.masterDataUrl, {
@@ -78,11 +69,7 @@ const FA_API = (function () {
     });
   }
 
-  /* ---------------- SUBMIT REQUEST ----------------
-     "email" is now included in the body so that
-     RequestorEmail and CreatedBy can be populated
-     in SharePoint.
-     ------------------------------------------------ */
+  /* ---------------- SUBMIT ---------------- */
 
   function submitRequest(email, form){
     return post(FA_CONFIG.submitUrl, {
@@ -94,10 +81,27 @@ const FA_API = (function () {
       assetTypeCode   : form.assetTypeCode,
       quantity        : form.quantity,
       amount          : form.amount,
+      totalAmount     : form.totalAmount,
       locationCode    : form.locationCode
     });
   }
 
-  return { requestOtp, verifyOtp, getMasterData, submitRequest };
+  /* ---------------- MY REQUESTS ---------------- */
+
+  function getMyRequests(email){
+    return post(FA_CONFIG.myRequestsUrl, {
+      moduleCode : FA_CONFIG.moduleCode,
+      action     : "myRequests",
+      email      : email
+    });
+  }
+
+  return {
+    requestOtp,
+    verifyOtp,
+    getMasterData,
+    submitRequest,
+    getMyRequests
+  };
 
 })();
