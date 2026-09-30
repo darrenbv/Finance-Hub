@@ -18,6 +18,9 @@ const FA_REQUEST = (function () {
   /* True when the selected asset class has no applicable asset type */
   let assetTypeNotApplicable = false;
 
+  /* Requests submitted by the signed-in user */
+  let myRequests = [];
+
   /* Value saved to SharePoint when asset type does not apply */
   const NOT_APPLICABLE_CODE = "N/A";
 
@@ -34,6 +37,10 @@ const FA_REQUEST = (function () {
   const OTP_SENT_STATUSES = ["SUCCESS", "SENT", "OK", "CREATED"];
 
   const NOT_REGISTERED_STATUSES = ["UNAUTHORIZED", "NOT_FOUND", "NOTFOUND", "NO_USER"];
+
+  const STATUS_ORDER = ["Pending", "Approved", "Rejected", "Verified"];
+
+  /* ---------------- GENERAL HELPERS ---------------- */
 
   function activeEmail(){
     return (session && session.email) || currentEmail || "";
@@ -58,12 +65,31 @@ const FA_REQUEST = (function () {
     return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
   }
 
+  /* Prevents user-entered text from being rendered as HTML */
+  function escapeHtml(value){
+    return String(value === null || value === undefined ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function formatDate(iso){
+    if (!iso) return "\u2014";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "\u2014";
+    return d.toLocaleString("en-MY", {
+      day    : "2-digit",
+      month  : "short",
+      year   : "numeric",
+      hour   : "2-digit",
+      minute : "2-digit"
+    });
+  }
+
   /* ============================================================
      ASSET TYPE FILTERING
-     AllowedAssetClasses comes from SharePoint as:
-       [ { "Id": 2, "Value": "1020" }, ... ]
-     Asset types without a TypeDescription are treated as
-     "not applicable" and the Asset Type box is greyed out.
      ============================================================ */
 
   function allowedClassesOf(assetType){
@@ -83,13 +109,18 @@ const FA_REQUEST = (function () {
     return String((assetType && assetType.description) || "").trim() !== "";
   }
 
-  /* Greys out or re-enables the Asset Type box */
   function setAssetTypeEnabled(enabled){
 
     const sel = el("faAssetType");
     if (!sel) return;
 
     sel.disabled = !enabled;
+
+    /* Hide the required asterisk when asset type does not apply */
+    const star = document.querySelector('label[for="faAssetType"] .fa-required');
+    if (star){
+      star.style.display = (!enabled && assetTypeNotApplicable) ? "none" : "";
+    }
 
     if (enabled){
       sel.style.background = "";
@@ -126,7 +157,6 @@ const FA_REQUEST = (function () {
       return;
     }
 
-    /* Only types with a TypeDescription are selectable */
     const filtered = masterAssetTypes
       .filter(function (t) {
         return allowedClassesOf(t).indexOf(String(selectedClass)) !== -1 &&
@@ -136,7 +166,6 @@ const FA_REQUEST = (function () {
         return { code: t.code, description: t.description };
       });
 
-    /* No applicable type (e.g. 8010, 9000, 9010): grey out */
     if (!filtered.length){
 
       assetTypeNotApplicable = true;
@@ -154,7 +183,6 @@ const FA_REQUEST = (function () {
     setAssetTypeEnabled(true);
     sel.classList.remove("fa-bad");
 
-    /* Auto-select when only one asset type applies (e.g. 3000 -> RENO) */
     if (filtered.length === 1){
       sel.value = filtered[0].code;
     }
@@ -162,11 +190,6 @@ const FA_REQUEST = (function () {
 
   /* ============================================================
      ASSET CLASS LIMITS (per unit)
-     Read from the bracket at the end of the class description:
-       (<=1.3K)   -> up to 1,300
-       (1.3K-5K)  -> above 1,300 and up to 5,000
-       (>150K)    -> above 150,000
-       no bracket -> no limit
      ============================================================ */
 
   function toNumber(text){
@@ -277,7 +300,6 @@ const FA_REQUEST = (function () {
     }
   }
 
-  /* Total = amount per unit x quantity */
   function calcTotal(){
     const qty = parseInt(el("faQuantity").value, 10);
     const amt = parseFloat(el("faAmount").value);
@@ -291,6 +313,168 @@ const FA_REQUEST = (function () {
       amt   : amt,
       total : Math.round(qty * amt * 100) / 100
     };
+  }
+
+  /* ============================================================
+     MY REQUESTS
+     ============================================================ */
+
+  function statusClass(status){
+    switch (String(status || "").toLowerCase()){
+      case "approved" : return "fa-st-approved";
+      case "rejected" : return "fa-st-rejected";
+      case "verified" : return "fa-st-verified";
+      default         : return "fa-st-pending";
+    }
+  }
+
+  function switchTab(tab){
+
+    const isNew = (tab === "new");
+
+    el("faTabNew").classList.toggle("fa-tab-active", isNew);
+    el("faTabMine").classList.toggle("fa-tab-active", !isNew);
+
+    el("faPanelNew").classList.toggle("fa-hide", !isNew);
+    el("faPanelMine").classList.toggle("fa-hide", isNew);
+
+    if (!isNew){
+      loadMyRequests(false);
+    }
+  }
+
+  function updateCounts(){
+
+    const counts = { Pending: 0, Approved: 0, Rejected: 0, Verified: 0 };
+
+    myRequests.forEach(function (r) {
+      const s = r.status || "Pending";
+      if (counts[s] !== undefined) counts[s]++;
+    });
+
+    el("faCountPending").textContent  = counts.Pending;
+    el("faCountApproved").textContent = counts.Approved;
+    el("faCountRejected").textContent = counts.Rejected;
+    el("faCountVerified").textContent = counts.Verified;
+
+    el("faTabMineCount").textContent = myRequests.length;
+    el("faTabMineCount").classList.toggle("fa-hide", myRequests.length === 0);
+  }
+
+  function metaItem(label, value){
+    return '<div><small>' + escapeHtml(label) + '</small><b>' +
+           escapeHtml(value === "" || value === null || value === undefined ? "\u2014" : value) +
+           '</b></div>';
+  }
+
+  function renderMyRequests(){
+
+    const list   = el("faReqList");
+    const search = String(el("faReqSearch").value || "").trim().toLowerCase();
+    const filter = el("faReqFilter").value;
+
+    const rows = myRequests.filter(function (r) {
+
+      const matchesSearch =
+        !search ||
+        String(r.requestNumber || "").toLowerCase().indexOf(search) !== -1 ||
+        String(r.assetDetails  || "").toLowerCase().indexOf(search) !== -1;
+
+      const matchesStatus =
+        !filter || (r.status || "Pending") === filter;
+
+      return matchesSearch && matchesStatus;
+    });
+
+    if (!myRequests.length){
+      list.innerHTML =
+        '<div class="fa-empty">You have not submitted any requests yet.</div>';
+      return;
+    }
+
+    if (!rows.length){
+      list.innerHTML =
+        '<div class="fa-empty">No requests match your search or filter.</div>';
+      return;
+    }
+
+    list.innerHTML = rows.map(function (r) {
+
+      const status = r.status || "Pending";
+      const qty    = parseInt(r.quantity, 10);
+      const amt    = parseFloat(r.amount);
+      const total  = (!isNaN(qty) && !isNaN(amt)) ? qty * amt : NaN;
+
+      const qtyText = (!isNaN(qty) && !isNaN(amt))
+        ? qty + " \u00d7 " + FA_UI.money(amt)
+        : "\u2014";
+
+      let remark = "";
+
+      if (r.remarks){
+        remark = (status === "Rejected")
+          ? '<div class="fa-req-remark"><b>Reason:</b> ' + escapeHtml(r.remarks) + '</div>'
+          : '<div class="fa-req-note"><b>Remarks:</b> ' + escapeHtml(r.remarks) + '</div>';
+      }
+
+      return '' +
+        '<article class="fa-req-card">' +
+          '<div class="fa-req-head">' +
+            '<div>' +
+              '<div class="fa-req-no">' + escapeHtml(r.requestNumber || "(pending)") + '</div>' +
+              '<div class="fa-req-date">Submitted ' + escapeHtml(formatDate(r.submittedDate)) + '</div>' +
+            '</div>' +
+            '<span class="fa-badge-status ' + statusClass(status) + '">' + escapeHtml(status) + '</span>' +
+          '</div>' +
+          (r.assetDetails
+            ? '<div class="fa-req-desc">' + escapeHtml(r.assetDetails) + '</div>'
+            : '') +
+          '<div class="fa-req-meta">' +
+            metaItem("Category",     r.requestCategory) +
+            metaItem("Asset class",  r.assetClassCode) +
+            metaItem("Asset type",   r.assetTypeCode) +
+            metaItem("Location",     r.locationCode) +
+            metaItem("Quantity",     qtyText) +
+            metaItem("Total amount", isNaN(total) ? "" : FA_UI.money(total)) +
+          '</div>' +
+          remark +
+        '</article>';
+
+    }).join("");
+  }
+
+  /* silent = true loads in the background without the loader */
+  async function loadMyRequests(silent){
+
+    const email = activeEmail();
+    if (!email) return;
+
+    if (!silent){
+      FA_UI.loader(true, "Loading your requests\u2026");
+      FA_UI.message("faListMsg", null, null);
+    }
+
+    try {
+
+      const res = await FA_API.getMyRequests(email);
+
+      myRequests = Array.isArray(res.requests) ? res.requests : [];
+
+      updateCounts();
+      renderMyRequests();
+
+    } catch (e) {
+
+      if (!silent){
+        FA_UI.message("faListMsg", "error",
+          "Unable to load your requests. " + e.message);
+      }
+
+    } finally {
+      if (!silent){
+        FA_UI.loader(false);
+      }
+    }
   }
 
   /* ---------------- STEP 1 : REQUEST OTP ---------------- */
@@ -464,6 +648,7 @@ const FA_REQUEST = (function () {
       el("faBtnSignOut").classList.remove("fa-hide");
 
       FA_UI.showScreen("faScreenForm");
+      switchTab("new");
 
       const data = await FA_API.getMasterData(activeEmail());
 
@@ -501,6 +686,9 @@ const FA_REQUEST = (function () {
     } finally {
       FA_UI.loader(false);
     }
+
+    /* Load the request count in the background */
+    loadMyRequests(true);
   }
 
   /* ---------------- STEP 4 : SUBMIT ---------------- */
@@ -554,7 +742,6 @@ const FA_REQUEST = (function () {
       ["faAssetClass",   !f.assetClassCode,
         "Please select an asset class."],
 
-      /* Asset type is only mandatory when it applies */
       ["faAssetType",    !assetTypeNotApplicable && !f.assetTypeCode,
         "Please select an asset type."],
 
@@ -643,6 +830,9 @@ const FA_REQUEST = (function () {
       el("faRefNo").textContent = res.requestNumber || "(pending)";
       FA_UI.showScreen("faScreenDone");
 
+      /* Refresh the request list in the background */
+      loadMyRequests(true);
+
     } catch (err) {
       FA_UI.message("faFormMsg", "error", err.message);
     } finally {
@@ -651,7 +841,7 @@ const FA_REQUEST = (function () {
     }
   }
 
-  /* ---------------- HELPERS ---------------- */
+  /* ---------------- FORM HELPERS ---------------- */
 
   function updateTotal(){
 
@@ -717,14 +907,26 @@ const FA_REQUEST = (function () {
     currentEmail = "";
     classLimits = {};
     masterAssetTypes = [];
+    myRequests = [];
 
     clearFormState();
+
+    el("faReqList").innerHTML = "";
+    el("faReqSearch").value = "";
+    el("faReqFilter").value = "";
+    updateCounts();
+
+    el("faTabNew").classList.add("fa-tab-active");
+    el("faTabMine").classList.remove("fa-tab-active");
+    el("faPanelNew").classList.remove("fa-hide");
+    el("faPanelMine").classList.add("fa-hide");
 
     el("faEmail").value = "";
     el("faBtnVerify").disabled = false;
     el("faBtnSignOut").classList.add("fa-hide");
 
     FA_UI.clearMessages();
+    FA_UI.message("faListMsg", null, null);
     FA_UI.showScreen("faScreenEmail");
   }
 
@@ -736,6 +938,7 @@ const FA_REQUEST = (function () {
 
     FA_OTP.bindBoxes(verifyOtp);
 
+    /* OTP */
     el("faBtnRequestOtp").addEventListener("click", function () {
       requestOtp(false);
     });
@@ -756,13 +959,33 @@ const FA_REQUEST = (function () {
     el("faBtnChangeEmail").addEventListener("click", signOut);
     el("faBtnSignOut").addEventListener("click", signOut);
 
+    /* Tabs */
+    el("faTabNew").addEventListener("click", function () { switchTab("new"); });
+    el("faTabMine").addEventListener("click", function () { switchTab("mine"); });
+
+    /* My requests toolbar */
+    el("faReqSearch").addEventListener("input", renderMyRequests);
+    el("faReqFilter").addEventListener("change", renderMyRequests);
+    el("faBtnRefresh").addEventListener("click", function () {
+      loadMyRequests(false);
+    });
+
+    /* Form */
     el("faForm").addEventListener("submit", submitForm);
 
     el("faBtnClear").addEventListener("click", resetSelectionsOnly);
 
+    /* Success screen */
     el("faBtnAnother").addEventListener("click", function () {
       resetSelectionsOnly();
       FA_UI.showScreen("faScreenForm");
+      switchTab("new");
+    });
+
+    el("faBtnViewMine").addEventListener("click", function () {
+      resetSelectionsOnly();
+      FA_UI.showScreen("faScreenForm");
+      switchTab("mine");
     });
 
     el("faAssetDetails").addEventListener("input", function () {
