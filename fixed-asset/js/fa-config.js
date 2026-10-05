@@ -6,10 +6,9 @@ const FA_CONFIG = {
 
   moduleCode : "FA",
   moduleName : "Fixed Asset Number Request",
-  appVersion : "v4.4.0",
+  appVersion : "v4.4.1",
 
-  /* ---- Power Automate HTTP trigger URLs ----
-     Plain URL only, inside straight quotes. One line each. */
+  /* ---- Power Automate HTTP trigger URLs ---- */
 
   requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
 
@@ -45,4 +44,4 @@ const FA_CONFIG = {
   bcaMaxSizeMB         : 25,
   bcaAllowedExtensions : ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"]
 
-};​‌
+};
