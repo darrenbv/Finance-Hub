@@ -3,66 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CGC Petty Cash Management System</title>
-
+<title>Petty Cash Management | CGC</title>
 <style>
-  @import url("styles.css?v=5");
+  @import url("styles.css?v=6");
 </style>
 </head>
-
 <body>
 
-<div class="shell">
-
-  <header class="hero">
-    <h1>CGC Petty Cash Management System</h1>
-    <p id="heroSubtitle">Secure request, approval, disbursement and settlement lifecycle</p>
-  </header>
-
-  <!-- LOCATION -->
-  <section id="locationScreen" class="screen">
-    <div class="center">
-      <div class="title">Select your origination location</div>
-      <div class="subtitle">The selected location determines the applicable verification and approval workflow.</div>
-    </div>
-
-    <div class="cards">
-      <div class="select-card" data-location="HQ" onclick="chooseLocation(this)">
-        <div class="icon">🏢</div>
-        <h3>Headquarters</h3>
-        <p>Petty Cash Advance or Petty Cash Claim initiated by an HQ department.</p>
-      </div>
-
-      <div class="select-card" data-location="Branch" onclick="chooseLocation(this)">
-        <div class="icon">🏬</div>
-        <h3>Branch</h3>
-        <p>Branch request initiated by a Maker and routed through Branch verification.</p>
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <div class="brand-mark">CGC</div>
+      <div class="brand-text">
+        <span class="brand-title">Petty Cash Management</span>
+        <span class="brand-sub">Credit Guarantee Corporation Malaysia Berhad</span>
       </div>
     </div>
+    <div id="userChip" class="user-chip hidden">
+      <span class="user-dot"></span>
+      <div>
+        <span id="chipEmail" class="chip-email"></span>
+        <span id="chipContext" class="chip-context"></span>
+      </div>
+    </div>
+  </div>
+</header>
 
-    <div class="actions">
+<main class="stage">
+
+  <!-- ENTRY: LOCATION -->
+  <section id="screenLocation" class="entry-card">
+    <p class="eyebrow">Secure access</p>
+    <h1 class="entry-title">Where does this request originate?</h1>
+    <p class="entry-lead">Your selection determines the verification and approval route applied to the request.</p>
+
+    <div class="choice-list">
+      <button type="button" class="choice" data-location="HQ" onclick="chooseLocation(this)">
+        <span class="choice-radio"></span>
+        <span class="choice-body">
+          <span class="choice-title">Headquarters</span>
+          <span class="choice-desc">Departmental petty cash advance or claim, approved under the departmental Authority Approval Matrix.</span>
+        </span>
+      </button>
+      <button type="button" class="choice" data-location="Branch" onclick="chooseLocation(this)">
+        <span class="choice-radio"></span>
+        <span class="choice-body">
+          <span class="choice-title">Branch</span>
+          <span class="choice-desc">Branch request prepared by a Maker, verified at branch level and approved by Branch Management.</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="entry-actions end">
       <button id="locationContinue" class="btn btn-primary" disabled onclick="openAuthentication()">Continue</button>
     </div>
   </section>
 
-  <!-- AUTHENTICATION -->
-  <section id="authenticationScreen" class="screen hidden">
-    <div class="auth-card">
-      <div class="center">
-        <div id="locationTag" class="tag">HEADQUARTERS</div>
-        <div class="title">Verify your CGC email</div>
-        <div class="subtitle">A six-digit verification code will be sent after the email is validated against the CGC directory.</div>
-      </div>
+  <!-- ENTRY: AUTHENTICATION -->
+  <section id="screenAuth" class="entry-card hidden">
+    <p class="eyebrow">Secure access · <span id="authContext"></span></p>
+    <h1 class="entry-title">Verify your identity</h1>
+    <p class="entry-lead">Enter your CGC email address. A six-digit code will be sent once your email is confirmed in the CGC directory.</p>
 
+    <div class="stack">
       <div class="field">
-        <label>CGC Email Address <span class="required">*</span></label>
-        <input id="gateEmail" type="email" placeholder="name@cgc.com.my">
+        <label for="gateEmail">CGC email address <span class="req">*</span></label>
+        <input id="gateEmail" type="email" autocomplete="email" placeholder="name@cgc.com.my">
       </div>
 
-      <div id="branchSelection" class="field hidden" style="margin-top:16px">
-        <label>Branch <span class="required">*</span></label>
+      <div id="branchSelection" class="field hidden">
+        <label for="branchSelect">Branch <span class="req">*</span></label>
         <select id="branchSelect">
-          <option value="">-- Select Branch --</option>
+          <option value="">Select branch</option>
           <option>Johor Bahru</option>
           <option>Melaka</option>
           <option>Seremban</option>
@@ -77,388 +89,392 @@
           <option>Miri</option>
         </select>
       </div>
+    </div>
 
-      <div class="actions">
-        <button class="btn btn-secondary" onclick="returnToLocation()">Back</button>
-        <button id="sendOtpButton" class="btn btn-primary" onclick="sendOTP()">Send Verification Code</button>
+    <div class="entry-actions">
+      <button class="btn btn-ghost" onclick="returnToLocation()">Back</button>
+      <button id="sendOtpButton" class="btn btn-primary" onclick="sendOTP()">Send verification code</button>
+    </div>
+
+    <div id="authSuccess" class="notice success"></div>
+    <div id="authError" class="notice error"></div>
+
+    <div id="otpArea" class="otp-block hidden">
+      <p class="otp-sent">Enter the code sent to <strong id="otpEmail"></strong></p>
+
+      <div class="otp-digits">
+        <input class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code" data-index="0">
+        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="1">
+        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="2">
+        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="3">
+        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="4">
+        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="5">
       </div>
 
-      <div id="authSuccess" class="message success"></div>
-      <div id="authError" class="message error"></div>
+      <div class="otp-meta">
+        <span>Code expires in <strong id="otpTimer">01:00</strong></span>
+        <button type="button" id="resendButton" class="link-btn" disabled onclick="resendOTP()">Resend in 30s</button>
+      </div>
 
-      <div id="otpArea" class="otp-wrap hidden">
-        <div class="center otp-sent">Code sent to <strong id="otpEmail"></strong></div>
+      <div id="otpError" class="notice error"></div>
 
-        <div class="otp-digits">
-          <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="0">
-          <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="1">
-          <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="2">
-          <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="3">
-          <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="4">
-          <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="5">
+      <button id="verifyButton" class="btn btn-primary btn-block" style="margin-top:20px" onclick="verifyOTP()">Verify and continue</button>
+    </div>
+  </section>
+
+  <!-- ENTRY: REQUEST TYPE (HQ) -->
+  <section id="screenType" class="entry-card hidden">
+    <p class="eyebrow">Headquarters</p>
+    <h1 class="entry-title">What would you like to submit?</h1>
+    <p class="entry-lead">Both request types follow the same approval and settlement lifecycle under a single reference number.</p>
+
+    <div class="choice-list">
+      <button type="button" class="choice" data-type="Advance" onclick="chooseType(this)">
+        <span class="choice-radio"></span>
+        <span class="choice-body">
+          <span class="choice-title">Petty Cash Advance</span>
+          <span class="choice-desc">Request funds before the business expense is incurred.</span>
+        </span>
+      </button>
+      <button type="button" class="choice" data-type="Claim" onclick="chooseType(this)">
+        <span class="choice-radio"></span>
+        <span class="choice-body">
+          <span class="choice-title">Petty Cash Claim</span>
+          <span class="choice-desc">Claim an expense already incurred, linked to an existing request reference where applicable.</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="entry-actions">
+      <button class="btn btn-ghost" onclick="restartApplication()">Start over</button>
+      <button id="typeContinue" class="btn btn-primary" disabled onclick="confirmType()">Continue</button>
+    </div>
+  </section>
+
+  <!-- WIZARD -->
+  <section id="wizard" class="wizard hidden">
+
+    <aside class="rail">
+      <div class="rail-head">
+        <p class="eyebrow" id="railLocation"></p>
+        <p class="rail-type" id="railType"></p>
+        <div class="rail-ref">Request reference<strong>Assigned on submission</strong></div>
+      </div>
+      <ol id="stepList" class="step-list"></ol>
+      <div class="rail-foot">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="9" width="12" height="8" rx="1.5"/><path d="M7 9V6.5a3 3 0 016 0V9"/></svg>
+        Session protected by one-time verification
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <div class="mobile-progress">
+        <span id="mobileStepLabel"></span>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      </div>
+
+      <form id="requestForm" novalidate onsubmit="return false;">
+
+        <!-- STEP 1 -->
+        <div class="step-panel" data-step="1">
+          <header class="panel-head">
+            <p class="eyebrow">Step 1 of 7</p>
+            <h2>Requestor</h2>
+            <p class="panel-lead">Confirm the identity and department responsible for this request. Directory details are applied automatically where available.</p>
+          </header>
+
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="requestorName">Full name <span class="req">*</span></label>
+              <input id="requestorName" autocomplete="name">
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="requestorEmail">Email address</label>
+              <input id="requestorEmail" readonly>
+            </div>
+            <div class="field">
+              <label for="department">Department <span class="req">*</span></label>
+              <input id="department" placeholder="e.g. FAS, FIN, BSM">
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="employeeId">Employee ID <span class="req">*</span></label>
+              <input id="employeeId">
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="requestDate">Request date</label>
+              <input id="requestDate" readonly>
+            </div>
+          </div>
+
+          <div id="branchProfileFields" class="grid grid-2 hidden" style="margin-top:20px">
+            <div class="field">
+              <label for="branchName">Branch</label>
+              <input id="branchName" readonly>
+            </div>
+            <div class="field">
+              <label for="branchCostCentre">Branch cost centre</label>
+              <input id="branchCostCentre" readonly placeholder="To be confirmed by Finance">
+            </div>
+          </div>
         </div>
 
-        <div class="otp-meta">
-          <span>Expires in <strong id="otpTimer">01:00</strong></span>
-          <button id="resendButton" class="link-button" disabled onclick="resendOTP()">Resend in 30s</button>
+        <!-- STEP 2 -->
+        <div class="step-panel hidden" data-step="2">
+          <header class="panel-head">
+            <p class="eyebrow">Step 2 of 7</p>
+            <h2>Request details</h2>
+            <p class="panel-lead">State the amount required and the business purpose. This information is reviewed by every approver in the chain.</p>
+          </header>
+
+          <div id="claimReferenceSection" class="hidden">
+            <p class="subhead">Original request</p>
+            <div class="grid grid-2" style="margin-top:16px">
+              <div class="field">
+                <label for="originalRequestRef">Original request reference <span class="req">*</span></label>
+                <input id="originalRequestRef" placeholder="YYYY/MM/DD/DEPT/0001">
+                <span class="error-text"></span>
+              </div>
+              <div class="field">
+                <label for="originalAmount">Original amount <span class="req">*</span></label>
+                <div class="affix"><span>RM</span><input id="originalAmount" type="number" min="0" step="0.01" placeholder="0.00"></div>
+                <span class="error-text"></span>
+              </div>
+            </div>
+            <div class="divider"></div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="amountRequested">Amount requested <span class="req">*</span></label>
+              <div class="affix"><span>RM</span><input id="amountRequested" type="number" min="0.01" step="0.01" placeholder="0.00"></div>
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="dateRequired">Date required <span class="req">*</span></label>
+              <input id="dateRequired" type="date">
+              <span class="error-text"></span>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:20px">
+            <label for="purpose">Business purpose <span class="req">*</span></label>
+            <textarea id="purpose" maxlength="500" placeholder="Describe what the funds will be used for and why they are required."></textarea>
+            <span class="counter" id="purposeCount">0 / 500</span>
+            <span class="error-text"></span>
+          </div>
         </div>
 
-        <div class="actions">
-          <button id="verifyButton" class="btn btn-primary" onclick="verifyOTP()">Verify and Continue</button>
+        <!-- STEP 3 -->
+        <div class="step-panel hidden" data-step="3">
+          <header class="panel-head">
+            <p class="eyebrow">Step 3 of 7</p>
+            <h2>Budget and GL classification</h2>
+            <p class="panel-lead">Select the expense classification from the SAP S/4HANA master data. The cost centre is applied automatically.</p>
+          </header>
+
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="opexClass">Class of OPEX <span class="req">*</span></label>
+              <select id="opexClass" onchange="filterGlOptions()"></select>
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="glCode">SAP GL code <span class="req">*</span></label>
+              <select id="glCode" onchange="applySelectedGL()"></select>
+              <span class="error-text"></span>
+            </div>
+          </div>
+
+          <div id="glDetail" class="detail-card hidden" style="margin-top:20px">
+            <dl>
+              <dt>Class of OPEX</dt><dd id="detailOpex"></dd>
+              <dt>SAP GL code</dt><dd id="detailGlCode"></dd>
+              <dt>GL description</dt><dd id="detailGlDescription"></dd>
+              <dt>Type of expense</dt><dd id="detailExpenseType"></dd>
+              <dt>Cost centre</dt><dd id="detailCostCentre"></dd>
+            </dl>
+          </div>
+
+          <div class="callout" style="margin-top:20px">
+            Classifications are based on the SAP extracts provided by Finance. Contact Finance if the required expense type is not listed.
+          </div>
         </div>
 
-        <div id="otpError" class="message error"></div>
+        <!-- STEP 4 -->
+        <div class="step-panel hidden" data-step="4">
+          <header class="panel-head">
+            <p class="eyebrow">Step 4 of 7</p>
+            <h2>Payment details</h2>
+            <p class="panel-lead">Provide the account to receive the funds. Finance will transfer approved amounts via Maybank2u outside this system.</p>
+          </header>
+
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="bankName">Bank <span class="req">*</span></label>
+              <select id="bankName">
+                <option value="">Select bank</option>
+                <option>Maybank</option>
+                <option>CIMB Bank</option>
+                <option>Public Bank</option>
+                <option>RHB Bank</option>
+                <option>Hong Leong Bank</option>
+                <option>AmBank</option>
+                <option>Bank Islam</option>
+                <option>Bank Muamalat</option>
+                <option>BSN</option>
+                <option>Other</option>
+              </select>
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="bankAccountNumber">Account number <span class="req">*</span></label>
+              <input id="bankAccountNumber" inputmode="numeric" autocomplete="off" placeholder="Digits only">
+              <span class="error-text"></span>
+            </div>
+          </div>
+
+          <div id="otherBankField" class="field hidden" style="margin-top:20px">
+            <label for="otherBankName">Bank name <span class="req">*</span></label>
+            <input id="otherBankName">
+            <span class="error-text"></span>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="step-panel hidden" data-step="5">
+          <header class="panel-head">
+            <p class="eyebrow">Step 5 of 7</p>
+            <h2>Approvals</h2>
+            <p class="panel-lead">Nominate approvers in accordance with the Authority Approval Matrix. You cannot nominate yourself.</p>
+          </header>
+
+          <div id="hqApprovalFields" class="grid grid-2">
+            <div class="field">
+              <label for="departmentApprover1">First approver <span class="req">*</span></label>
+              <input id="departmentApprover1" type="email" placeholder="name@cgc.com.my">
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="departmentApprover2">Second approver <span class="req">*</span></label>
+              <input id="departmentApprover2" type="email" placeholder="name@cgc.com.my">
+              <span class="error-text"></span>
+            </div>
+          </div>
+
+          <div id="branchApprovalFields" class="grid grid-2 hidden">
+            <div class="field">
+              <label for="branchVerifierEmail">Branch verifier <span class="req">*</span></label>
+              <input id="branchVerifierEmail" type="email" placeholder="Branch Manager or Assistant Branch Manager">
+              <span class="error-text"></span>
+            </div>
+            <div class="field">
+              <label for="branchManagementApprover">Branch Management approver <span class="req">*</span></label>
+              <input id="branchManagementApprover" type="email" placeholder="name@cgc.com.my">
+              <span class="error-text"></span>
+            </div>
+            <div class="field span-2">
+              <label for="branchSecondApprover">Additional approver <span class="optional">Optional, where required by AAM</span></label>
+              <input id="branchSecondApprover" type="email" placeholder="name@cgc.com.my">
+              <span class="error-text"></span>
+            </div>
+          </div>
+
+          <div class="callout" style="margin-top:20px">
+            After departmental approval, the request is routed to a Finance Processor, who assigns the Finance Approver under the Finance Authority Approval Matrix.
+          </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div class="step-panel hidden" data-step="6">
+          <header class="panel-head">
+            <p class="eyebrow">Step 6 of 7</p>
+            <h2>Supporting documents</h2>
+            <p class="panel-lead">Attach the Budget Confirmation Approval (BCA) or the approved supporting paper for this request.</p>
+          </header>
+
+          <div class="field">
+            <label id="dropzone" class="dropzone" for="requestDocuments">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+              <span class="dz-title">Drag files here or click to browse</span>
+              <span class="dz-sub">PDF, Word, Excel, JPG or PNG · 10 MB total</span>
+            </label>
+            <input id="requestDocuments" type="file" multiple class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+            <span class="error-text"></span>
+            <ul id="fileList" class="file-list"></ul>
+            <div id="fileTotal" class="file-total"></div>
+          </div>
+
+          <div class="callout" style="margin-top:20px">
+            Payment receipts, purchase receipts and refund documents are uploaded at later stages under the same request reference.
+          </div>
+        </div>
+
+        <!-- STEP 7 -->
+        <div class="step-panel hidden" data-step="7">
+          <header class="panel-head">
+            <p class="eyebrow">Step 7 of 7</p>
+            <h2>Review and submit</h2>
+            <p class="panel-lead">Check every detail before submitting. Once submitted, the request is routed for approval and cannot be edited.</p>
+          </header>
+
+          <div id="reviewContent"></div>
+
+          <div class="declaration">
+            <p>I confirm that the information submitted is complete and accurate, and that this request is for a legitimate CGC business purpose. I will submit the payment acknowledgement, purchase receipts and any refund documents under the same request reference.</p>
+            <label class="checkline">
+              <input type="checkbox" id="declarationAccepted">
+              <span>I accept this declaration</span>
+            </label>
+            <span id="declarationError" class="error-text">You must accept the declaration to submit.</span>
+          </div>
+
+          <div id="submitNotice" class="notice"></div>
+        </div>
+
+      </form>
+
+      <div class="workspace-footer">
+        <button id="backButton" class="btn btn-ghost" onclick="previousStep()">Back</button>
+        <div class="footer-right">
+          <span id="stepCounter" class="step-counter"></span>
+          <button id="nextButton" class="btn btn-primary" onclick="nextStep()">Continue</button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- REQUEST TYPE (HQ ONLY) -->
-  <section id="requestTypeScreen" class="screen hidden">
-    <div class="center">
-      <div class="tag">HEADQUARTERS</div>
-      <div class="title">Select transaction type</div>
-      <div class="subtitle">Advance requests and claims use the same request lifecycle and reference model.</div>
+  <!-- SUCCESS -->
+  <section id="screenSuccess" class="entry-card hidden">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
     </div>
-
-    <div class="cards">
-      <div class="select-card" onclick="openRequestForm('Advance')">
-        <div class="icon">💵</div>
-        <h3>Petty Cash Advance</h3>
-        <p>Request funds before the business expense is incurred.</p>
-      </div>
-
-      <div class="select-card" onclick="openRequestForm('Claim')">
-        <div class="icon">🧾</div>
-        <h3>Petty Cash Claim</h3>
-        <p>Submit a direct petty cash claim or settlement linked to an existing reference.</p>
-      </div>
+    <p class="eyebrow">Submitted</p>
+    <h1 class="entry-title">Your request has been submitted</h1>
+    <p class="entry-lead">It has been routed to the first approver. Use the reference below for all follow-up documents and enquiries.</p>
+    <div class="reference-box">
+      <span>Request reference</span>
+      <strong id="successReference"></strong>
     </div>
-
-    <div class="actions">
-      <button class="btn btn-secondary" onclick="returnToAuthentication()">Back</button>
+    <div class="entry-actions end">
+      <button class="btn btn-primary" onclick="restartApplication(true)">Submit another request</button>
     </div>
   </section>
 
-  <!-- MAIN REQUEST FORM -->
-  <main id="requestScreen" class="hidden">
+</main>
 
-    <div class="topbar">
-      <div>Location: <strong id="displayLocation"></strong></div>
-      <div>Verified email: <strong id="displayEmail"></strong></div>
-      <div><span id="requestBadge" class="tag tag-inline"></span></div>
-    </div>
-
-    <div class="workflow">
-      <h3>Expected workflow</h3>
-      <div id="workflowSteps" class="workflow-grid"></div>
-    </div>
-
-    <form id="requestForm" class="form-content" novalidate onsubmit="return false;">
-
-      <!-- REQUESTOR PROFILE -->
-      <section class="section">
-        <div class="section-heading">
-          <h2>Requestor Profile</h2>
-          <span>Profile fields will be populated from the CGC directory</span>
-        </div>
-
-        <div class="grid-2">
-          <div class="field">
-            <label>Requestor Name</label>
-            <input id="requestorName" readonly placeholder="To be populated from user profile">
-          </div>
-          <div class="field">
-            <label>Requestor Email</label>
-            <input id="requestorEmail" readonly>
-          </div>
-        </div>
-
-        <div class="grid-3">
-          <div class="field">
-            <label>Department</label>
-            <input id="department" readonly placeholder="To be populated from user profile">
-          </div>
-          <div class="field">
-            <label>Employee ID <span class="required">*</span></label>
-            <input id="employeeId" placeholder="Enter employee ID">
-            <span class="error-text">Enter your employee ID.</span>
-          </div>
-          <div class="field">
-            <label>Request Date</label>
-            <input id="requestDate" readonly>
-          </div>
-        </div>
-
-        <div id="branchProfileFields" class="grid-2 hidden">
-          <div class="field">
-            <label>Branch</label>
-            <input id="branchName" readonly>
-          </div>
-          <div class="field">
-            <label>Branch Cost Centre</label>
-            <input id="branchCostCentre" readonly placeholder="Pending Finance confirmation">
-          </div>
-        </div>
-      </section>
-
-      <!-- CLAIM REFERENCE -->
-      <section id="claimReferenceSection" class="section hidden">
-        <div class="section-heading">
-          <h2>Original Request Reference</h2>
-          <span>Use the same reference throughout settlement</span>
-        </div>
-
-        <div class="grid-2">
-          <div class="field">
-            <label>Original Request Reference <span class="required">*</span></label>
-            <input id="originalRequestRef" placeholder="YYYY/MM/DD/DEPT/Sequence">
-            <span class="error-text">Enter the original request reference.</span>
-          </div>
-          <div class="field">
-            <label>Original Amount (RM) <span class="required">*</span></label>
-            <input id="originalAmount" type="number" min="0" step="0.01" placeholder="0.00">
-            <span class="error-text">Enter the original amount.</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- REQUEST DETAILS -->
-      <section class="section">
-        <div class="section-heading">
-          <h2>Request Details</h2>
-          <span>Financial and business information</span>
-        </div>
-
-        <div class="grid-2">
-          <div class="field">
-            <label>Amount Requested (RM) <span class="required">*</span></label>
-            <input id="amountRequested" type="number" min="0.01" step="0.01" placeholder="0.00">
-            <span class="error-text">Enter an amount greater than zero.</span>
-          </div>
-          <div class="field">
-            <label>Date Required By <span class="required">*</span></label>
-            <input id="dateRequired" type="date">
-            <span class="error-text">Select the required date.</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Purpose of Request <span class="required">*</span></label>
-          <textarea id="purpose" placeholder="Describe the business purpose and expected use of the funds."></textarea>
-          <span class="error-text">Enter the purpose of the request.</span>
-        </div>
-      </section>
-
-      <!-- GL CLASSIFICATION -->
-      <section class="section">
-        <div class="section-heading">
-          <h2>Budget and GL Classification</h2>
-          <span>Controlled values from SAP S/4HANA master data</span>
-        </div>
-
-        <div class="grid-3">
-          <div class="field">
-            <label>Class of OPEX <span class="required">*</span></label>
-            <select id="opexClass" onchange="filterGlOptions()">
-              <option value="">-- Select Class --</option>
-            </select>
-            <span class="error-text">Select the Class of OPEX.</span>
-          </div>
-          <div class="field">
-            <label>SAP GL Code <span class="required">*</span></label>
-            <select id="glCode" onchange="applySelectedGL()">
-              <option value="">-- Select GL Code --</option>
-            </select>
-            <span class="error-text">Select a GL Code.</span>
-          </div>
-          <div class="field">
-            <label>Cost Centre</label>
-            <input id="costCentre" readonly placeholder="Derived from master data">
-          </div>
-        </div>
-
-        <div class="grid-2">
-          <div class="field">
-            <label>SAP GL Description</label>
-            <input id="glDescription" readonly>
-          </div>
-          <div class="field">
-            <label>Type of Expense</label>
-            <textarea id="expenseType" readonly></textarea>
-          </div>
-        </div>
-
-        <div class="warning-box">
-          These dropdown values come from the SAP extracts provided by Finance. Later, they will be loaded from a SharePoint GL master list so Finance can update them without editing this page.
-        </div>
-      </section>
-
-      <!-- BANK DETAILS -->
-      <section id="bankSection" class="section">
-        <div class="section-heading">
-          <h2>Recipient Bank Details</h2>
-          <span>Used by Finance for the M2U transfer</span>
-        </div>
-
-        <div class="grid-2">
-          <div class="field">
-            <label>Bank Name <span class="required">*</span></label>
-            <select id="bankName">
-              <option value="">-- Select Bank --</option>
-              <option>Maybank</option>
-              <option>CIMB Bank</option>
-              <option>Public Bank</option>
-              <option>RHB Bank</option>
-              <option>Hong Leong Bank</option>
-              <option>AmBank</option>
-              <option>Bank Islam</option>
-              <option>Bank Muamalat</option>
-              <option>BSN</option>
-              <option>Other</option>
-            </select>
-            <span class="error-text">Select the recipient bank.</span>
-          </div>
-          <div class="field">
-            <label>Bank Account Number <span class="required">*</span></label>
-            <input id="bankAccountNumber" inputmode="numeric" placeholder="Enter recipient bank account number">
-            <span class="error-text">Enter the bank account number.</span>
-          </div>
-        </div>
-
-        <div id="otherBankField" class="field hidden">
-          <label>Other Bank Name <span class="required">*</span></label>
-          <input id="otherBankName">
-          <span class="error-text">Enter the bank name.</span>
-        </div>
-      </section>
-
-      <!-- APPROVAL ROUTING -->
-      <section class="section">
-        <div class="section-heading">
-          <h2>Approval Routing</h2>
-          <span>Selections must follow the Authority Approval Matrix</span>
-        </div>
-
-        <div id="hqApprovalFields" class="grid-2">
-          <div class="field">
-            <label>Department Approver, Layer 1 <span class="required">*</span></label>
-            <input id="departmentApprover1" type="email" placeholder="approver1@cgc.com.my">
-            <span class="error-text">Enter the first approver email.</span>
-          </div>
-          <div class="field">
-            <label>Department Approver, Layer 2 <span class="required">*</span></label>
-            <input id="departmentApprover2" type="email" placeholder="approver2@cgc.com.my">
-            <span class="error-text">Enter the second approver email.</span>
-          </div>
-        </div>
-
-        <div id="branchApprovalFields" class="grid-3 hidden">
-          <div class="field">
-            <label>Branch Verifier <span class="required">*</span></label>
-            <input id="branchVerifierEmail" type="email" placeholder="Branch Manager / ABM">
-            <span class="error-text">Enter the Branch Verifier email.</span>
-          </div>
-          <div class="field">
-            <label>Branch Management Approver <span class="required">*</span></label>
-            <input id="branchManagementApprover" type="email" placeholder="Branch Management approver">
-            <span class="error-text">Enter the Branch Management Approver email.</span>
-          </div>
-          <div class="field">
-            <label>Second Approver (if required)</label>
-            <input id="branchSecondApprover" type="email" placeholder="Per AAM">
-          </div>
-        </div>
-
-        <div class="info-box">
-          The Finance Processor and Finance Approver are assigned at the Finance stage. The Finance Processor selects the Finance Approver based on the Finance AAM.
-        </div>
-      </section>
-
-      <!-- DOCUMENTS -->
-      <section class="section">
-        <div class="section-heading">
-          <h2>Request Submission Documents</h2>
-          <span>Stored under the generated request reference</span>
-        </div>
-
-        <div class="field">
-          <label>BCA or Approved Supporting Paper <span class="required">*</span></label>
-          <input id="requestDocuments" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-          <span class="error-text">Upload at least one supporting document.</span>
-          <span class="help">Accepted: PDF, Word, Excel, JPG, PNG. Max 10 MB total.</span>
-        </div>
-
-        <div class="document-grid">
-          <div class="document-card current">
-            <h4>1. Request Documents</h4>
-            <p>Uploaded now by the Requestor.</p>
-          </div>
-          <div class="document-card">
-            <h4>2. Payment Receipt</h4>
-            <p>Uploaded by Finance after M2U disbursement.</p>
-          </div>
-          <div class="document-card">
-            <h4>3. Purchase Receipts</h4>
-            <p>Uploaded by the Requestor using the same reference.</p>
-          </div>
-          <div class="document-card">
-            <h4>4. Refund Documents</h4>
-            <p>Uploaded if any balance is unused and must be refunded.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- DECLARATION -->
-      <section class="section">
-        <div class="section-heading"><h2>Declaration</h2></div>
-
-        <div class="declaration">
-          The information submitted is complete and accurate. This request is for a legitimate CGC business purpose. I will submit all payment acknowledgements, purchase receipts and refund documents using the same request reference number.
-        </div>
-
-        <label class="checkline">
-          <input type="checkbox" id="declarationAccepted">
-          <span>I acknowledge and agree to the declaration above. <span class="required">*</span></span>
-        </label>
-        <span id="declarationError" class="error-text">You must accept the declaration.</span>
-      </section>
-
-      <!-- SUMMARY -->
-      <section class="section">
-        <div class="section-heading">
-          <h2>Request Summary</h2>
-          <span>Reference number is generated by SharePoint after submission</span>
-        </div>
-
-        <div class="summary-box">
-          <div class="summary-tile"><small>Origination</small><strong id="summaryLocation">-</strong></div>
-          <div class="summary-tile"><small>Transaction Type</small><strong id="summaryType">-</strong></div>
-          <div class="summary-tile"><small>Amount</small><strong id="summaryAmount">RM 0.00</strong></div>
-        </div>
-      </section>
-
-    </form>
-
-    <footer class="form-footer">
-      <button class="btn btn-secondary" onclick="restartApplication()">Start Over</button>
-      <button id="submitButton" class="btn btn-primary" onclick="submitRequest()">Submit Request</button>
-    </footer>
-  </main>
-
-</div>
+<footer class="page-foot">Credit Guarantee Corporation Malaysia Berhad · Internal use only</footer>
 
 <script>
   (function () {
-    var appScript = document.createElement('script');
-    appScript.src = 'app.js?v=5';
-    appScript.onload = function () {
-      // app.js sets up its listeners on DOMContentLoaded, which has already fired
-      document.dispatchEvent(new Event('DOMContentLoaded'));
-    };
-    appScript.onerror = function () {
+    var s = document.createElement('script');
+    s.src = 'app.js?v=6';
+    s.onerror = function () {
       alert('app.js could not be loaded. Check that it is in the same folder as index.html.');
     };
-    document.body.appendChild(appScript);
+    document.body.appendChild(s);
   })();
 </script>
 
