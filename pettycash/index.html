@@ -2,481 +2,455 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Petty Cash Management | CGC</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="CGC Finance Hub Petty Cash Request">
+<title>Petty Cash Request | CGC Finance Hub</title>
 <style>
-  @import url("styles.css?v=6");
+:root{--navy:#173b6c;--dark:#0d294d;--blue:#2d5c97;--gold:#f3b61f;--bg:#f3f6fa;--white:#fff;--soft:#f7f9fc;--line:#dce4ee;--text:#172033;--muted:#667085;--green:#16835a;--red:#c83737;--shadow:0 24px 60px rgba(15,39,71,.12)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{min-height:100vh;background:radial-gradient(circle at 10% 0,rgba(45,92,151,.12),transparent 34%),radial-gradient(circle at 100% 100%,rgba(243,182,31,.1),transparent 32%),var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;line-height:1.5}
+button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
+.fa-page{min-height:100vh;padding:28px}
+.fa-shell{width:min(1180px,100%);min-height:calc(100vh - 56px);margin:auto;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(340px,39%) minmax(0,61%)}
+.fa-brand{position:relative;overflow:hidden;min-height:720px;padding:38px;color:#fff;background:linear-gradient(155deg,var(--navy),#12345f 52%,var(--dark));display:flex;flex-direction:column}
+.fa-brand:before{content:"";position:absolute;top:-110px;right:-100px;width:330px;height:330px;border-radius:50%;background:radial-gradient(circle,rgba(243,182,31,.28),rgba(243,182,31,.05) 58%,transparent 70%)}
+.fa-brand:after{content:"";position:absolute;bottom:-160px;left:-110px;width:430px;height:430px;border:1px solid rgba(255,255,255,.1);border-radius:50%;box-shadow:0 0 0 45px rgba(255,255,255,.025),0 0 0 90px rgba(255,255,255,.018)}
+.fa-brand-top,.fa-brand-content,.fa-security,.fa-brand-footer{position:relative;z-index:1}
+.fa-brand-top{display:flex;align-items:center;gap:15px}
+.fa-logo{width:128px;height:76px;flex:0 0 auto;padding:8px;overflow:hidden;border-radius:13px;background:#fff;box-shadow:0 9px 25px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center}
+.fa-logo-image{display:block;width:100%;height:100%;object-fit:contain;transform:scale(1.8);transform-origin:center}
+.fa-brand-name strong{display:block;font-size:15px}.fa-brand-name span{display:block;max-width:190px;margin-top:4px;color:rgba(255,255,255,.7);font-size:11px}
+.fa-brand-content{margin:auto 0;padding:48px 0}
+.fa-brand h1{font-size:clamp(32px,4vw,47px);line-height:1.1;letter-spacing:-1.4px}.fa-brand h1 span{display:block;color:var(--gold)}
+.fa-brand-description{max-width:410px;margin-top:20px;color:rgba(255,255,255,.76);font-size:14px;line-height:1.75}
+.fa-features{display:grid;gap:13px;margin-top:30px}.fa-feature{display:flex;align-items:center;gap:12px;font-size:13px}
+.fa-feature b{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.1);color:var(--gold);display:grid;place-items:center;font-size:11px}
+.fa-security{padding:15px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.08);display:flex;gap:12px}
+.fa-security-icon{width:36px;height:36px;flex:0 0 auto;border-radius:10px;background:rgba(243,182,31,.14);color:var(--gold);display:grid;place-items:center}
+.fa-security strong{display:block;font-size:12px}.fa-security span{display:block;margin-top:4px;color:rgba(255,255,255,.65);font-size:11px}
+.fa-brand-footer{margin-top:20px;color:rgba(255,255,255,.48);font-size:10.5px}
+.fa-app{min-width:0;display:flex;flex-direction:column;background:linear-gradient(180deg,#fff,#fbfcfe)}
+.fa-app-header{min-height:88px;padding:24px 38px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.fa-app-header small{display:block;color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.fa-app-header strong{color:var(--navy);font-size:17px}
+.fa-signout{padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--navy);font-size:12px;font-weight:650;cursor:pointer}
+.fa-progress{padding:26px 38px 0}
+.fa-stepper{position:relative;display:grid;grid-template-columns:repeat(3,1fr)}
+.fa-stepper:before{content:"";position:absolute;top:18px;left:calc(16.66% + 18px);right:calc(16.66% + 18px);height:2px;background:var(--line)}
+.fa-step{position:relative;z-index:1;color:#98a2b3;text-align:center;display:flex;flex-direction:column;align-items:center}
+.fa-step-number{width:38px;height:38px;margin-bottom:8px;border:2px solid var(--line);border-radius:50%;background:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.fa-step-label{font-size:11px;font-weight:650}
+.fa-step.fa-step-active{color:var(--navy)}.fa-step.fa-step-active .fa-step-number{border-color:var(--navy);background:var(--navy);color:#fff;box-shadow:0 0 0 5px rgba(23,59,108,.11)}
+.fa-step.fa-step-done{color:var(--green)}.fa-step.fa-step-done .fa-step-number{border-color:var(--green);background:var(--green);color:#fff}
+.fa-content{width:min(680px,100%);margin:auto;padding:46px 38px 42px;flex:1}
+.fa-screen{animation:enter .3s ease}@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fa-screen-icon{width:56px;height:56px;margin-bottom:22px;border-radius:16px;background:linear-gradient(145deg,#edf3fa,#f7f9fc);color:var(--navy);box-shadow:inset 0 0 0 1px rgba(23,59,108,.08);display:grid;place-items:center;font-size:23px}
+.fa-title{font-size:27px;line-height:1.25}.fa-lead{max-width:560px;margin-top:10px;color:var(--muted);font-size:14px;line-height:1.65}
+.fa-form{margin-top:30px}.fa-field{margin-bottom:20px}
+.fa-field label{display:flex;gap:4px;margin-bottom:8px;color:#344054;font-size:12px;font-weight:650}
+.fa-required{color:var(--red)}.fa-optional{color:var(--muted);font-weight:500}
+.fa-field input,.fa-field select,.fa-field textarea{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;outline:none;background:#fff;color:var(--text);font-size:14px}
+.fa-field textarea{min-height:108px;resize:vertical}
+.fa-field input:focus,.fa-field select:focus,.fa-field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(45,92,151,.11)}
+.fa-field input[readonly]{background:var(--soft);color:var(--muted)}
+.fa-field select:disabled{background:#eef1f5;color:#98a2b3;cursor:not-allowed}
+.fa-field .fa-bad,.fa-bad{border-color:var(--red)!important}
+.fa-hint{margin-top:7px;color:var(--muted);font-size:10.5px;display:flex;justify-content:space-between;gap:10px}
+.fa-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.fa-btn{min-height:48px;padding:12px 20px;border:0;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+.fa-btn-primary{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;box-shadow:0 10px 22px rgba(23,59,108,.2)}
+.fa-btn-secondary{border:1px solid var(--line);background:#fff;color:#344054}
+.fa-btn-block{width:100%}.fa-btn:disabled{cursor:not-allowed;opacity:.55}
+.fa-actions{margin-top:28px;display:flex;justify-content:flex-end;gap:12px}.fa-actions-center{justify-content:center}
+.fa-msg{margin-bottom:18px;padding:12px 14px;border-radius:10px;font-size:12px}
+.fa-msg-error{border:1px solid #f1c5c5;background:#fff3f3;color:#9f2929}
+.fa-msg-ok{border:1px solid #b8dfcf;background:#effaf5;color:#126b4b}
+.fa-msg-warn{border:1px solid #f0d59d;background:#fff9ec;color:#885600}
+.fa-msg-info{border:1px solid var(--line);background:var(--soft);color:#344054}
+.fa-access-note{margin-top:17px;color:var(--muted);text-align:center;font-size:10.5px}
+.fa-otp-email{margin-top:24px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--soft);color:var(--muted);font-size:12px}.fa-otp-email strong{color:var(--navy)}
+.fa-otp-group{margin:28px 0 15px;display:grid;grid-template-columns:repeat(6,minmax(42px,58px));justify-content:center;gap:10px}
+.fa-otp-box{width:100%;height:62px;border:1px solid var(--line);border-radius:12px;outline:none;text-align:center;color:var(--navy);font-size:25px;font-weight:750}
+.fa-otp-box:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(45,92,151,.11)}
+.fa-otp-box.fa-filled{border-color:var(--navy);background:#f8fbff}.fa-otp-box.fa-bad{border-color:var(--red);background:#fff4f4}
+.fa-otp-meta{margin-bottom:22px;color:var(--muted);text-align:center;font-size:11px}.fa-otp-meta strong{color:var(--navy)}
+.fa-subactions{margin-top:16px;display:flex;justify-content:space-between}
+.fa-link{padding:4px 0;border:0;background:transparent;color:var(--navy);font-size:11.5px;font-weight:650;cursor:pointer}.fa-link:disabled{color:#98a2b3;cursor:not-allowed}
+.fa-user-card{margin-bottom:22px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft);display:flex;align-items:center;gap:12px}
+.fa-avatar{width:42px;height:42px;flex:0 0 auto;border-radius:12px;background:linear-gradient(145deg,var(--navy),var(--blue));color:#fff;display:grid;place-items:center;font-weight:750}
+.fa-user-details{min-width:0}.fa-user-details strong,.fa-user-details small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fa-user-details small{color:var(--muted);font-size:10.5px}
+.fa-department{margin-left:auto;padding:5px 10px;border-radius:999px;background:#eaf1f9;color:var(--navy);font-size:10px;font-weight:700;white-space:nowrap}
+.fa-summary{margin-top:7px;padding:16px 17px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;background:linear-gradient(135deg,#f8fafc,#f1f5fa);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.fa-summary span{color:var(--muted);font-size:11px;font-weight:650}.fa-summary strong{color:var(--navy);font-size:18px;white-space:nowrap}
+.fa-success{text-align:center;padding-top:34px}
+.fa-success-icon{width:76px;height:76px;margin:0 auto 22px;border:1px solid #b9dfd1;border-radius:24px;background:#ecf9f4;color:var(--green);display:grid;place-items:center;font-size:34px}
+.fa-reference{margin:26px auto 14px;padding:18px;border:1px dashed var(--blue);border-radius:14px;background:#f6f9fd}
+.fa-reference span{display:block;color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase}.fa-reference strong{color:var(--navy);font:700 22px Consolas,monospace}
+.fa-success-note{max-width:480px;margin:0 auto 20px;color:var(--muted);font-size:12px}
+.fa-footer{padding:17px 38px;border-top:1px solid var(--line);color:#98a2b3;font-size:9.5px;display:flex;justify-content:space-between}
+.fa-loader{position:fixed;inset:0;z-index:9999;background:rgba(245,248,252,.88);display:grid;place-items:center}
+.fa-loader-card{min-width:190px;padding:24px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow);text-align:center}
+.fa-spinner{width:40px;height:40px;margin:0 auto 13px;border:4px solid #e4eaf1;border-top-color:var(--navy);border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+/* Upload (same as FA) */
+.fa-upload{border:1.5px dashed #c3cfdf;border-radius:12px;background:var(--soft)}.fa-upload:hover,.fa-upload.fa-drag{border-color:var(--blue);background:#eef4fb}
+.fa-upload-input{display:none}
+.fa-upload-empty{display:flex;flex-direction:column;align-items:center;gap:3px;padding:22px 16px;cursor:pointer;text-align:center;color:#344054;font-size:13px}.fa-upload-empty strong{color:var(--navy)}.fa-upload-empty small{color:var(--muted);font-size:11px}
+.fa-upload-icon{width:42px;height:42px;margin-bottom:6px;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;color:var(--navy);font-size:19px}
+.fa-upload.fa-has-file{border-style:solid;border-color:var(--line);background:#fff}.fa-upload-files{padding:14px}
+.fa-upload-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.fa-upload-summary strong{display:block;color:var(--navy);font-size:13px}.fa-upload-summary small{display:block;margin-top:2px;color:var(--muted);font-size:10.5px}
+.fa-upload-summary-actions{display:flex;gap:8px}
+.fa-upload-add,.fa-file-remove{padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--navy);font-size:12px;font-weight:650;cursor:pointer}.fa-file-remove{color:#b42318}
+.fa-upload-file-list{display:grid;gap:9px;margin-top:12px}
+.fa-upload-file-row{display:flex;align-items:center;gap:11px;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--soft)}
+.fa-file-icon{width:40px;height:40px;flex:0 0 auto;border-radius:10px;background:linear-gradient(145deg,var(--navy),var(--blue));color:#fff;display:grid;place-items:center;font-size:10px;font-weight:800}
+.fa-file-info{flex:1;min-width:0}.fa-file-info strong{display:block;overflow:hidden;font-size:12.5px;text-overflow:ellipsis;white-space:nowrap}.fa-file-info small{display:block;color:var(--muted);font-size:10.5px}
+.fa-file-remove-one{width:32px;height:32px;flex:0 0 auto;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--red);font-size:16px;cursor:pointer}
+
+/* ---------- Petty Cash additions (same visual language) ---------- */
+.pc-label{display:block;margin-bottom:8px;color:#344054;font-size:12px;font-weight:650}
+.pc-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.pc-choice{position:relative;display:flex;gap:12px;padding:14px 15px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
+.pc-choice:hover{border-color:#c3cfdf}
+.pc-choice input{position:absolute;opacity:0;pointer-events:none}
+.pc-dot{width:18px;height:18px;flex:0 0 auto;margin-top:2px;border:2px solid #c3cfdf;border-radius:50%;background:#fff}
+.pc-choice strong{display:block;color:var(--navy);font-size:13.5px}.pc-choice small{display:block;margin-top:2px;color:var(--muted);font-size:11px;line-height:1.45}
+.pc-choice.pc-checked{border-color:var(--navy);background:#f6f9fd;box-shadow:0 0 0 4px rgba(23,59,108,.08)}
+.pc-choice.pc-checked .pc-dot{border-color:var(--navy);background:var(--navy);box-shadow:inset 0 0 0 3px #fff}
+.pc-choices.fa-bad .pc-choice{border-color:var(--red)}
+.pc-sechead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.pc-sechead span{color:var(--muted);font-size:11px;font-weight:650;letter-spacing:.6px;text-transform:uppercase}
+.pc-sechead strong{color:var(--navy);font-size:12px}
+.pc-secbar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:28px}
+.pc-secbar i{height:4px;border-radius:4px;background:var(--line);transition:background .25s}
+.pc-secbar i.pc-on{background:var(--navy)}.pc-secbar i.pc-done{background:var(--green)}
+.pc-section{animation:enter .25s ease}
+.pc-subtitle{font-size:21px;line-height:1.3;color:var(--text)}
+.pc-sublead{margin:8px 0 24px;color:var(--muted);font-size:13px;line-height:1.6}
+.pc-note{margin-bottom:20px;padding:12px 14px;border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;background:var(--soft);color:#344054;font-size:12px}
+.pc-gl-card{margin-bottom:20px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.pc-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
+.pc-meta small{display:block;color:var(--muted);font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.pc-meta b{display:block;color:var(--text);font-size:12.5px;font-weight:650;word-break:break-word}
+.pc-meta .pc-full{grid-column:1/-1}
+.pc-review{margin-bottom:12px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.pc-review-head{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--soft)}
+.pc-review-head strong{color:var(--navy);font-size:12.5px}
+.pc-review .pc-meta{padding:14px 16px}
+.pc-declare{margin-top:18px;padding:15px 16px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;background:#fffdf6;font-size:12px;color:#344054}
+.pc-check{display:flex;align-items:flex-start;gap:10px;margin-top:12px;font-weight:650;cursor:pointer}
+.pc-check input{width:17px;height:17px;margin-top:2px;accent-color:var(--navy)}
+.pc-nav{margin-top:28px;display:flex;justify-content:space-between;gap:12px}
+@media(max-width:940px){.fa-page{padding:0}.fa-shell{min-height:100vh;border:0;border-radius:0;box-shadow:none;grid-template-columns:1fr}.fa-brand{min-height:auto;padding:24px}.fa-brand-content{margin:35px 0 28px;padding:0}.fa-brand h1{font-size:34px}.fa-features,.fa-security,.fa-brand-footer{display:none}}
+@media(max-width:640px){.fa-brand{padding:20px}.fa-logo{width:108px;height:66px}.fa-brand h1{font-size:29px}.fa-app-header{min-height:72px;padding:18px 20px}.fa-progress{padding:22px 20px 0}.fa-content{padding:34px 20px 36px}.fa-title{font-size:23px}.fa-grid,.pc-choices,.pc-meta{grid-template-columns:1fr}.fa-grid{gap:0}.fa-otp-group{grid-template-columns:repeat(6,minmax(34px,1fr));gap:6px}.fa-otp-box{height:54px;font-size:21px}.pc-nav,.fa-actions{flex-direction:column-reverse}.pc-nav .fa-btn,.fa-actions .fa-btn{width:100%}.fa-footer{padding:15px 20px;flex-direction:column;text-align:center}}
 </style>
 </head>
 <body>
+<div class="fa-page"><div class="fa-shell">
 
-<header class="masthead">
-  <div class="masthead-inner">
-    <div class="brand">
-      <div class="brand-mark">CGC</div>
-      <div class="brand-text">
-        <span class="brand-title">Petty Cash Management</span>
-        <span class="brand-sub">Credit Guarantee Corporation Malaysia Berhad</span>
-      </div>
-    </div>
-    <div id="userChip" class="user-chip hidden">
-      <span class="user-dot"></span>
-      <div>
-        <span id="chipEmail" class="chip-email"></span>
-        <span id="chipContext" class="chip-context"></span>
-      </div>
+<!-- BRAND PANEL -->
+<aside class="fa-brand">
+  <div class="fa-brand-top">
+    <div class="fa-logo"><img class="fa-logo-image" src="../assets/images/cgc-logo.jpg" alt="CGC logo"></div>
+    <div class="fa-brand-name"><strong>Finance Hub</strong><span>Credit Guarantee Corporation Malaysia Berhad</span></div>
+  </div>
+  <div class="fa-brand-content">
+    <h1>Petty Cash <span>Request</span></h1>
+    <p class="fa-brand-description">Submit, approve and settle petty cash advances and claims through a secure, guided and fully traceable digital process.</p>
+    <div class="fa-features">
+      <div class="fa-feature"><b>01</b><span>Secure email verification</span></div>
+      <div class="fa-feature"><b>02</b><span>Authority Approval Matrix routing</span></div>
+      <div class="fa-feature"><b>03</b><span>Single reference from request to settlement</span></div>
     </div>
   </div>
-</header>
+  <div class="fa-security">
+    <div class="fa-security-icon">&#128274;</div>
+    <div><strong>Secure internal access</strong><span>Access is restricted to authorised CGC users using email verification.</span></div>
+  </div>
+  <div class="fa-brand-footer">CGC Finance Hub &middot; Internal Use Only</div>
+</aside>
 
-<main class="stage">
+<!-- APP -->
+<section class="fa-app">
+  <header class="fa-app-header">
+    <div><small>Current module</small><strong>Petty Cash Request</strong></div>
+    <button type="button" id="pcBtnSignOut" class="fa-signout fa-hide">Sign out</button>
+  </header>
 
-  <!-- ENTRY: LOCATION -->
-  <section id="screenLocation" class="entry-card">
-    <p class="eyebrow">Secure access</p>
-    <h1 class="entry-title">Where does this request originate?</h1>
-    <p class="entry-lead">Your selection determines the verification and approval route applied to the request.</p>
+  <div class="fa-progress">
+    <nav class="fa-stepper">
+      <div class="fa-step fa-step-active" data-step="1"><span class="fa-step-number">1</span><span class="fa-step-label">Verification</span></div>
+      <div class="fa-step" data-step="2"><span class="fa-step-number">2</span><span class="fa-step-label">Request Details</span></div>
+      <div class="fa-step" data-step="3"><span class="fa-step-number">3</span><span class="fa-step-label">Completed</span></div>
+    </nav>
+  </div>
 
-    <div class="choice-list">
-      <button type="button" class="choice" data-location="HQ" onclick="chooseLocation(this)">
-        <span class="choice-radio"></span>
-        <span class="choice-body">
-          <span class="choice-title">Headquarters</span>
-          <span class="choice-desc">Departmental petty cash advance or claim, approved under the departmental Authority Approval Matrix.</span>
-        </span>
-      </button>
-      <button type="button" class="choice" data-location="Branch" onclick="chooseLocation(this)">
-        <span class="choice-radio"></span>
-        <span class="choice-body">
-          <span class="choice-title">Branch</span>
-          <span class="choice-desc">Branch request prepared by a Maker, verified at branch level and approved by Branch Management.</span>
-        </span>
-      </button>
-    </div>
+  <main class="fa-content">
 
-    <div class="entry-actions end">
-      <button id="locationContinue" class="btn btn-primary" disabled onclick="openAuthentication()">Continue</button>
-    </div>
-  </section>
+    <!-- SCREEN 1 : LOCATION + EMAIL -->
+    <section id="pcScreenEmail" class="fa-screen">
+      <div class="fa-screen-icon">&#9993;</div>
+      <h2 class="fa-title">Verify your email</h2>
+      <p class="fa-lead">Select where the request originates, then enter your CGC email address. A six-digit one-time password will be sent to your inbox.</p>
 
-  <!-- ENTRY: AUTHENTICATION -->
-  <section id="screenAuth" class="entry-card hidden">
-    <p class="eyebrow">Secure access · <span id="authContext"></span></p>
-    <h1 class="entry-title">Verify your identity</h1>
-    <p class="entry-lead">Enter your CGC email address. A six-digit code will be sent once your email is confirmed in the CGC directory.</p>
+      <div class="fa-form">
+        <span class="pc-label">Origination location <span class="fa-required">*</span></span>
+        <div class="pc-choices" id="pcLocationGroup">
+          <label class="pc-choice">
+            <input type="radio" name="pcLocation" value="HQ">
+            <span class="pc-dot"></span>
+            <span><strong>Headquarters</strong><small>Departmental advance or claim</small></span>
+          </label>
+          <label class="pc-choice">
+            <input type="radio" name="pcLocation" value="Branch">
+            <span class="pc-dot"></span>
+            <span><strong>Branch</strong><small>Maker, verifier and Branch Management</small></span>
+          </label>
+        </div>
 
-    <div class="stack">
-      <div class="field">
-        <label for="gateEmail">CGC email address <span class="req">*</span></label>
-        <input id="gateEmail" type="email" autocomplete="email" placeholder="name@cgc.com.my">
+        <div class="fa-field fa-hide" id="pcBranchField">
+          <label for="pcBranch">Branch <span class="fa-required">*</span></label>
+          <select id="pcBranch">
+            <option value="" selected disabled hidden>&mdash; Select &mdash;</option>
+            <option>Johor Bahru</option><option>Melaka</option><option>Seremban</option>
+            <option>Kuantan</option><option>Kuala Terengganu</option><option>Kota Bharu</option>
+            <option>Ipoh</option><option>Pulau Pinang</option><option>Alor Setar</option>
+            <option>Kota Kinabalu</option><option>Kuching</option><option>Miri</option>
+          </select>
+        </div>
+
+        <div class="fa-field">
+          <label for="pcEmail">CGC email address <span class="fa-required">*</span></label>
+          <input type="email" id="pcEmail" placeholder="name@cgc.com.my" autocomplete="email" spellcheck="false">
+          <div class="fa-hint"><span>Use your official CGC email address.</span></div>
+        </div>
+
+        <div id="pcEmailMsg" class="fa-msg fa-hide" role="alert"></div>
+        <button type="button" id="pcBtnRequestOtp" class="fa-btn fa-btn-primary fa-btn-block">Request verification code</button>
+        <p class="fa-access-note">Access is restricted to authorised CGC staff.</p>
+      </div>
+    </section>
+
+    <!-- SCREEN 2 : OTP -->
+    <section id="pcScreenOtp" class="fa-screen fa-hide">
+      <div class="fa-screen-icon">&#128274;</div>
+      <h2 class="fa-title">Enter verification code</h2>
+      <p class="fa-lead">Enter the six-digit code sent to the registered email address.</p>
+      <div class="fa-otp-email">Verification code sent to <strong id="pcMaskedEmail"></strong></div>
+      <div class="fa-otp-group">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box" autocomplete="one-time-code">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+      </div>
+      <div class="fa-otp-meta">Code expires in <strong id="pcTimer">01:00</strong></div>
+      <div id="pcOtpMsg" class="fa-msg fa-hide"></div>
+      <button type="button" id="pcBtnVerify" class="fa-btn fa-btn-primary fa-btn-block">Verify and continue</button>
+      <div class="fa-subactions">
+        <button type="button" id="pcBtnResend" class="fa-link" disabled>Resend code</button>
+        <button type="button" id="pcBtnChangeEmail" class="fa-link">Change email address</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 3 : REQUEST FORM (SECTIONED) -->
+    <section id="pcScreenForm" class="fa-screen fa-hide">
+      <div class="fa-user-card">
+        <div class="fa-avatar" id="pcAvatar"></div>
+        <div class="fa-user-details"><strong id="pcUserName"></strong><small id="pcUserEmail"></small></div>
+        <span class="fa-department" id="pcUserLocation"></span>
       </div>
 
-      <div id="branchSelection" class="field hidden">
-        <label for="branchSelect">Branch <span class="req">*</span></label>
-        <select id="branchSelect">
-          <option value="">Select branch</option>
-          <option>Johor Bahru</option>
-          <option>Melaka</option>
-          <option>Seremban</option>
-          <option>Kuantan</option>
-          <option>Kuala Terengganu</option>
-          <option>Kota Bharu</option>
-          <option>Ipoh</option>
-          <option>Pulau Pinang</option>
-          <option>Alor Setar</option>
-          <option>Kota Kinabalu</option>
-          <option>Kuching</option>
-          <option>Miri</option>
-        </select>
-      </div>
-    </div>
+      <div class="pc-sechead"><span id="pcSecCounter">Section 1 of 7</span><strong id="pcSecName">Requestor</strong></div>
+      <div class="pc-secbar" id="pcSecBar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
-    <div class="entry-actions">
-      <button class="btn btn-ghost" onclick="returnToLocation()">Back</button>
-      <button id="sendOtpButton" class="btn btn-primary" onclick="sendOTP()">Send verification code</button>
-    </div>
+      <form id="pcForm" novalidate>
 
-    <div id="authSuccess" class="notice success"></div>
-    <div id="authError" class="notice error"></div>
+        <!-- 1. REQUESTOR -->
+        <div class="pc-section" data-section="1">
+          <h3 class="pc-subtitle">Requestor details</h3>
+          <p class="pc-sublead">Confirm the person and department responsible for this request.</p>
 
-    <div id="otpArea" class="otp-block hidden">
-      <p class="otp-sent">Enter the code sent to <strong id="otpEmail"></strong></p>
-
-      <div class="otp-digits">
-        <input class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code" data-index="0">
-        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="1">
-        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="2">
-        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="3">
-        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="4">
-        <input class="otp-digit" maxlength="1" inputmode="numeric" data-index="5">
-      </div>
-
-      <div class="otp-meta">
-        <span>Code expires in <strong id="otpTimer">01:00</strong></span>
-        <button type="button" id="resendButton" class="link-btn" disabled onclick="resendOTP()">Resend in 30s</button>
-      </div>
-
-      <div id="otpError" class="notice error"></div>
-
-      <button id="verifyButton" class="btn btn-primary btn-block" style="margin-top:20px" onclick="verifyOTP()">Verify and continue</button>
-    </div>
-  </section>
-
-  <!-- ENTRY: REQUEST TYPE (HQ) -->
-  <section id="screenType" class="entry-card hidden">
-    <p class="eyebrow">Headquarters</p>
-    <h1 class="entry-title">What would you like to submit?</h1>
-    <p class="entry-lead">Both request types follow the same approval and settlement lifecycle under a single reference number.</p>
-
-    <div class="choice-list">
-      <button type="button" class="choice" data-type="Advance" onclick="chooseType(this)">
-        <span class="choice-radio"></span>
-        <span class="choice-body">
-          <span class="choice-title">Petty Cash Advance</span>
-          <span class="choice-desc">Request funds before the business expense is incurred.</span>
-        </span>
-      </button>
-      <button type="button" class="choice" data-type="Claim" onclick="chooseType(this)">
-        <span class="choice-radio"></span>
-        <span class="choice-body">
-          <span class="choice-title">Petty Cash Claim</span>
-          <span class="choice-desc">Claim an expense already incurred, linked to an existing request reference where applicable.</span>
-        </span>
-      </button>
-    </div>
-
-    <div class="entry-actions">
-      <button class="btn btn-ghost" onclick="restartApplication()">Start over</button>
-      <button id="typeContinue" class="btn btn-primary" disabled onclick="confirmType()">Continue</button>
-    </div>
-  </section>
-
-  <!-- WIZARD -->
-  <section id="wizard" class="wizard hidden">
-
-    <aside class="rail">
-      <div class="rail-head">
-        <p class="eyebrow" id="railLocation"></p>
-        <p class="rail-type" id="railType"></p>
-        <div class="rail-ref">Request reference<strong>Assigned on submission</strong></div>
-      </div>
-      <ol id="stepList" class="step-list"></ol>
-      <div class="rail-foot">
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="9" width="12" height="8" rx="1.5"/><path d="M7 9V6.5a3 3 0 016 0V9"/></svg>
-        Session protected by one-time verification
-      </div>
-    </aside>
-
-    <div class="workspace">
-      <div class="mobile-progress">
-        <span id="mobileStepLabel"></span>
-        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
-      </div>
-
-      <form id="requestForm" novalidate onsubmit="return false;">
-
-        <!-- STEP 1 -->
-        <div class="step-panel" data-step="1">
-          <header class="panel-head">
-            <p class="eyebrow">Step 1 of 7</p>
-            <h2>Requestor</h2>
-            <p class="panel-lead">Confirm the identity and department responsible for this request. Directory details are applied automatically where available.</p>
-          </header>
-
-          <div class="grid grid-2">
-            <div class="field">
-              <label for="requestorName">Full name <span class="req">*</span></label>
-              <input id="requestorName" autocomplete="name">
-              <span class="error-text"></span>
-            </div>
-            <div class="field">
-              <label for="requestorEmail">Email address</label>
-              <input id="requestorEmail" readonly>
-            </div>
-            <div class="field">
-              <label for="department">Department <span class="req">*</span></label>
-              <input id="department" placeholder="e.g. FAS, FIN, BSM">
-              <span class="error-text"></span>
-            </div>
-            <div class="field">
-              <label for="employeeId">Employee ID <span class="req">*</span></label>
-              <input id="employeeId">
-              <span class="error-text"></span>
-            </div>
-            <div class="field">
-              <label for="requestDate">Request date</label>
-              <input id="requestDate" readonly>
+          <div id="pcTypeBlock">
+            <span class="pc-label">Request type <span class="fa-required">*</span></span>
+            <div class="pc-choices" id="pcTypeGroup">
+              <label class="pc-choice">
+                <input type="radio" name="pcType" value="Advance">
+                <span class="pc-dot"></span>
+                <span><strong>Petty Cash Advance</strong><small>Funds required before spending</small></span>
+              </label>
+              <label class="pc-choice">
+                <input type="radio" name="pcType" value="Claim">
+                <span class="pc-dot"></span>
+                <span><strong>Petty Cash Claim</strong><small>Expense already incurred</small></span>
+              </label>
             </div>
           </div>
 
-          <div id="branchProfileFields" class="grid grid-2 hidden" style="margin-top:20px">
-            <div class="field">
-              <label for="branchName">Branch</label>
-              <input id="branchName" readonly>
+          <div class="fa-grid">
+            <div class="fa-field"><label for="pcFullName">Full name <span class="fa-required">*</span></label><input id="pcFullName" autocomplete="name"></div>
+            <div class="fa-field"><label for="pcEmployeeId">Employee ID <span class="fa-required">*</span></label><input id="pcEmployeeId"></div>
+          </div>
+          <div class="fa-grid">
+            <div class="fa-field"><label for="pcDepartment">Department <span class="fa-required">*</span></label><input id="pcDepartment" placeholder="e.g. FAS, FIN, BSM"></div>
+            <div class="fa-field"><label for="pcRequestDate">Request date</label><input id="pcRequestDate" readonly></div>
+          </div>
+        </div>
+
+        <!-- 2. REQUEST -->
+        <div class="pc-section fa-hide" data-section="2">
+          <h3 class="pc-subtitle">Request details</h3>
+          <p class="pc-sublead">State the amount required and the business purpose. Every approver reviews this information.</p>
+
+          <div id="pcClaimBlock" class="fa-hide">
+            <div class="fa-grid">
+              <div class="fa-field"><label for="pcOrigRef">Original request reference <span class="fa-required">*</span></label><input id="pcOrigRef" placeholder="YYYY/MM/DD/DEPT/0001"></div>
+              <div class="fa-field"><label for="pcOrigAmount">Original amount (RM) <span class="fa-required">*</span></label><input type="number" id="pcOrigAmount" min="0" step="0.01" placeholder="0.00"></div>
             </div>
-            <div class="field">
-              <label for="branchCostCentre">Branch cost centre</label>
-              <input id="branchCostCentre" readonly placeholder="To be confirmed by Finance">
+          </div>
+
+          <div class="fa-grid">
+            <div class="fa-field"><label for="pcAmount">Amount requested (RM) <span class="fa-required">*</span></label><input type="number" id="pcAmount" min="0" step="0.01" placeholder="0.00"></div>
+            <div class="fa-field"><label for="pcDateRequired">Date required <span class="fa-required">*</span></label><input type="date" id="pcDateRequired"></div>
+          </div>
+          <div class="fa-field">
+            <label for="pcPurpose">Purpose of request <span class="fa-required">*</span></label>
+            <textarea id="pcPurpose" maxlength="500" placeholder="Describe what the funds will be used for and why they are required"></textarea>
+            <div class="fa-hint"><span>Provide enough detail for approval and Finance processing.</span><span><span id="pcCharCount">0</span>/500</span></div>
+          </div>
+          <div class="fa-summary"><span>Amount requested</span><strong id="pcTotal">RM 0.00</strong></div>
+        </div>
+
+        <!-- 3. BUDGET & GL -->
+        <div class="pc-section fa-hide" data-section="3">
+          <h3 class="pc-subtitle">Budget and GL classification</h3>
+          <p class="pc-sublead">Select the expense classification from the SAP S/4HANA master data. The cost centre is applied automatically.</p>
+
+          <div class="fa-field"><label for="pcOpex">Class of OPEX <span class="fa-required">*</span></label><select id="pcOpex"></select></div>
+          <div class="fa-field"><label for="pcGl">SAP GL code <span class="fa-required">*</span></label><select id="pcGl"></select></div>
+
+          <div id="pcGlCard" class="pc-gl-card fa-hide">
+            <div class="pc-meta">
+              <div><small>SAP GL code</small><b id="pcGlCode"></b></div>
+              <div><small>Cost centre</small><b id="pcGlCostCentre"></b></div>
+              <div class="pc-full"><small>GL description</small><b id="pcGlDesc"></b></div>
+              <div class="pc-full"><small>Type of expense</small><b id="pcGlType"></b></div>
             </div>
           </div>
         </div>
 
-        <!-- STEP 2 -->
-        <div class="step-panel hidden" data-step="2">
-          <header class="panel-head">
-            <p class="eyebrow">Step 2 of 7</p>
-            <h2>Request details</h2>
-            <p class="panel-lead">State the amount required and the business purpose. This information is reviewed by every approver in the chain.</p>
-          </header>
+        <!-- 4. PAYMENT -->
+        <div class="pc-section fa-hide" data-section="4">
+          <h3 class="pc-subtitle">Payment details</h3>
+          <p class="pc-sublead">Provide the account to receive the funds. Finance transfers approved amounts via Maybank2u outside this system.</p>
 
-          <div id="claimReferenceSection" class="hidden">
-            <p class="subhead">Original request</p>
-            <div class="grid grid-2" style="margin-top:16px">
-              <div class="field">
-                <label for="originalRequestRef">Original request reference <span class="req">*</span></label>
-                <input id="originalRequestRef" placeholder="YYYY/MM/DD/DEPT/0001">
-                <span class="error-text"></span>
-              </div>
-              <div class="field">
-                <label for="originalAmount">Original amount <span class="req">*</span></label>
-                <div class="affix"><span>RM</span><input id="originalAmount" type="number" min="0" step="0.01" placeholder="0.00"></div>
-                <span class="error-text"></span>
-              </div>
-            </div>
-            <div class="divider"></div>
-          </div>
-
-          <div class="grid grid-2">
-            <div class="field">
-              <label for="amountRequested">Amount requested <span class="req">*</span></label>
-              <div class="affix"><span>RM</span><input id="amountRequested" type="number" min="0.01" step="0.01" placeholder="0.00"></div>
-              <span class="error-text"></span>
-            </div>
-            <div class="field">
-              <label for="dateRequired">Date required <span class="req">*</span></label>
-              <input id="dateRequired" type="date">
-              <span class="error-text"></span>
-            </div>
-          </div>
-
-          <div class="field" style="margin-top:20px">
-            <label for="purpose">Business purpose <span class="req">*</span></label>
-            <textarea id="purpose" maxlength="500" placeholder="Describe what the funds will be used for and why they are required."></textarea>
-            <span class="counter" id="purposeCount">0 / 500</span>
-            <span class="error-text"></span>
-          </div>
-        </div>
-
-        <!-- STEP 3 -->
-        <div class="step-panel hidden" data-step="3">
-          <header class="panel-head">
-            <p class="eyebrow">Step 3 of 7</p>
-            <h2>Budget and GL classification</h2>
-            <p class="panel-lead">Select the expense classification from the SAP S/4HANA master data. The cost centre is applied automatically.</p>
-          </header>
-
-          <div class="grid grid-2">
-            <div class="field">
-              <label for="opexClass">Class of OPEX <span class="req">*</span></label>
-              <select id="opexClass" onchange="filterGlOptions()"></select>
-              <span class="error-text"></span>
-            </div>
-            <div class="field">
-              <label for="glCode">SAP GL code <span class="req">*</span></label>
-              <select id="glCode" onchange="applySelectedGL()"></select>
-              <span class="error-text"></span>
-            </div>
-          </div>
-
-          <div id="glDetail" class="detail-card hidden" style="margin-top:20px">
-            <dl>
-              <dt>Class of OPEX</dt><dd id="detailOpex"></dd>
-              <dt>SAP GL code</dt><dd id="detailGlCode"></dd>
-              <dt>GL description</dt><dd id="detailGlDescription"></dd>
-              <dt>Type of expense</dt><dd id="detailExpenseType"></dd>
-              <dt>Cost centre</dt><dd id="detailCostCentre"></dd>
-            </dl>
-          </div>
-
-          <div class="callout" style="margin-top:20px">
-            Classifications are based on the SAP extracts provided by Finance. Contact Finance if the required expense type is not listed.
-          </div>
-        </div>
-
-        <!-- STEP 4 -->
-        <div class="step-panel hidden" data-step="4">
-          <header class="panel-head">
-            <p class="eyebrow">Step 4 of 7</p>
-            <h2>Payment details</h2>
-            <p class="panel-lead">Provide the account to receive the funds. Finance will transfer approved amounts via Maybank2u outside this system.</p>
-          </header>
-
-          <div class="grid grid-2">
-            <div class="field">
-              <label for="bankName">Bank <span class="req">*</span></label>
-              <select id="bankName">
-                <option value="">Select bank</option>
-                <option>Maybank</option>
-                <option>CIMB Bank</option>
-                <option>Public Bank</option>
-                <option>RHB Bank</option>
-                <option>Hong Leong Bank</option>
-                <option>AmBank</option>
-                <option>Bank Islam</option>
-                <option>Bank Muamalat</option>
-                <option>BSN</option>
-                <option>Other</option>
+          <div class="fa-grid">
+            <div class="fa-field">
+              <label for="pcBank">Bank <span class="fa-required">*</span></label>
+              <select id="pcBank">
+                <option value="" selected disabled hidden>&mdash; Select &mdash;</option>
+                <option>Maybank</option><option>CIMB Bank</option><option>Public Bank</option>
+                <option>RHB Bank</option><option>Hong Leong Bank</option><option>AmBank</option>
+                <option>Bank Islam</option><option>Bank Muamalat</option><option>BSN</option><option>Other</option>
               </select>
-              <span class="error-text"></span>
             </div>
-            <div class="field">
-              <label for="bankAccountNumber">Account number <span class="req">*</span></label>
-              <input id="bankAccountNumber" inputmode="numeric" autocomplete="off" placeholder="Digits only">
-              <span class="error-text"></span>
+            <div class="fa-field">
+              <label for="pcAccount">Account number <span class="fa-required">*</span></label>
+              <input id="pcAccount" inputmode="numeric" autocomplete="off" placeholder="Digits only">
             </div>
           </div>
+          <div class="fa-field fa-hide" id="pcOtherBankField"><label for="pcOtherBank">Bank name <span class="fa-required">*</span></label><input id="pcOtherBank"></div>
+        </div>
 
-          <div id="otherBankField" class="field hidden" style="margin-top:20px">
-            <label for="otherBankName">Bank name <span class="req">*</span></label>
-            <input id="otherBankName">
-            <span class="error-text"></span>
+        <!-- 5. APPROVALS -->
+        <div class="pc-section fa-hide" data-section="5">
+          <h3 class="pc-subtitle">Approvals</h3>
+          <p class="pc-sublead">Nominate approvers in accordance with the Authority Approval Matrix. You cannot nominate yourself.</p>
+
+          <div id="pcHqApprovers">
+            <div class="fa-field"><label for="pcApprover1">First approver email <span class="fa-required">*</span></label><input type="email" id="pcApprover1" placeholder="name@cgc.com.my"></div>
+            <div class="fa-field"><label for="pcApprover2">Second approver email <span class="fa-required">*</span></label><input type="email" id="pcApprover2" placeholder="name@cgc.com.my"></div>
+          </div>
+
+          <div id="pcBranchApprovers" class="fa-hide">
+            <div class="fa-field"><label for="pcVerifier">Branch verifier email <span class="fa-required">*</span></label><input type="email" id="pcVerifier" placeholder="Branch Manager or Assistant Branch Manager"></div>
+            <div class="fa-field"><label for="pcBranchMgmt">Branch Management approver email <span class="fa-required">*</span></label><input type="email" id="pcBranchMgmt" placeholder="name@cgc.com.my"></div>
+          </div>
+
+          <div class="pc-note">After departmental approval, the request is routed to a Finance Processor, who assigns the Finance Approver under the Finance Authority Approval Matrix.</div>
+        </div>
+
+        <!-- 6. DOCUMENTS -->
+        <div class="pc-section fa-hide" data-section="6">
+          <h3 class="pc-subtitle">Supporting documents</h3>
+          <p class="pc-sublead">Attach the Budget Confirmation Approval (BCA) or the approved supporting paper.</p>
+
+          <div class="fa-field">
+            <label for="pcFile">BCA or approved supporting paper <span class="fa-required">*</span></label>
+            <div class="fa-upload" id="pcZone">
+              <input type="file" id="pcFile" class="fa-upload-input" multiple>
+              <label for="pcFile" class="fa-upload-empty" id="pcZoneEmpty">
+                <span class="fa-upload-icon">&#8679;</span>
+                <span><strong>Click to upload</strong> or drag and drop files</span>
+                <small id="pcZoneHint"></small>
+              </label>
+              <div class="fa-upload-files fa-hide" id="pcZoneSelected">
+                <div class="fa-upload-summary">
+                  <div><strong id="pcFileCount">0 files selected</strong><small id="pcFileSize">0 B total</small></div>
+                  <div class="fa-upload-summary-actions">
+                    <label for="pcFile" class="fa-upload-add">&#10133; Add more</label>
+                    <button type="button" id="pcRemoveAll" class="fa-file-remove">Remove all</button>
+                  </div>
+                </div>
+                <div id="pcFileList" class="fa-upload-file-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-note">Payment receipts, purchase receipts and refund documents are uploaded at later stages under the same request reference.</div>
+        </div>
+
+        <!-- 7. REVIEW -->
+        <div class="pc-section fa-hide" data-section="7">
+          <h3 class="pc-subtitle">Review and submit</h3>
+          <p class="pc-sublead">Check every detail before submitting. Once submitted, the request is routed for approval and cannot be edited.</p>
+          <div id="pcReview"></div>
+          <div class="pc-declare">
+            I confirm that the information submitted is complete and accurate, and that this request is for a legitimate CGC business purpose. I will submit the payment acknowledgement, purchase receipts and any refund documents under the same request reference.
+            <label class="pc-check"><input type="checkbox" id="pcDeclare"><span>I accept this declaration</span></label>
           </div>
         </div>
 
-        <!-- STEP 5 -->
-        <div class="step-panel hidden" data-step="5">
-          <header class="panel-head">
-            <p class="eyebrow">Step 5 of 7</p>
-            <h2>Approvals</h2>
-            <p class="panel-lead">Nominate approvers in accordance with the Authority Approval Matrix. You cannot nominate yourself.</p>
-          </header>
+        <div id="pcFormMsg" class="fa-msg fa-hide" style="margin-top:20px"></div>
 
-          <div id="hqApprovalFields" class="grid grid-2">
-            <div class="field">
-              <label for="departmentApprover1">First approver <span class="req">*</span></label>
-              <input id="departmentApprover1" type="email" placeholder="name@cgc.com.my">
-              <span class="error-text"></span>
-            </div>
-            <div class="field">
-              <label for="departmentApprover2">Second approver <span class="req">*</span></label>
-              <input id="departmentApprover2" type="email" placeholder="name@cgc.com.my">
-              <span class="error-text"></span>
-            </div>
-          </div>
-
-          <div id="branchApprovalFields" class="grid grid-2 hidden">
-            <div class="field">
-              <label for="branchVerifierEmail">Branch verifier <span class="req">*</span></label>
-              <input id="branchVerifierEmail" type="email" placeholder="Branch Manager or Assistant Branch Manager">
-              <span class="error-text"></span>
-            </div>
-            <div class="field">
-              <label for="branchManagementApprover">Branch Management approver <span class="req">*</span></label>
-              <input id="branchManagementApprover" type="email" placeholder="name@cgc.com.my">
-              <span class="error-text"></span>
-            </div>
-            <div class="field span-2">
-              <label for="branchSecondApprover">Additional approver <span class="optional">Optional, where required by AAM</span></label>
-              <input id="branchSecondApprover" type="email" placeholder="name@cgc.com.my">
-              <span class="error-text"></span>
-            </div>
-          </div>
-
-          <div class="callout" style="margin-top:20px">
-            After departmental approval, the request is routed to a Finance Processor, who assigns the Finance Approver under the Finance Authority Approval Matrix.
-          </div>
+        <div class="pc-nav">
+          <button type="button" id="pcBtnBack" class="fa-btn fa-btn-secondary">Back</button>
+          <button type="button" id="pcBtnNext" class="fa-btn fa-btn-primary">Continue</button>
         </div>
-
-        <!-- STEP 6 -->
-        <div class="step-panel hidden" data-step="6">
-          <header class="panel-head">
-            <p class="eyebrow">Step 6 of 7</p>
-            <h2>Supporting documents</h2>
-            <p class="panel-lead">Attach the Budget Confirmation Approval (BCA) or the approved supporting paper for this request.</p>
-          </header>
-
-          <div class="field">
-            <label id="dropzone" class="dropzone" for="requestDocuments">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
-              <span class="dz-title">Drag files here or click to browse</span>
-              <span class="dz-sub">PDF, Word, Excel, JPG or PNG · 10 MB total</span>
-            </label>
-            <input id="requestDocuments" type="file" multiple class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-            <span class="error-text"></span>
-            <ul id="fileList" class="file-list"></ul>
-            <div id="fileTotal" class="file-total"></div>
-          </div>
-
-          <div class="callout" style="margin-top:20px">
-            Payment receipts, purchase receipts and refund documents are uploaded at later stages under the same request reference.
-          </div>
-        </div>
-
-        <!-- STEP 7 -->
-        <div class="step-panel hidden" data-step="7">
-          <header class="panel-head">
-            <p class="eyebrow">Step 7 of 7</p>
-            <h2>Review and submit</h2>
-            <p class="panel-lead">Check every detail before submitting. Once submitted, the request is routed for approval and cannot be edited.</p>
-          </header>
-
-          <div id="reviewContent"></div>
-
-          <div class="declaration">
-            <p>I confirm that the information submitted is complete and accurate, and that this request is for a legitimate CGC business purpose. I will submit the payment acknowledgement, purchase receipts and any refund documents under the same request reference.</p>
-            <label class="checkline">
-              <input type="checkbox" id="declarationAccepted">
-              <span>I accept this declaration</span>
-            </label>
-            <span id="declarationError" class="error-text">You must accept the declaration to submit.</span>
-          </div>
-
-          <div id="submitNotice" class="notice"></div>
-        </div>
-
       </form>
+    </section>
 
-      <div class="workspace-footer">
-        <button id="backButton" class="btn btn-ghost" onclick="previousStep()">Back</button>
-        <div class="footer-right">
-          <span id="stepCounter" class="step-counter"></span>
-          <button id="nextButton" class="btn btn-primary" onclick="nextStep()">Continue</button>
-        </div>
+    <!-- SCREEN 4 : SUCCESS -->
+    <section id="pcScreenDone" class="fa-screen fa-success fa-hide">
+      <div class="fa-success-icon">&#10003;</div>
+      <h2 class="fa-title">Request submitted successfully</h2>
+      <p class="fa-lead" style="margin-left:auto;margin-right:auto">The request has been recorded and routed to the first approver.</p>
+      <div class="fa-reference"><span>Request reference number</span><strong id="pcRefNo"></strong></div>
+      <p class="fa-success-note">Use this reference for the payment acknowledgement, purchase receipts and any refund documents.</p>
+      <div class="fa-actions fa-actions-center">
+        <button type="button" id="pcBtnAnother" class="fa-btn fa-btn-primary">Submit another request</button>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SUCCESS -->
-  <section id="screenSuccess" class="entry-card hidden">
-    <div class="success-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-    </div>
-    <p class="eyebrow">Submitted</p>
-    <h1 class="entry-title">Your request has been submitted</h1>
-    <p class="entry-lead">It has been routed to the first approver. Use the reference below for all follow-up documents and enquiries.</p>
-    <div class="reference-box">
-      <span>Request reference</span>
-      <strong id="successReference"></strong>
-    </div>
-    <div class="entry-actions end">
-      <button class="btn btn-primary" onclick="restartApplication(true)">Submit another request</button>
-    </div>
-  </section>
+  </main>
 
-</main>
+  <footer class="fa-footer"><span>CGC Finance Hub &middot; Internal Use Only</span><span>Petty Cash Module &middot; <span id="pcVersion"></span></span></footer>
+</section>
 
-<footer class="page-foot">Credit Guarantee Corporation Malaysia Berhad · Internal use only</footer>
+</div></div>
 
-<script>
-  (function () {
-    var s = document.createElement('script');
-    s.src = 'app.js?v=6';
-    s.onerror = function () {
-      alert('app.js could not be loaded. Check that it is in the same folder as index.html.');
-    };
-    document.body.appendChild(s);
-  })();
-</script>
+<div id="pcLoader" class="fa-loader fa-hide"><div class="fa-loader-card"><div class="fa-spinner"></div><span id="pcLoaderText">Processing...</span></div></div>
 
+js/pc-config.js?v=1.0.0
+js/pc-app.js?v=1.0.0
 </body>
 </html>
