@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CGC Petty Cash Management System</title>
-styles.css?v=4
+
+<style>
+  @import url("styles.css?v=5");
+</style>
 </head>
 
 <body>
@@ -286,7 +289,7 @@ styles.css?v=4
         </div>
 
         <div class="warning-box">
-          These dropdown values come from the SAP extracts you were sent. Later, load them from a SharePoint GL master list so Finance can update them without editing this page.
+          These dropdown values come from the SAP extracts provided by Finance. Later, they will be loaded from a SharePoint GL master list so Finance can update them without editing this page.
         </div>
       </section>
 
@@ -367,7 +370,7 @@ styles.css?v=4
         </div>
 
         <div class="info-box">
-          The Finance Processor and Finance Approver are assigned at the Finance stage. The Finance Processor picks the Finance Approver based on the Finance AAM.
+          The Finance Processor and Finance Approver are assigned at the Finance stage. The Finance Processor selects the Finance Approver based on the Finance AAM.
         </div>
       </section>
 
@@ -444,6 +447,20 @@ styles.css?v=4
 
 </div>
 
-app.js?v=4script>
+<script>
+  (function () {
+    var appScript = document.createElement('script');
+    appScript.src = 'app.js?v=5';
+    appScript.onload = function () {
+      // app.js sets up its listeners on DOMContentLoaded, which has already fired
+      document.dispatchEvent(new Event('DOMContentLoaded'));
+    };
+    appScript.onerror = function () {
+      alert('app.js could not be loaded. Check that it is in the same folder as index.html.');
+    };
+    document.body.appendChild(appScript);
+  })();
+</script>
+
 </body>
 </html>
