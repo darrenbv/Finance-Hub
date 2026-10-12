@@ -452,13 +452,14 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 <script>
 var PC_CONFIG = {
   moduleCode : "PC",
-  appVersion : "v1.6.0",
+  appVersion : "v1.7.0",
   requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
   verifyOtpUrl  : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ",
   submitUrl     : "",
-  /* PASTE the PC_GetReferenceData HTTP POST URL between the quotes below.
-     Banks, departments, branches, the GL master and the approval matrix all load from SharePoint through this flow. */
-  referenceDataUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/20/workflows/5cb2b93c382e4d7697460f922b241aae/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P8ZH9yFa1gEKc8lFFbHexcQWnMthFUJjEznpEn4NOAQ",
+
+  /* >>> PASTE THE PC_GetReferenceData HTTP POST URL BETWEEN THE QUOTES BELOW <<< */
+  referenceDataUrl : "",
+
   allowedDomain   : "cgc.com.my",
   otpLength       : 6,
   otpValidSeconds : 60,
@@ -666,13 +667,22 @@ var PC = (function () {
     var matrix = prep(res.matrix).map(function(r){
       return {
         scope     : normScope(pick(r, ["Scope","scope"])),
-        appliesTo : pickStr(r, ["AppliesTo","appliesTo"]),
-        a1        : person(r.Approver1 || r.approver1),
-        a2        : person(r.Approver2 || r.approver2)
+        appliesTo : pickStr(r, ["AppliesTo","appliesTo","Applies_x0020_To","Applies_x0020_to"]),
+        a1        : person(r.Approver1 || r.approver1 || r.Approver_x0020_1 || r.Approver_x0020_One),
+        a2        : person(r.Approver2 || r.approver2 || r.Approver_x0020_2 || r.Approver_x0020_Two)
       };
     }).filter(function(r){ return r.appliesTo; });
 
     return { banks: banks, departments: departments, branches: branches, gl: gl, matrix: matrix };
+  }
+
+  /* Explains exactly why no approver rows could be used */
+  function whyMatrixEmpty(res){
+    var raw = asArray(res && res.matrix);
+    if (!res || !("matrix" in res)) return "the flow response has no 'matrix' property. Add it to the Response body.";
+    if (!raw.length) return "the flow returned 0 rows. Check the Get items filter and that IsActive is Yes on the rows.";
+    if (!raw.filter(isActiveRow).length) return "the flow returned " + raw.length + " row(s) but all are inactive (IsActive = No).";
+    return "the flow returned " + raw.length + " row(s) but none could be read. Columns received: " + Object.keys(raw[0] || {}).join(", ") + ". Expected AppliesTo, Approver1, Approver2.";
   }
 
   function showRefBanner(type, text, withRetry){
@@ -800,7 +810,7 @@ var PC = (function () {
 
     if (!PC_CONFIG.referenceDataUrl){
       refLoaded = false;
-      showRefBanner("warn", "The configuration service is not connected yet. Paste the PC_GetReferenceData URL into referenceDataUrl in this page.", false);
+      showRefBanner("warn", "The configuration service is not connected yet. Paste the PC_GetReferenceData URL into referenceDataUrl near the top of this page.", false);
       setRequestEnabled(false);
       return false;
     }
@@ -815,12 +825,13 @@ var PC = (function () {
       if (st && ["OK","SUCCESS"].indexOf(st) === -1) throw new Error(res.message || "The configuration service returned an error.");
 
       var data = normalizeRef(res);
+
+      /* Banks, departments, branches and GL are required to open the form */
       var empty = [];
       if (!data.banks.length)       empty.push("banks");
       if (!data.departments.length) empty.push("departments");
       if (!data.branches.length)    empty.push("branches");
       if (!data.gl.length)          empty.push("GL codes");
-      if (!data.matrix.length)      empty.push("approvers (PC_ApprovalMatrix)");
       if (empty.length) throw new Error("No active " + empty.join(", ") + " found in SharePoint. Please contact the Automation team.");
 
       refData = data;
@@ -828,8 +839,16 @@ var PC = (function () {
       loadDepartments();
       loadBranches();
       loadBanks();
-      showRefBanner(null);
       setRequestEnabled(true);
+
+      console.log("Reference data loaded:", { banks: data.banks.length, departments: data.departments.length, branches: data.branches.length, gl: data.gl.length, approverRows: data.matrix.length });
+
+      /* The approval matrix does not block sign-in. Requests cannot be submitted until it is fixed. */
+      if (!data.matrix.length){
+        showRefBanner("warn", "Approvers could not be loaded: " + whyMatrixEmpty(res) + " Requests cannot be submitted until this is fixed.", true);
+      } else {
+        showRefBanner(null);
+      }
       return true;
     } catch (e) {
       refLoaded = false;
@@ -1137,7 +1156,6 @@ var PC = (function () {
 
   function validate(n){
     clearBad();
-    var emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
     var rules = [];
 
     if (n === 1){
@@ -1536,7 +1554,7 @@ var PC = (function () {
 try {
   PC.init();
   window.PC_READY = true;
-  console.log("BUILD v14 | Petty Cash single-file");
+  console.log("BUILD v15 | Petty Cash single-file");
 } catch (err) {
   console.error("Petty Cash failed to start:", err);
   alert("Petty Cash failed to start: " + err.message);
