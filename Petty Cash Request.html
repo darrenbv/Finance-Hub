@@ -28,8 +28,8 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 .fa-brand:after{content:"";position:absolute;bottom:-160px;left:-110px;width:430px;height:430px;border:1px solid rgba(255,255,255,.1);border-radius:50%;box-shadow:0 0 0 45px rgba(255,255,255,.025),0 0 0 90px rgba(255,255,255,.018);pointer-events:none}
 .fa-brand-top,.fa-brand-content,.fa-security,.fa-brand-footer{position:relative;z-index:1}
 .fa-brand-top{display:flex;align-items:center;gap:15px}
-.fa-logo{width:128px;height:76px;flex:0 0 auto;padding:8px;overflow:hidden;border-radius:13px;background:#fff;box-shadow:0 9px 25px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center}
-.fa-logo-image{display:block;width:100%;height:100%;object-fit:contain;transform:scale(1.8);transform-origin:center}
+.fa-logo{width:128px;height:76px;flex:0 0 auto;padding:8px;overflow:hidden;border-radius:13px;background:#fff;box-shadow:0 9px 25px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;position:relative}
+.fa-logo:before{content:"";position:absolute;top:8px;right:8px;bottom:8px;left:8px;background:url("../assets/images/cgc-logo.jpg") center/contain no-repeat;transform:scale(1.8);transform-origin:center}
 .fa-brand-name strong{display:block;font-size:15px}.fa-brand-name span{display:block;max-width:190px;margin-top:4px;color:rgba(255,255,255,.7);font-size:11px}
 .fa-brand-content{margin:auto 0;padding:48px 0}
 .fa-brand h1{font-size:clamp(32px,4vw,47px);line-height:1.1;letter-spacing:-1.4px}.fa-brand h1 span{display:block;color:var(--gold)}
@@ -173,7 +173,7 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 
 <aside class="fa-brand">
   <div class="fa-brand-top">
-    <div class="fa-logo">../assets/images/cgc-logo.jpg</div>
+    <div class="fa-logo" role="img" aria-label="CGC logo"></div>
     <div class="fa-brand-name"><strong>Finance Hub</strong><span>Credit Guarantee Corporation Malaysia Berhad</span></div>
   </div>
   <div class="fa-brand-content">
@@ -371,14 +371,14 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 
         <div class="pc-section fa-hide" data-section="5">
           <h3 class="pc-subtitle">Approvals</h3>
-          <p class="pc-sublead">Nominate approvers in accordance with the Authority Approval Matrix. You cannot nominate yourself.</p>
+          <p class="pc-sublead">Approvers are assigned automatically from the Authority Approval Matrix and cannot be changed.</p>
           <div id="pcHqApprovers">
-            <div class="fa-field"><label for="pcApprover1">First approver email <span class="fa-required">*</span></label><input type="email" id="pcApprover1" placeholder="name@cgc.com.my"></div>
-            <div class="fa-field"><label for="pcApprover2">Second approver email <span class="fa-required">*</span></label><input type="email" id="pcApprover2" placeholder="name@cgc.com.my"></div>
+            <div class="fa-field"><label for="pcApprover1">First approver</label><div class="pc-lock"><input id="pcApprover1" readonly placeholder="Assigned automatically"></div></div>
+            <div class="fa-field"><label for="pcApprover2">Second approver</label><div class="pc-lock"><input id="pcApprover2" readonly placeholder="Assigned automatically"></div></div>
           </div>
           <div id="pcBranchApprovers" class="fa-hide">
-            <div class="fa-field"><label for="pcVerifier">Branch verifier email <span class="fa-required">*</span></label><input type="email" id="pcVerifier" placeholder="Branch Manager or Assistant Branch Manager"></div>
-            <div class="fa-field"><label for="pcBranchMgmt">Branch Management approver email <span class="fa-required">*</span></label><input type="email" id="pcBranchMgmt" placeholder="name@cgc.com.my"></div>
+            <div class="fa-field"><label for="pcVerifier">Branch verifier</label><div class="pc-lock"><input id="pcVerifier" readonly placeholder="Assigned automatically"></div></div>
+            <div class="fa-field"><label for="pcBranchMgmt">Branch Management approver</label><div class="pc-lock"><input id="pcBranchMgmt" readonly placeholder="Assigned automatically"></div></div>
           </div>
           <div class="pc-note">After departmental approval, the request is routed to a Finance Processor, who assigns the Finance Approver under the Finance Authority Approval Matrix.</div>
         </div>
@@ -452,12 +452,12 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 <script>
 var PC_CONFIG = {
   moduleCode : "PC",
-  appVersion : "v1.5.0",
+  appVersion : "v1.6.0",
   requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
   verifyOtpUrl  : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ",
   submitUrl     : "",
   /* PASTE the PC_GetReferenceData HTTP POST URL between the quotes below.
-     Banks, departments, branches and the GL master all load from SharePoint through this flow. */
+     Banks, departments, branches, the GL master and the approval matrix all load from SharePoint through this flow. */
   referenceDataUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/20/workflows/5cb2b93c382e4d7697460f922b241aae/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P8ZH9yFa1gEKc8lFFbHexcQWnMthFUJjEznpEn4NOAQ",
   allowedDomain   : "cgc.com.my",
   otpLength       : 6,
@@ -481,7 +481,8 @@ var PC = (function () {
 
   var currentEmail = "", location = "", branch = "", requestType = "";
   var userName = "", userDept = "", userDeptRaw = "";
-  var refData = { banks: [], departments: [], branches: [], gl: [] };
+  var refData = { banks: [], departments: [], branches: [], gl: [], matrix: [] };
+  var approvers = { a1: null, a2: null };
   var refLoaded = false, refLoading = false;
   var section = 1, glRows = [], selectedGl = null, files = [], boxes = [];
   var expiryTimer = null, resendTimer = null, busy = false;
@@ -566,10 +567,11 @@ var PC = (function () {
   /* ============================================================
      REFERENCE DATA  (SharePoint lists through PC_GetReferenceData)
      The flow returns the raw SharePoint rows, so the column names are read directly:
-       PC_Banks        BankName
-       PC_Departments  DeptCode, DeptName
-       PC_Branches     BranchName, CostCentre
-       PC_GLMaster     Scope, Department, CostCentre, GLCode, GLDescription, ExpenseType, OpexClass
+       PC_Banks           BankName
+       PC_Departments     DeptCode, DeptName
+       PC_Branches        BranchName, CostCentre
+       PC_GLMaster        Scope, Department, CostCentre, GLCode, GLDescription, ExpenseType, OpexClass
+       PC_ApprovalMatrix  Scope, AppliesTo, Approver1, Approver2 (Person columns)
      All lists also use IsActive and SortOrder.
      ============================================================ */
   function asArray(v){ return Array.isArray(v) ? v : []; }
@@ -613,6 +615,24 @@ var PC = (function () {
     return "Both";
   }
 
+  /* Reads a SharePoint Person column: { DisplayName, Email, Claims } */
+  function person(p){
+    if (Array.isArray(p)) p = p[0];
+    if (!p) return null;
+    if (typeof p === "string"){
+      var s = cleanStr(p);
+      return /@/.test(s) ? { name: s, email: s.toLowerCase() } : null;
+    }
+    var email = cleanStr(p.Email || p.email || p.EMail || "");
+    if (!email){
+      var claims = cleanStr(p.Claims || p.claims || "");
+      var m = claims.match(/([^|\s]+@[^|\s]+)$/);
+      if (m) email = m[1];
+    }
+    if (!email) return null;
+    return { name: cleanStr(p.DisplayName || p.displayName || p.Title || "") || email, email: email.toLowerCase() };
+  }
+
   function normalizeRef(res){
     var banks = prep(res.banks).map(function(b){
       if (typeof b === "string") b = { BankName: b };
@@ -643,7 +663,16 @@ var PC = (function () {
       };
     }).filter(function(r){ return r.glCode && r.opexClass; });
 
-    return { banks: banks, departments: departments, branches: branches, gl: gl };
+    var matrix = prep(res.matrix).map(function(r){
+      return {
+        scope     : normScope(pick(r, ["Scope","scope"])),
+        appliesTo : pickStr(r, ["AppliesTo","appliesTo"]),
+        a1        : person(r.Approver1 || r.approver1),
+        a2        : person(r.Approver2 || r.approver2)
+      };
+    }).filter(function(r){ return r.appliesTo; });
+
+    return { banks: banks, departments: departments, branches: branches, gl: gl, matrix: matrix };
   }
 
   function showRefBanner(type, text, withRetry){
@@ -711,6 +740,61 @@ var PC = (function () {
 
   function setRequestEnabled(on){ el("pcBtnRequestOtp").disabled = !on; }
 
+  /* ---------- Approvers (from PC_ApprovalMatrix, not editable on the page) ---------- */
+  function apLabel(p){
+    if (!p) return "";
+    return p.name && p.name.toLowerCase() !== p.email ? p.name + " (" + p.email + ")" : p.email;
+  }
+  function apEmail(n){ return approvers["a" + n] ? approvers["a" + n].email : ""; }
+
+  function showApprovers(){
+    var t1 = apLabel(approvers.a1), t2 = apLabel(approvers.a2);
+    el("pcApprover1").value = t1;  el("pcApprover2").value = t2;
+    el("pcVerifier").value  = t1;  el("pcBranchMgmt").value = t2;
+  }
+
+  /* HQ is matched on the department, Branch on the branch name */
+  function resolveApprovers(){
+    approvers.a1 = null; approvers.a2 = null;
+    var key = location === "HQ" ? val("pcDepartment") : (location === "Branch" ? branch : "");
+    if (key){
+      var k = key.toLowerCase();
+      var kn = location === "HQ" ? deptName(key).toLowerCase() : "";
+      var found = null;
+      var rows = refData.matrix || [];
+      for (var i = 0; i < rows.length; i++){
+        var r = rows[i];
+        if (r.scope !== location && r.scope !== "Both") continue;
+        var at = r.appliesTo.toLowerCase();
+        if (at === k || (kn && at === kn)){
+          found = r;
+          if (r.a1 && r.a2) break;
+        }
+      }
+      if (found){ approvers.a1 = found.a1; approvers.a2 = found.a2; }
+    }
+    showApprovers();
+    return !!(approvers.a1 && approvers.a2);
+  }
+
+  function checkApprovers(ids){
+    resolveApprovers();
+    var p1 = approvers.a1, p2 = approvers.a2;
+    if (!p1 || !p2){
+      markBad(ids[!p1 ? 0 : 1]);
+      return "No approvers are configured for your selection. Please contact Finance.";
+    }
+    if (p1.email === currentEmail || p2.email === currentEmail){
+      markBad(ids[p1.email === currentEmail ? 0 : 1]);
+      return "You are listed as an approver for your own request. Please contact Finance.";
+    }
+    if (p1.email === p2.email){
+      markBad(ids[1]);
+      return "The same person is set as both approvers. Please contact Finance.";
+    }
+    return null;
+  }
+
   async function loadReferenceData(){
     if (refLoading) return false;
 
@@ -736,6 +820,7 @@ var PC = (function () {
       if (!data.departments.length) empty.push("departments");
       if (!data.branches.length)    empty.push("branches");
       if (!data.gl.length)          empty.push("GL codes");
+      if (!data.matrix.length)      empty.push("approvers (PC_ApprovalMatrix)");
       if (empty.length) throw new Error("No active " + empty.join(", ") + " found in SharePoint. Please contact the Automation team.");
 
       refData = data;
@@ -781,6 +866,7 @@ var PC = (function () {
     el("pcRequestDate").value = displayDate(todayIso());
     var dept = el("pcDepartment");
     if (userDept) dept.value = userDept; else dept.selectedIndex = 0;
+    resolveApprovers();
   }
 
   async function post(url, payload, timeoutMs){
@@ -805,7 +891,7 @@ var PC = (function () {
     var data;
     try { data = text ? JSON.parse(text) : {}; }
     catch (e) { throw new Error("Unexpected response received from the server."); }
-    if (!response.ok && !data.status) throw new Error(data.message || "Request failed (" + response.status + ")");
+    if (!response.ok && !data.status) throw new Error(data.message || (data.error && data.error.message) || "Request failed (" + response.status + ")");
     return data;
   }
 
@@ -1036,6 +1122,7 @@ var PC = (function () {
     el("pcBtnBack").disabled = n === 1;
     el("pcBtnNext").textContent = n === SECTIONS.length ? "Submit request" : "Continue";
     message("pcFormMsg", null, null);
+    if (n === 5) resolveApprovers();
     if (n === SECTIONS.length) buildReview();
     window.scrollTo({ top:0, behavior:"smooth" });
   }
@@ -1057,7 +1144,8 @@ var PC = (function () {
       rules = [
         ["pcTypeGroup",  location === "HQ" && !requestType, "Please select the request type."],
         ["pcFullName",   !val("pcFullName"),   "Your name could not be retrieved. Please sign out and verify again."],
-        ["pcDepartment", !val("pcDepartment"), "Please select your department."]
+        ["pcDepartment", !val("pcDepartment"), "Please select your department."],
+        ["pcDepartment", !!val("pcDepartment") && !resolveApprovers(), "No approvers are configured for this " + (location === "Branch" ? "branch" : "department") + ". Please contact Finance."]
       ];
     }
     if (n === 2){
@@ -1089,15 +1177,8 @@ var PC = (function () {
     }
     if (n === 5){
       var ids = location === "HQ" ? ["pcApprover1","pcApprover2"] : ["pcVerifier","pcBranchMgmt"];
-      var a = val(ids[0]).toLowerCase();
-      var b = val(ids[1]).toLowerCase();
-      rules = [
-        [ids[0], !emailRe.test(a), "Please enter a valid email for the first approver."],
-        [ids[1], !emailRe.test(b), "Please enter a valid email for the second approver."],
-        [ids[0], a === currentEmail, "You cannot approve your own request."],
-        [ids[1], b === currentEmail, "You cannot approve your own request."],
-        [ids[1], a === b, "Each approver must be a different person."]
-      ];
+      var apErr = checkApprovers(ids);
+      if (apErr) return apErr;
     }
     if (n === 6){
       rules = [
@@ -1242,8 +1323,8 @@ var PC = (function () {
       ]],
       [4, "Payment", [["Bank", bankName()], ["Account number", val("pcAccount")]]],
       [5, "Approvals", isHQ
-        ? [["First approver", val("pcApprover1")], ["Second approver", val("pcApprover2")]]
-        : [["Branch verifier", val("pcVerifier")], ["Branch Management approver", val("pcBranchMgmt")]]],
+        ? [["First approver", apLabel(approvers.a1)], ["Second approver", apLabel(approvers.a2)]]
+        : [["Branch verifier", apLabel(approvers.a1)], ["Branch Management approver", apLabel(approvers.a2)]]],
       [6, "Documents", [["Attachments", files.map(function(f){ return f.name; }).join(", "), true]]]
     ];
 
@@ -1291,10 +1372,10 @@ var PC = (function () {
       expenseType              : gl.expenseType || "",
       bankName                 : bankName(),
       bankAccountNumber        : val("pcAccount").replace(/[\s-]/g, ""),
-      departmentApprover1      : isHQ ? val("pcApprover1").toLowerCase() : "",
-      departmentApprover2      : isHQ ? val("pcApprover2").toLowerCase() : "",
-      branchVerifier           : isHQ ? "" : val("pcVerifier").toLowerCase(),
-      branchManagementApprover : isHQ ? "" : val("pcBranchMgmt").toLowerCase(),
+      departmentApprover1      : isHQ ? apEmail(1) : "",
+      departmentApprover2      : isHQ ? apEmail(2) : "",
+      branchVerifier           : isHQ ? "" : apEmail(1),
+      branchManagementApprover : isHQ ? "" : apEmail(2),
       requestDocuments         : docs,
       declarationAccepted      : true,
       submittedAt              : new Date().toISOString()
@@ -1407,6 +1488,7 @@ var PC = (function () {
     el("pcBtnBack").addEventListener("click", back);
     el("pcBtnAnother").addEventListener("click", function(){ resetForm(); renderHero(); showScreen("pcScreenForm"); goToSection(1); });
 
+    el("pcDepartment").addEventListener("change", resolveApprovers);
     el("pcOpex").addEventListener("change", filterGl);
     el("pcGl").addEventListener("change", applyGl);
     el("pcBank").addEventListener("change", function(){ hide("pcOtherBankField", !isOtherBank(val("pcBank"))); });
@@ -1440,7 +1522,7 @@ var PC = (function () {
 
     showScreen("pcScreenEmail");
 
-    /* Load banks, departments, branches and the GL master from SharePoint, then resume any valid session */
+    /* Load banks, departments, branches, the GL master and the approval matrix from SharePoint, then resume any valid session */
     if (PC_CONFIG.referenceDataUrl) loader(true, "Loading configuration\u2026");
     loadReferenceData().then(function(ok){
       loader(false);
@@ -1454,7 +1536,7 @@ var PC = (function () {
 try {
   PC.init();
   window.PC_READY = true;
-  console.log("BUILD v13 | Petty Cash single-file");
+  console.log("BUILD v14 | Petty Cash single-file");
 } catch (err) {
   console.error("Petty Cash failed to start:", err);
   alert("Petty Cash failed to start: " + err.message);
