@@ -167,7 +167,48 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 @media(max-width:940px){.fa-page{padding:0}.fa-shell{min-height:100vh;border:0;border-radius:0;box-shadow:none;grid-template-columns:1fr}.fa-brand{min-height:auto;padding:24px}.fa-brand-content{margin:35px 0 28px;padding:0}.fa-brand h1{font-size:34px}.fa-features,.fa-security,.fa-brand-footer{display:none}}
 @media(max-width:640px){.fa-brand{padding:20px}.fa-logo{width:108px;height:66px}.fa-brand h1{font-size:29px}.fa-app-header{min-height:72px;padding:18px 20px}.fa-progress{padding:22px 20px 0}.fa-content{padding:34px 20px 36px}.fa-title{font-size:23px}.fa-grid,.pc-choices,.pc-meta{grid-template-columns:1fr}.fa-grid{gap:0}.fa-otp-group{grid-template-columns:repeat(6,minmax(34px,1fr));gap:6px}.fa-otp-box{height:54px;font-size:21px}.pc-nav,.fa-actions{flex-direction:column-reverse}.pc-nav .fa-btn,.fa-actions .fa-btn{width:100%}.fa-footer{padding:15px 20px;flex-direction:column;text-align:center}.pc-hero{padding:20px 20px 24px}.pc-hero h2{font-size:25px;margin-top:14px}}
 </style>
-</head>
+</head><style>
+br{display:none!important}
+p:has(>br:only-child){display:none!important}
+li:has(>br:only-child){display:none!important}
+.fa-logo:before{display:none!important}
+.fa-logo img{display:block;width:100%;height:100%;object-fit:contain;transform:scale(1.8);transform-origin:center}
+.fa-logo-text{color:#173b6c;font:800 22px Arial,sans-serif;letter-spacing:2px}
+</style>
+<script>
+(function () {
+  var removed = 0, busy = false;
+  function clean() {
+    if (busy) return; busy = true;
+    var root = document.querySelector(".fa-shell") || document.querySelector(".fa-page") || document.body;
+    root.querySelectorAll("br").forEach(function (n) { n.remove(); removed++; });
+    var list = Array.prototype.slice.call(root.querySelectorAll("p,li,ul,ol")).reverse();
+    list.forEach(function (n) {
+      if (!n.children.length && !n.textContent.trim()) { n.remove(); removed++; }
+    });
+    busy = false;
+  }
+  function logo() {
+    var box = document.querySelector(".fa-logo");
+    if (!box || box.querySelector("img,.fa-logo-text")) return;
+    var showText = function () {
+      box.innerHTML = "";
+      var t = document.createElement("span"); t.className = "fa-logo-text"; t.textContent = "CGC"; box.appendChild(t);
+    };
+    var im = document.createElement("img"); im.alt = "CGC logo";
+    im.onerror = showText;
+    im.onload = function () { if (!im.naturalWidth) showText(); };
+    box.appendChild(im);
+    im.src = "../assets/images/cgc-logo.jpg";
+  }
+  function start() {
+    clean(); logo();
+    console.log("Layout clean-up: removed " + removed + " stray element(s).");
+    new MutationObserver(function () { clean(); }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();
+</script>
 <body>
 <div class="fa-page"><div class="fa-shell">
 <aside class="fa-brand">
