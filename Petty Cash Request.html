@@ -8,12 +8,12 @@
 <script>
 /* Integrity guard: shows a visible warning if the main script below did not load completely */
 window.addEventListener("load", function () {
-  if (typeof PC === "undefined" || !window.PC_READY) {
-    var d = document.createElement("div");
-    d.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:99999;padding:14px 18px;background:#c83737;color:#fff;font:600 14px Segoe UI,Arial,sans-serif;text-align:center";
-    d.textContent = "This page did not load completely. Press Ctrl+Shift+R. If this message stays, the file on GitHub is incomplete or contains an error.";
-    document.body.appendChild(d);
-  }
+if (typeof PC === "undefined" || !window.PC_READY) {
+var d = document.createElement("div");
+d.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:99999;padding:14px 18px;background:#c83737;color:#fff;font:600 14px Segoe UI,Arial,sans-serif;text-align:center";
+d.textContent = "This page did not load completely. Press Ctrl+Shift+R. If this message stays, the file on GitHub is incomplete or contains an error.";
+document.body.appendChild(d);
+}
 });
 </script>
 <style>
@@ -29,7 +29,7 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 .fa-brand-top,.fa-brand-content,.fa-security,.fa-brand-footer{position:relative;z-index:1}
 .fa-brand-top{display:flex;align-items:center;gap:15px}
 .fa-logo{width:128px;height:76px;flex:0 0 auto;padding:8px;overflow:hidden;border-radius:13px;background:#fff;box-shadow:0 9px 25px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;position:relative}
-.fa-logo:before{content:"";position:absolute;top:8px;right:8px;bottom:8px;left:8px;background:url("../assets/images/cgc-logo.jpg") center/contain no-repeat;transform:scale(1.8);transform-origin:center}
+.fa-logo img{display:block;width:100%;height:100%;object-fit:contain;transform:scale(1.8);transform-origin:center}.fa-logo-text{color:var(--navy);font:800 22px "Segoe UI",Arial,sans-serif;letter-spacing:2px}
 .fa-brand-name strong{display:block;font-size:15px}.fa-brand-name span{display:block;max-width:190px;margin-top:4px;color:rgba(255,255,255,.7);font-size:11px}
 .fa-brand-content{margin:auto 0;padding:48px 0}
 .fa-brand h1{font-size:clamp(32px,4vw,47px);line-height:1.1;letter-spacing:-1.4px}.fa-brand h1 span{display:block;color:var(--gold)}
@@ -167,1322 +167,1337 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 @media(max-width:940px){.fa-page{padding:0}.fa-shell{min-height:100vh;border:0;border-radius:0;box-shadow:none;grid-template-columns:1fr}.fa-brand{min-height:auto;padding:24px}.fa-brand-content{margin:35px 0 28px;padding:0}.fa-brand h1{font-size:34px}.fa-features,.fa-security,.fa-brand-footer{display:none}}
 @media(max-width:640px){.fa-brand{padding:20px}.fa-logo{width:108px;height:66px}.fa-brand h1{font-size:29px}.fa-app-header{min-height:72px;padding:18px 20px}.fa-progress{padding:22px 20px 0}.fa-content{padding:34px 20px 36px}.fa-title{font-size:23px}.fa-grid,.pc-choices,.pc-meta{grid-template-columns:1fr}.fa-grid{gap:0}.fa-otp-group{grid-template-columns:repeat(6,minmax(34px,1fr));gap:6px}.fa-otp-box{height:54px;font-size:21px}.pc-nav,.fa-actions{flex-direction:column-reverse}.pc-nav .fa-btn,.fa-actions .fa-btn{width:100%}.fa-footer{padding:15px 20px;flex-direction:column;text-align:center}.pc-hero{padding:20px 20px 24px}.pc-hero h2{font-size:25px;margin-top:14px}}
 </style>
-</head><style>
-br{display:none!important}
-p:has(>br:only-child){display:none!important}
-li:has(>br:only-child){display:none!important}
-.fa-logo:before{display:none!important}
-.fa-logo img{display:block;width:100%;height:100%;object-fit:contain;transform:scale(1.8);transform-origin:center}
-.fa-logo-text{color:#173b6c;font:800 22px Arial,sans-serif;letter-spacing:2px}
-</style>
-<script>
-(function () {
-  var removed = 0, busy = false;
-  function clean() {
-    if (busy) return; busy = true;
-    var root = document.querySelector(".fa-shell") || document.querySelector(".fa-page") || document.body;
-    root.querySelectorAll("br").forEach(function (n) { n.remove(); removed++; });
-    var list = Array.prototype.slice.call(root.querySelectorAll("p,li,ul,ol")).reverse();
-    list.forEach(function (n) {
-      if (!n.children.length && !n.textContent.trim()) { n.remove(); removed++; }
-    });
-    busy = false;
-  }
-  function logo() {
-    var box = document.querySelector(".fa-logo");
-    if (!box || box.querySelector("img,.fa-logo-text")) return;
-    var showText = function () {
-      box.innerHTML = "";
-      var t = document.createElement("span"); t.className = "fa-logo-text"; t.textContent = "CGC"; box.appendChild(t);
-    };
-    var im = document.createElement("img"); im.alt = "CGC logo";
-    im.onerror = showText;
-    im.onload = function () { if (!im.naturalWidth) showText(); };
-    box.appendChild(im);
-    im.src = "../assets/images/cgc-logo.jpg";
-  }
-  function start() {
-    clean(); logo();
-    console.log("Layout clean-up: removed " + removed + " stray element(s).");
-    new MutationObserver(function () { clean(); }).observe(document.body, { childList: true, subtree: true });
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
-})();
-</script>
+</head>
 <body>
 <div class="fa-page"><div class="fa-shell">
 <aside class="fa-brand">
-  <div class="fa-brand-top">
-    <div class="fa-logo" role="img" aria-label="CGC logo"></div>
-    <div class="fa-brand-name"><strong>Finance Hub</strong><span>Credit Guarantee Corporation Malaysia Berhad</span></div>
-  </div>
-  <div class="fa-brand-content">
-    <h1>Petty Cash <span>Request</span></h1>
-    <p class="fa-brand-description">Submit, approve and settle petty cash advances and claims through a secure, guided and fully traceable digital process.</p>
-    <div class="fa-features">
-      <div class="fa-feature"><b>01</b><span>Secure email verification</span></div>
-      <div class="fa-feature"><b>02</b><span>Authority Approval Matrix routing</span></div>
-      <div class="fa-feature"><b>03</b><span>Single reference from request to settlement</span></div>
-    </div>
-  </div>
-  <div class="fa-security">
-    <div class="fa-security-icon">&#128274;</div>
-    <div><strong>Secure internal access</strong><span>Access is restricted to authorised CGC users using email verification.</span></div>
-  </div>
-  <div class="fa-brand-footer">CGC Finance Hub &middot; Internal Use Only</div>
+<div class="fa-brand-top">
+<div class="fa-logo" id="pcLogo" role="img" aria-label="CGC logo"></div>
+<div class="fa-brand-name"><strong>Finance Hub</strong><span>Credit Guarantee Corporation Malaysia Berhad</span></div>
+</div>
+<div class="fa-brand-content">
+<h1>Petty Cash <span>Request</span></h1>
+<p class="fa-brand-description">Submit, approve and settle petty cash advances and claims through a secure, guided and fully traceable digital process.</p>
+<div class="fa-features">
+<div class="fa-feature"><b>01</b><span>Secure email verification</span></div>
+<div class="fa-feature"><b>02</b><span>Authority Approval Matrix routing</span></div>
+<div class="fa-feature"><b>03</b><span>Single reference from request to settlement</span></div>
+</div>
+</div>
+<div class="fa-security">
+<div class="fa-security-icon">&#128274;</div>
+<div><strong>Secure internal access</strong><span>Access is restricted to authorised CGC users using email verification.</span></div>
+</div>
+<div class="fa-brand-footer">CGC Finance Hub &middot; Internal Use Only</div>
 </aside>
 <section class="fa-app">
-  <header class="fa-app-header">
-    <div><small>Current module</small><strong>Petty Cash Request</strong></div>
-    <button type="button" id="pcBtnSignOut" class="fa-signout fa-hide">Sign out</button>
-  </header>
-  <div class="fa-progress">
-    <nav class="fa-stepper">
-      <div class="fa-step fa-step-active" data-step="1"><span class="fa-step-number">1</span><span class="fa-step-label">Verification</span></div>
-      <div class="fa-step" data-step="2"><span class="fa-step-number">2</span><span class="fa-step-label">Request Details</span></div>
-      <div class="fa-step" data-step="3"><span class="fa-step-number">3</span><span class="fa-step-label">Completed</span></div>
-    </nav>
-  </div>
-  <main class="fa-content">
-    <div id="pcRefBanner" class="fa-msg fa-hide" role="status"></div>
-    <section id="pcScreenEmail" class="fa-screen">
-      <div class="fa-screen-icon">&#9993;</div>
-      <h2 class="fa-title">Verify your email</h2>
-      <p class="fa-lead">Select where the request originates, then enter your CGC email address. A six-digit one-time password will be sent to your inbox.</p>
-      <div class="fa-form">
-        <span class="pc-label">Origination location <span class="fa-required">*</span></span>
-        <div class="pc-choices" id="pcLocationGroup">
-          <label class="pc-choice">
-            <input type="radio" name="pcLocation" value="HQ">
-            <span class="pc-dot"></span>
-            <span><strong>Headquarters</strong></span>
-          </label>
-          <label class="pc-choice">
-            <input type="radio" name="pcLocation" value="Branch">
-            <span class="pc-dot"></span>
-            <span><strong>Branch</strong></span>
-          </label>
-        </div>
-        <div class="fa-field fa-hide" id="pcBranchField">
-          <label for="pcBranch">Branch <span class="fa-required">*</span></label>
-          <select id="pcBranch"><option value="" selected disabled hidden>&mdash; Select &mdash;</option></select>
-        </div>
-        <div class="fa-field">
-          <label for="pcEmail">CGC email address <span class="fa-required">*</span></label>
-          <input type="email" id="pcEmail" placeholder="name@cgc.com.my" autocomplete="email" spellcheck="false">
-          <div class="fa-hint"><span>Use your official CGC email address.</span></div>
-        </div>
-        <div id="pcEmailMsg" class="fa-msg fa-hide" role="alert"></div>
-        <button type="button" id="pcBtnRequestOtp" class="fa-btn fa-btn-primary fa-btn-block" disabled>Request verification code</button>
-        <p class="fa-access-note">Access is restricted to authorised CGC staff.</p>
-      </div>
-    </section>
-    <section id="pcScreenOtp" class="fa-screen fa-hide">
-      <div class="fa-screen-icon">&#128274;</div>
-      <h2 class="fa-title">Enter verification code</h2>
-      <p class="fa-lead">Enter the six-digit code sent to the registered email address.</p>
-      <div class="fa-otp-email">Verification code sent to <strong id="pcMaskedEmail"></strong></div>
-      <div class="fa-otp-group">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box" autocomplete="one-time-code">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-        <input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
-      </div>
-      <div class="fa-otp-meta">Code expires in <strong id="pcTimer">01:00</strong></div>
-      <div id="pcOtpMsg" class="fa-msg fa-hide"></div>
-      <button type="button" id="pcBtnVerify" class="fa-btn fa-btn-primary fa-btn-block">Verify and continue</button>
-      <div class="fa-subactions">
-        <button type="button" id="pcBtnResend" class="fa-link" disabled>Resend code</button>
-        <button type="button" id="pcBtnChangeEmail" class="fa-link">Change email address</button>
-      </div>
-    </section>
-    <section id="pcScreenForm" class="fa-screen fa-hide">
-      <div class="pc-hero">
-        <div class="pc-hero-top">
-          <span class="pc-hero-date"><span class="pc-hero-icon" id="pcGreetIcon"></span><span id="pcHeroDate"></span></span>
-          <span class="pc-hero-loc" id="pcUserLocation"></span>
-        </div>
-        <h2 id="pcGreeting"></h2>
-        <p>Complete the seven short sections below to submit your petty cash request.</p>
-      </div>
-      <div class="pc-sechead"><span id="pcSecCounter">Section 1 of 7</span><strong id="pcSecName">Requestor</strong></div>
-      <div class="pc-secbar" id="pcSecBar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <form id="pcForm" novalidate>
-        <div class="pc-section" data-section="1">
-          <h3 class="pc-subtitle">Requestor details</h3>
-          <p class="pc-sublead" id="pcReqLead">Your name and email come from your verified sign-in and cannot be edited. Select your department to continue.</p>
-          <div id="pcTypeBlock">
-            <span class="pc-label">Request type <span class="fa-required">*</span></span>
-            <div class="pc-choices" id="pcTypeGroup">
-              <label class="pc-choice">
-                <input type="radio" name="pcType" value="Advance">
-                <span class="pc-dot"></span>
-                <span><strong>Petty Cash Advance</strong><small>Funds required before spending</small></span>
-              </label>
-              <label class="pc-choice">
-                <input type="radio" name="pcType" value="Claim">
-                <span class="pc-dot"></span>
-                <span><strong>Petty Cash Claim</strong><small>Expense already incurred</small></span>
-              </label>
-            </div>
-          </div>
-          <div class="fa-grid">
-            <div class="fa-field"><label for="pcFullName">Full name</label><div class="pc-lock"><input id="pcFullName" readonly></div></div>
-            <div class="fa-field"><label for="pcEmailLocked">Email address</label><div class="pc-lock"><input id="pcEmailLocked" readonly></div></div>
-          </div>
-          <div class="fa-grid">
-            <div class="fa-field" id="pcDeptField"><label for="pcDepartment">Department <span class="fa-required">*</span></label><select id="pcDepartment"></select></div>
-            <div class="fa-field fa-hide" id="pcBranchLockField"><label for="pcBranchLocked">Branch</label><div class="pc-lock"><input id="pcBranchLocked" readonly></div></div>
-            <div class="fa-field"><label for="pcRequestDate">Request date</label><div class="pc-lock"><input id="pcRequestDate" readonly></div></div>
-          </div>
-        </div>
-        <div class="pc-section fa-hide" data-section="2">
-          <h3 class="pc-subtitle">Request details</h3>
-          <p class="pc-sublead">State the amount required and the business purpose. Every approver reviews this information.</p>
-          <div id="pcClaimBlock" class="fa-hide">
-            <div class="fa-grid">
-              <div class="fa-field"><label for="pcOrigRef">Original request reference <span class="fa-required">*</span></label><input id="pcOrigRef" placeholder="YYYY/MM/DD/DEPT/0001"></div>
-              <div class="fa-field"><label for="pcOrigAmount">Original amount (RM) <span class="fa-required">*</span></label><input type="number" id="pcOrigAmount" min="0" step="0.01" placeholder="0.00"></div>
-            </div>
-          </div>
-          <div class="fa-grid">
-            <div class="fa-field"><label for="pcAmount">Amount requested (RM) <span class="fa-required">*</span></label><input type="number" id="pcAmount" min="0" step="0.01" placeholder="0.00"></div>
-            <div class="fa-field"><label for="pcDateRequired">Date required <span class="fa-required">*</span></label><input type="date" id="pcDateRequired"></div>
-          </div>
-          <div class="fa-field">
-            <label for="pcPurpose">Purpose of request <span class="fa-required">*</span></label>
-            <textarea id="pcPurpose" maxlength="500" placeholder="Describe what the funds will be used for and why they are required"></textarea>
-            <div class="fa-hint"><span>Provide enough detail for approval and Finance processing.</span><span><span id="pcCharCount">0</span>/500</span></div>
-          </div>
-          <div class="fa-summary"><span>Amount requested</span><strong id="pcTotal">RM 0.00</strong></div>
-        </div>
-        <div class="pc-section fa-hide" data-section="3">
-          <h3 class="pc-subtitle">Budget and GL classification</h3>
-          <p class="pc-sublead">Select the expense classification from the SAP S/4HANA master data. The cost centre is applied automatically.</p>
-          <div class="fa-field"><label for="pcOpex">Class of OPEX <span class="fa-required">*</span></label><select id="pcOpex"></select></div>
-          <div class="fa-field"><label for="pcGl">SAP GL code <span class="fa-required">*</span></label><select id="pcGl"></select></div>
-          <div id="pcGlCard" class="pc-gl-card fa-hide">
-            <div class="pc-meta">
-              <div><small>SAP GL code</small><b id="pcGlCode"></b></div>
-              <div><small>Cost centre</small><b id="pcGlCostCentre"></b></div>
-              <div class="pc-full"><small>GL description</small><b id="pcGlDesc"></b></div>
-              <div class="pc-full"><small>Type of expense</small><b id="pcGlType"></b></div>
-            </div>
-          </div>
-        </div>
-        <div class="pc-section fa-hide" data-section="4">
-          <h3 class="pc-subtitle">Payment details</h3>
-          <p class="pc-sublead">Provide the account to receive the funds. Finance transfers approved amounts via Maybank2u outside this system.</p>
-          <div class="fa-grid">
-            <div class="fa-field">
-              <label for="pcBank">Bank <span class="fa-required">*</span></label>
-              <select id="pcBank"><option value="" selected disabled hidden>&mdash; Select &mdash;</option></select>
-            </div>
-            <div class="fa-field">
-              <label for="pcAccount">Account number <span class="fa-required">*</span></label>
-              <input id="pcAccount" inputmode="numeric" autocomplete="off" placeholder="Digits only">
-            </div>
-          </div>
-          <div class="fa-field fa-hide" id="pcOtherBankField"><label for="pcOtherBank">Bank name <span class="fa-required">*</span></label><input id="pcOtherBank"></div>
-        </div>
-        <div class="pc-section fa-hide" data-section="5">
-          <h3 class="pc-subtitle">Approvals</h3>
-          <p class="pc-sublead">Approvers are assigned automatically from the Authority Approval Matrix and cannot be changed.</p>
-          <div id="pcHqApprovers">
-            <div class="fa-field"><label for="pcApprover1">First approver</label><div class="pc-lock"><input id="pcApprover1" readonly placeholder="Assigned automatically"></div></div>
-            <div class="fa-field"><label for="pcApprover2">Second approver</label><div class="pc-lock"><input id="pcApprover2" readonly placeholder="Assigned automatically"></div></div>
-          </div>
-          <div id="pcBranchApprovers" class="fa-hide">
-            <div class="fa-field"><label for="pcVerifier">Branch verifier</label><div class="pc-lock"><input id="pcVerifier" readonly placeholder="Assigned automatically"></div></div>
-            <div class="fa-field"><label for="pcBranchMgmt">Branch Management approver</label><div class="pc-lock"><input id="pcBranchMgmt" readonly placeholder="Assigned automatically"></div></div>
-          </div>
-          <div class="pc-note">After departmental approval, the request is routed to a Finance Processor, who assigns the Finance Approver under the Finance Authority Approval Matrix.</div>
-        </div>
-        <div class="pc-section fa-hide" data-section="6">
-          <h3 class="pc-subtitle">Supporting documents</h3>
-          <p class="pc-sublead">Attach the Budget Confirmation Approval (BCA) or the approved supporting paper.</p>
-          <div class="fa-field">
-            <label for="pcFile">BCA or approved supporting paper <span class="fa-required">*</span></label>
-            <div class="fa-upload" id="pcZone">
-              <input type="file" id="pcFile" class="fa-upload-input" multiple>
-              <label for="pcFile" class="fa-upload-empty" id="pcZoneEmpty">
-                <span class="fa-upload-icon">&#8679;</span>
-                <span><strong>Click to upload</strong> or drag and drop files</span>
-                <small id="pcZoneHint"></small>
-              </label>
-              <div class="fa-upload-files fa-hide" id="pcZoneSelected">
-                <div class="fa-upload-summary">
-                  <div><strong id="pcFileCount">0 files selected</strong><small id="pcFileSize">0 B total</small></div>
-                  <div class="fa-upload-summary-actions">
-                    <label for="pcFile" class="fa-upload-add">&#10133; Add more</label>
-                    <button type="button" id="pcRemoveAll" class="fa-file-remove">Remove all</button>
-                  </div>
-                </div>
-                <div id="pcFileList" class="fa-upload-file-list"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pc-note">Payment receipts, purchase receipts and refund documents are uploaded at later stages under the same request reference.</div>
-        </div>
-        <div class="pc-section fa-hide" data-section="7">
-          <h3 class="pc-subtitle">Review and submit</h3>
-          <p class="pc-sublead">Check every detail before submitting. Once submitted, the request is routed for approval and cannot be edited.</p>
-          <div id="pcReview"></div>
-          <div class="pc-declare">
-            I confirm that the information submitted is complete and accurate, and that this request is for a legitimate CGC business purpose. I will submit the payment acknowledgement, purchase receipts and any refund documents under the same request reference.
-            <label class="pc-check"><input type="checkbox" id="pcDeclare"><span>I accept this declaration</span></label>
-          </div>
-        </div>
-        <div id="pcFormMsg" class="fa-msg fa-hide" style="margin-top:20px"></div>
-        <div class="pc-nav">
-          <button type="button" id="pcBtnBack" class="fa-btn fa-btn-secondary">Back</button>
-          <button type="button" id="pcBtnNext" class="fa-btn fa-btn-primary">Continue</button>
-        </div>
-      </form>
-    </section>
-    <section id="pcScreenDone" class="fa-screen fa-success fa-hide">
-      <div class="fa-success-icon">&#10003;</div>
-      <h2 class="fa-title">Request submitted successfully</h2>
-      <p class="fa-lead" style="margin-left:auto;margin-right:auto">The request has been recorded and routed to the first approver.</p>
-      <div class="fa-reference"><span>Request reference number</span><strong id="pcRefNo"></strong></div>
-      <p class="fa-success-note">Use this reference for the payment acknowledgement, purchase receipts and any refund documents.</p>
-      <div class="fa-actions fa-actions-center">
-        <button type="button" id="pcBtnAnother" class="fa-btn fa-btn-primary">Submit another request</button>
-      </div>
-    </section>
-  </main>
-  <footer class="fa-footer"><span>CGC Finance Hub &middot; Internal Use Only</span><span>Petty Cash Module &middot; <span id="pcVersion"></span></span></footer>
+<header class="fa-app-header">
+<div><small>Current module</small><strong>Petty Cash Request</strong></div>
+<button type="button" id="pcBtnSignOut" class="fa-signout fa-hide">Sign out</button>
+</header>
+<div class="fa-progress">
+<nav class="fa-stepper">
+<div class="fa-step fa-step-active" data-step="1"><span class="fa-step-number">1</span><span class="fa-step-label">Verification</span></div>
+<div class="fa-step" data-step="2"><span class="fa-step-number">2</span><span class="fa-step-label">Request Details</span></div>
+<div class="fa-step" data-step="3"><span class="fa-step-number">3</span><span class="fa-step-label">Completed</span></div>
+</nav>
+</div>
+<main class="fa-content">
+<div id="pcRefBanner" class="fa-msg fa-hide" role="status"></div>
+<section id="pcScreenEmail" class="fa-screen">
+<div class="fa-screen-icon">&#9993;</div>
+<h2 class="fa-title">Verify your email</h2>
+<p class="fa-lead">Select where the request originates, then enter your CGC email address. A six-digit one-time password will be sent to your inbox.</p>
+<div class="fa-form">
+<span class="pc-label">Origination location <span class="fa-required">*</span></span>
+<div class="pc-choices" id="pcLocationGroup">
+<label class="pc-choice">
+<input type="radio" name="pcLocation" value="HQ">
+<span class="pc-dot"></span>
+<span><strong>Headquarters</strong></span>
+</label>
+<label class="pc-choice">
+<input type="radio" name="pcLocation" value="Branch">
+<span class="pc-dot"></span>
+<span><strong>Branch</strong></span>
+</label>
+</div>
+<div class="fa-field fa-hide" id="pcBranchField">
+<label for="pcBranch">Branch <span class="fa-required">*</span></label>
+<select id="pcBranch"><option value="" selected disabled hidden>&mdash; Select &mdash;</option></select>
+</div>
+<div class="fa-field">
+<label for="pcEmail">CGC email address <span class="fa-required">*</span></label>
+<input type="email" id="pcEmail" placeholder="name@cgc.com.my" autocomplete="email" spellcheck="false">
+<div class="fa-hint"><span>Use your official CGC email address.</span></div>
+</div>
+<div id="pcEmailMsg" class="fa-msg fa-hide" role="alert"></div>
+<button type="button" id="pcBtnRequestOtp" class="fa-btn fa-btn-primary fa-btn-block" disabled>Request verification code</button>
+<p class="fa-access-note">Access is restricted to authorised CGC staff.</p>
+</div>
+</section>
+<section id="pcScreenOtp" class="fa-screen fa-hide">
+<div class="fa-screen-icon">&#128274;</div>
+<h2 class="fa-title">Enter verification code</h2>
+<p class="fa-lead">Enter the six-digit code sent to the registered email address.</p>
+<div class="fa-otp-email">Verification code sent to <strong id="pcMaskedEmail"></strong></div>
+<div class="fa-otp-group">
+<input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box" autocomplete="one-time-code">
+<input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+<input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+<input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+<input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+<input type="text" maxlength="1" inputmode="numeric" class="fa-otp-box">
+</div>
+<div class="fa-otp-meta">Code expires in <strong id="pcTimer">01:00</strong></div>
+<div id="pcOtpMsg" class="fa-msg fa-hide"></div>
+<button type="button" id="pcBtnVerify" class="fa-btn fa-btn-primary fa-btn-block">Verify and continue</button>
+<div class="fa-subactions">
+<button type="button" id="pcBtnResend" class="fa-link" disabled>Resend code</button>
+<button type="button" id="pcBtnChangeEmail" class="fa-link">Change email address</button>
+</div>
+</section>
+<section id="pcScreenForm" class="fa-screen fa-hide">
+<div class="pc-hero">
+<div class="pc-hero-top">
+<span class="pc-hero-date"><span class="pc-hero-icon" id="pcGreetIcon"></span><span id="pcHeroDate"></span></span>
+<span class="pc-hero-loc" id="pcUserLocation"></span>
+</div>
+<h2 id="pcGreeting"></h2>
+<p>Complete the seven short sections below to submit your petty cash request.</p>
+</div>
+<div class="pc-sechead"><span id="pcSecCounter">Section 1 of 7</span><strong id="pcSecName">Requestor</strong></div>
+<div class="pc-secbar" id="pcSecBar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<form id="pcForm" novalidate>
+<div class="pc-section" data-section="1">
+<h3 class="pc-subtitle">Requestor details</h3>
+<p class="pc-sublead" id="pcReqLead">Your name and email come from your verified sign-in and cannot be edited. Select your department to continue.</p>
+<div id="pcTypeBlock">
+<span class="pc-label">Request type <span class="fa-required">*</span></span>
+<div class="pc-choices" id="pcTypeGroup">
+<label class="pc-choice">
+<input type="radio" name="pcType" value="Advance">
+<span class="pc-dot"></span>
+<span><strong>Petty Cash Advance</strong><small>Funds required before spending</small></span>
+</label>
+<label class="pc-choice">
+<input type="radio" name="pcType" value="Claim">
+<span class="pc-dot"></span>
+<span><strong>Petty Cash Claim</strong><small>Expense already incurred</small></span>
+</label>
+</div>
+</div>
+<div class="fa-grid">
+<div class="fa-field"><label for="pcFullName">Full name</label><div class="pc-lock"><input id="pcFullName" readonly></div></div>
+<div class="fa-field"><label for="pcEmailLocked">Email address</label><div class="pc-lock"><input id="pcEmailLocked" readonly></div></div>
+</div>
+<div class="fa-grid">
+<div class="fa-field" id="pcDeptField"><label for="pcDepartment">Department <span class="fa-required">*</span></label><select id="pcDepartment"></select></div>
+<div class="fa-field fa-hide" id="pcBranchLockField"><label for="pcBranchLocked">Branch</label><div class="pc-lock"><input id="pcBranchLocked" readonly></div></div>
+<div class="fa-field"><label for="pcRequestDate">Request date</label><div class="pc-lock"><input id="pcRequestDate" readonly></div></div>
+</div>
+</div>
+<div class="pc-section fa-hide" data-section="2">
+<h3 class="pc-subtitle">Request details</h3>
+<p class="pc-sublead">State the amount required and the business purpose. Every approver reviews this information.</p>
+<div id="pcClaimBlock" class="fa-hide">
+<div class="fa-grid">
+<div class="fa-field"><label for="pcOrigRef">Original request reference <span class="fa-required">*</span></label><input id="pcOrigRef" placeholder="YYYY/MM/DD/DEPT/0001"></div>
+<div class="fa-field"><label for="pcOrigAmount">Original amount (RM) <span class="fa-required">*</span></label><input type="number" id="pcOrigAmount" min="0" step="0.01" placeholder="0.00"></div>
+</div>
+</div>
+<div class="fa-grid">
+<div class="fa-field"><label for="pcAmount">Amount requested (RM) <span class="fa-required">*</span></label><input type="number" id="pcAmount" min="0" step="0.01" placeholder="0.00"></div>
+<div class="fa-field"><label for="pcDateRequired">Date required <span class="fa-required">*</span></label><input type="date" id="pcDateRequired"></div>
+</div>
+<div class="fa-field">
+<label for="pcPurpose">Purpose of request <span class="fa-required">*</span></label>
+<textarea id="pcPurpose" maxlength="500" placeholder="Describe what the funds will be used for and why they are required"></textarea>
+<div class="fa-hint"><span>Provide enough detail for approval and Finance processing.</span><span><span id="pcCharCount">0</span>/500</span></div>
+</div>
+<div class="fa-summary"><span>Amount requested</span><strong id="pcTotal">RM 0.00</strong></div>
+</div>
+<div class="pc-section fa-hide" data-section="3">
+<h3 class="pc-subtitle">Budget and GL classification</h3>
+<p class="pc-sublead">Select the expense classification from the SAP S/4HANA master data. The cost centre is applied automatically.</p>
+<div class="fa-field"><label for="pcOpex">Class of OPEX <span class="fa-required">*</span></label><select id="pcOpex"></select></div>
+<div class="fa-field"><label for="pcGl">SAP GL code <span class="fa-required">*</span></label><select id="pcGl"></select></div>
+<div id="pcGlCard" class="pc-gl-card fa-hide">
+<div class="pc-meta">
+<div><small>SAP GL code</small><b id="pcGlCode"></b></div>
+<div><small>Cost centre</small><b id="pcGlCostCentre"></b></div>
+<div class="pc-full"><small>GL description</small><b id="pcGlDesc"></b></div>
+<div class="pc-full"><small>Type of expense</small><b id="pcGlType"></b></div>
+</div>
+</div>
+</div>
+<div class="pc-section fa-hide" data-section="4">
+<h3 class="pc-subtitle">Payment details</h3>
+<p class="pc-sublead">Provide the account to receive the funds. Finance transfers approved amounts via Maybank2u outside this system.</p>
+<div class="fa-grid">
+<div class="fa-field">
+<label for="pcBank">Bank <span class="fa-required">*</span></label>
+<select id="pcBank"><option value="" selected disabled hidden>&mdash; Select &mdash;</option></select>
+</div>
+<div class="fa-field">
+<label for="pcAccount">Account number <span class="fa-required">*</span></label>
+<input id="pcAccount" inputmode="numeric" autocomplete="off" placeholder="Digits only">
+</div>
+</div>
+<div class="fa-field fa-hide" id="pcOtherBankField"><label for="pcOtherBank">Bank name <span class="fa-required">*</span></label><input id="pcOtherBank"></div>
+</div>
+<div class="pc-section fa-hide" data-section="5">
+<h3 class="pc-subtitle">Approvals</h3>
+<p class="pc-sublead">Approvers are assigned automatically from the Authority Approval Matrix and cannot be changed.</p>
+<div id="pcHqApprovers">
+<div class="fa-field"><label for="pcApprover1">First approver</label><div class="pc-lock"><input id="pcApprover1" readonly placeholder="Assigned automatically"></div></div>
+<div class="fa-field"><label for="pcApprover2">Second approver</label><div class="pc-lock"><input id="pcApprover2" readonly placeholder="Assigned automatically"></div></div>
+</div>
+<div id="pcBranchApprovers" class="fa-hide">
+<div class="fa-field"><label for="pcVerifier">Branch verifier</label><div class="pc-lock"><input id="pcVerifier" readonly placeholder="Assigned automatically"></div></div>
+<div class="fa-field"><label for="pcBranchMgmt">Branch Management approver</label><div class="pc-lock"><input id="pcBranchMgmt" readonly placeholder="Assigned automatically"></div></div>
+</div>
+<div class="pc-note">After departmental approval, the request is routed to a Finance Processor, who assigns the Finance Approver under the Finance Authority Approval Matrix.</div>
+</div>
+<div class="pc-section fa-hide" data-section="6">
+<h3 class="pc-subtitle">Supporting documents</h3>
+<p class="pc-sublead">Attach the Budget Confirmation Approval (BCA) or the approved supporting paper.</p>
+<div class="fa-field">
+<label for="pcFile">BCA or approved supporting paper <span class="fa-required">*</span></label>
+<div class="fa-upload" id="pcZone">
+<input type="file" id="pcFile" class="fa-upload-input" multiple>
+<label for="pcFile" class="fa-upload-empty" id="pcZoneEmpty">
+<span class="fa-upload-icon">&#8679;</span>
+<span><strong>Click to upload</strong> or drag and drop files</span>
+<small id="pcZoneHint"></small>
+</label>
+<div class="fa-upload-files fa-hide" id="pcZoneSelected">
+<div class="fa-upload-summary">
+<div><strong id="pcFileCount">0 files selected</strong><small id="pcFileSize">0 B total</small></div>
+<div class="fa-upload-summary-actions">
+<label for="pcFile" class="fa-upload-add">&#10133; Add more</label>
+<button type="button" id="pcRemoveAll" class="fa-file-remove">Remove all</button>
+</div>
+</div>
+<div id="pcFileList" class="fa-upload-file-list"></div>
+</div>
+</div>
+</div>
+<div class="pc-note">Payment receipts, purchase receipts and refund documents are uploaded at later stages under the same request reference.</div>
+</div>
+<div class="pc-section fa-hide" data-section="7">
+<h3 class="pc-subtitle">Review and submit</h3>
+<p class="pc-sublead">Check every detail before submitting. Once submitted, the request is routed for approval and cannot be edited.</p>
+<div id="pcReview"></div>
+<div class="pc-declare">
+I confirm that the information submitted is complete and accurate, and that this request is for a legitimate CGC business purpose. I will submit the payment acknowledgement, purchase receipts and any refund documents under the same request reference.
+<label class="pc-check"><input type="checkbox" id="pcDeclare"><span>I accept this declaration</span></label>
+</div>
+</div>
+<div id="pcFormMsg" class="fa-msg fa-hide" style="margin-top:20px"></div>
+<div class="pc-nav">
+<button type="button" id="pcBtnBack" class="fa-btn fa-btn-secondary">Back</button>
+<button type="button" id="pcBtnNext" class="fa-btn fa-btn-primary">Continue</button>
+</div>
+</form>
+</section>
+<section id="pcScreenDone" class="fa-screen fa-success fa-hide">
+<div class="fa-success-icon">&#10003;</div>
+<h2 class="fa-title">Request submitted successfully</h2>
+<p class="fa-lead" style="margin-left:auto;margin-right:auto">The request has been recorded and routed to the first approver.</p>
+<div class="fa-reference"><span>Request reference number</span><strong id="pcRefNo"></strong></div>
+<p class="fa-success-note">Use this reference for the payment acknowledgement, purchase receipts and any refund documents.</p>
+<div class="fa-actions fa-actions-center">
+<button type="button" id="pcBtnAnother" class="fa-btn fa-btn-primary">Submit another request</button>
+</div>
+</section>
+</main>
+<footer class="fa-footer"><span>CGC Finance Hub &middot; Internal Use Only</span><span>Petty Cash Module &middot; <span id="pcVersion"></span></span></footer>
 </section>
 </div></div>
 <div id="pcLoader" class="fa-loader fa-hide"><div class="fa-loader-card"><div class="fa-spinner"></div><span id="pcLoaderText">Processing...</span></div></div>
 <script>
+/* Layout guard: removes invisible text (non-breaking or zero-width spaces) that can sneak in when code is copied from a chat window.
+Left in place, each one becomes a blank item inside the flex and grid layouts and scrambles the page. */
+(function () {
+var INVISIBLE = /[\u00a0\u200b\u200c\u200d\u2060\ufeff]/;
+var EMPTY = /^[\s\u00a0\u200b\u200c\u200d\u2060\ufeff]*$/;
+var removed = 0, working = false;
+function clean(root){
+if (working || !root) return;
+working = true;
+try {
+var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+var doomed = [], node;
+while ((node = walker.nextNode())){
+var p = node.parentNode && node.parentNode.nodeName;
+if (p === "SCRIPT" || p === "STYLE" || p === "TEXTAREA") continue;
+if (INVISIBLE.test(node.data) && EMPTY.test(node.data)) doomed.push(node);
+}
+doomed.forEach(function (n) { if (n.parentNode){ n.parentNode.removeChild(n); removed++; } });
+} catch (e) {}
+working = false;
+}
+function start(){
+var root = document.body;
+clean(root);
+console.log("Layout clean-up: removed " + removed + " invisible item(s).");
+try { new MutationObserver(function(){ clean(root); }).observe(root, { childList: true, subtree: true }); } catch (e) {}
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();
+</script>
+<script>
 var PC_CONFIG = {
-  moduleCode : "PC",
-  appVersion : "v1.8.0",
-  requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
-  verifyOtpUrl  : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ",
-  /* >>> PASTE THE PC_SubmitRequest HTTP POST URL BETWEEN THE QUOTES BELOW <<< */
-  submitUrl     : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/16/workflows/80c871b86a5b4e3894c94130dfb93693/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=5_GDNVS9esgL8LedDsFFQyf_nEIdUX9kVceq3vDJ6_Q",
-  /* >>> PASTE THE PC_GetReferenceData HTTP POST URL BETWEEN THE QUOTES BELOW <<< */
-  referenceDataUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/20/workflows/5cb2b93c382e4d7697460f922b241aae/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P8ZH9yFa1gEKc8lFFbHexcQWnMthFUJjEznpEn4NOAQ",
-  allowedDomain   : "cgc.com.my",
-  otpLength       : 6,
-  otpValidSeconds : 60,
-  resendCooldown  : 30,
-  sessionMinutes  : 30,
-  sessionKey      : "pc_session",
-  maxUploadMB     : 10,
-  referenceTimeoutMs : 20000,
-  submitTimeoutMs    : 120000,
-  allowedExtensions : ["pdf","doc","docx","xls","xlsx","jpg","jpeg","png"]
+moduleCode : "PC",
+appVersion : "v1.10.0",
+logoUrls : ["../assets/images/cgc-logo.jpg","/Finance-Hub/assets/images/cgc-logo.jpg","../assets/images/cgc-logo.png","assets/images/cgc-logo.jpg","../../assets/images/cgc-logo.jpg"],
+requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
+verifyOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ",
+/* >>> PASTE THE PC_SubmitRequest HTTP POST URL BETWEEN THE QUOTES BELOW <<< */
+submitUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/16/workflows/80c871b86a5b4e3894c94130dfb93693/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=5_GDNVS9esgL8LedDsFFQyf_nEIdUX9kVceq3vDJ6_Q",
+/* >>> PASTE THE PC_GetReferenceData HTTP POST URL BETWEEN THE QUOTES BELOW <<< */
+referenceDataUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/20/workflows/5cb2b93c382e4d7697460f922b241aae/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=P8ZH9yFa1gEKc8lFFbHexcQWnMthFUJjEznpEn4NOAQ",
+allowedDomain : "cgc.com.my",
+otpLength : 6,
+otpValidSeconds : 60,
+resendCooldown : 30,
+sessionMinutes : 30,
+sessionKey : "pc_session",
+maxUploadMB : 10,
+referenceTimeoutMs : 20000,
+submitTimeoutMs : 120000,
+allowedExtensions : ["pdf","doc","docx","xls","xlsx","jpg","jpeg","png"]
 };
 var PC = (function () {
-  var SECTIONS = ["Requestor","Request","Budget & GL","Payment","Approvals","Documents","Review"];
-  var SCREENS  = ["pcScreenEmail","pcScreenOtp","pcScreenForm","pcScreenDone"];
-  var STEP_MAP = { pcScreenEmail:1, pcScreenOtp:1, pcScreenForm:2, pcScreenDone:3 };
-  var ICON_SUN  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
-  var ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>';
-  var currentEmail = "", location = "", branch = "", requestType = "";
-  var userName = "", userDept = "", userDeptRaw = "";
-  var refData = { banks: [], departments: [], branches: [], gl: [], matrix: [] };
-  var approvers = { a1: null, a2: null };
-  var refLoaded = false, refLoading = false;
-  var section = 1, glRows = [], selectedGl = null, files = [], boxes = [];
-  var expiryTimer = null, resendTimer = null, busy = false;
-  function el(id){ return document.getElementById(id); }
-  function val(id){ var n = el(id); return String((n && n.value) || "").trim(); }
-  function hide(id, on){ var n = el(id); if (n) n.classList.toggle("fa-hide", on); }
-  function store(k, v){ try { sessionStorage.setItem(k, v); } catch(e){} }
-  function fetchStore(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
-  function dropStore(k){ try { sessionStorage.removeItem(k); } catch(e){} }
-  function loader(show, text){
-    el("pcLoaderText").textContent = text || "Processing\u2026";
-    hide("pcLoader", !show);
-  }
-  function message(id, type, text){
-    var box = el(id);
-    if (!box) return;
-    if (!text){ box.className = "fa-msg fa-hide"; box.textContent = ""; return; }
-    box.className = "fa-msg fa-msg-" + type;
-    box.textContent = text;
-  }
-  function showScreen(name){
-    SCREENS.forEach(function(id){ hide(id, id !== name); });
-    var active = STEP_MAP[name] || 1;
-    document.querySelectorAll(".fa-step").forEach(function(step){
-      var n = parseInt(step.getAttribute("data-step"), 10);
-      step.classList.toggle("fa-step-active", n === active);
-      step.classList.toggle("fa-step-done", n < active);
-    });
-    window.scrollTo({ top:0, behavior:"smooth" });
-  }
-  function markBad(id){ var n = el(id); if (n){ n.classList.add("fa-bad"); if (n.focus) n.focus(); } }
-  function clearBad(){ document.querySelectorAll(".fa-bad").forEach(function(n){ n.classList.remove("fa-bad"); }); }
-  function money(v){
-    var n = Number(v);
-    return "RM " + (isNaN(n) ? 0 : n).toLocaleString("en-MY", { minimumFractionDigits:2, maximumFractionDigits:2 });
-  }
-  function maskEmail(email){
-    var p = String(email).split("@");
-    if (p.length !== 2) return email;
-    return p[0].slice(0,2) + new Array(Math.max(p[0].length - 2, 2) + 1).join("*") + "@" + p[1];
-  }
-  function escapeHtml(v){
-    return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){
-      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
-    });
-  }
-  function todayIso(){
-    var d = new Date();
-    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0,10);
-  }
-  function displayDate(iso){
-    if (!iso) return "\u2014";
-    var p = iso.split("-").map(Number);
-    return new Date(p[0], p[1]-1, p[2]).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
-  }
-  function statusOf(res){ return String((res && res.status) || "").toUpperCase(); }
-  function cleanStr(v){ return String(v == null ? "" : v).replace(/\s+/g, " ").trim(); }
-  function titleCase(s){
-    return String(s).toLowerCase().replace(/(^|[\s'-])([a-z])/g, function(m, a, b){ return a + b.toUpperCase(); });
-  }
-  function tidyName(name){
-    var n = String(name || "").trim().replace(/\s+/g, " ");
-    if (!n) return "";
-    return (n === n.toUpperCase() || n === n.toLowerCase()) ? titleCase(n) : n;
-  }
-  function deriveName(email){
-    var local = String(email || "").split("@")[0];
-    var parts = local.split(/[._\-]+/).filter(Boolean);
-    return parts.length ? titleCase(parts.join(" ")) : "";
-  }
-  function firstName(full){ return String(full || "").trim().split(" ")[0] || ""; }
-  function greetingWord(){
-    var h = new Date().getHours();
-    return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-  }
-  /* ============================================================
-     REFERENCE DATA  (SharePoint lists through PC_GetReferenceData)
-     The flow returns the raw SharePoint rows, so the column names are read directly:
-       PC_Banks           BankName
-       PC_Departments     DeptCode, DeptName
-       PC_Branches        BranchName, CostCentre
-       PC_GLMaster        Scope, Department, CostCentre, GLCode, GLDescription, ExpenseType, OpexClass
-       PC_ApprovalMatrix  Scope, AppliesTo, Approver1, Approver2 (Person columns)
-     All lists also use IsActive and SortOrder.
-     ============================================================ */
-  function asArray(v){ return Array.isArray(v) ? v : []; }
-  function pick(o, keys){
-    if (o == null || typeof o !== "object") return "";
-    for (var i = 0; i < keys.length; i++){
-      var v = o[keys[i]];
-      if (v !== undefined && v !== null && cleanStr(typeof v === "object" ? (v.Value || "") : v) !== "") return v;
-    }
-    return "";
-  }
-  function pickStr(o, keys){
-    var v = pick(o, keys);
-    return cleanStr(v && typeof v === "object" ? v.Value : v);
-  }
-  function isActiveRow(o){
-    if (o == null || typeof o !== "object") return true;
-    var v = o.IsActive;
-    if (v === undefined) v = o.isActive;
-    if (v === undefined || v === null) return true;
-    if (typeof v === "object") v = v.Value;
-    if (typeof v === "string") return ["yes","true","1"].indexOf(v.toLowerCase()) !== -1;
-    return !!v;
-  }
-  function sortRows(rows){
-    return rows.map(function(r, i){
-      var raw = pickStr(r, ["SortOrder","sortOrder"]);
-      return { r:r, i:i, s: raw === "" ? 1e9 : Number(raw) };
-    }).sort(function(a, b){
-      var as = isNaN(a.s) ? 1e9 : a.s, bs = isNaN(b.s) ? 1e9 : b.s;
-      return (as - bs) || (a.i - b.i);
-    }).map(function(x){ return x.r; });
-  }
-  function prep(list){ return sortRows(asArray(list).filter(isActiveRow)); }
-  function normScope(v){
-    var s = cleanStr(v && typeof v === "object" ? v.Value : v).toLowerCase();
-    if (s === "hq" || s === "headquarters") return "HQ";
-    if (s === "branch" || s === "branches") return "Branch";
-    return "Both";
-  }
-  /* Reads a SharePoint Person column: { DisplayName, Email, Claims } */
-  function person(p){
-    if (Array.isArray(p)) p = p[0];
-    if (!p) return null;
-    if (typeof p === "string"){
-      var s = cleanStr(p);
-      return /@/.test(s) ? { name: s, email: s.toLowerCase() } : null;
-    }
-    var email = cleanStr(p.Email || p.email || p.EMail || "");
-    if (!email){
-      var claims = cleanStr(p.Claims || p.claims || "");
-      var m = claims.match(/([^|\s]+@[^|\s]+)$/);
-      if (m) email = m[1];
-    }
-    if (!email) return null;
-    return { name: cleanStr(p.DisplayName || p.displayName || p.Title || "") || email, email: email.toLowerCase() };
-  }
-  function normalizeRef(res){
-    var banks = prep(res.banks).map(function(b){
-      if (typeof b === "string") b = { BankName: b };
-      return { name: pickStr(b, ["BankName","name"]) };
-    }).filter(function(b){ return b.name; });
-    var departments = prep(res.departments).map(function(d){
-      if (typeof d === "string") d = { DeptName: d, DeptCode: d };
-      var name = pickStr(d, ["DeptName","name"]);
-      var code = pickStr(d, ["DeptCode","code"]) || name;
-      return { code: code, name: name || code };
-    }).filter(function(d){ return d.code; });
-    var branches = prep(res.branches).map(function(b){
-      if (typeof b === "string") b = { BranchName: b };
-      return { name: pickStr(b, ["BranchName","name"]), costCentre: pickStr(b, ["CostCentre","costCentre"]) };
-    }).filter(function(b){ return b.name; });
-    var gl = prep(res.gl).map(function(r){
-      return {
-        scope       : normScope(pick(r, ["Scope","scope"])),
-        department  : pickStr(r, ["Department","department"]),
-        opexClass   : pickStr(r, ["OpexClass","opexClass"]),
-        glCode      : pickStr(r, ["GLCode","glCode"]),
-        description : pickStr(r, ["GLDescription","description"]),
-        expenseType : pickStr(r, ["ExpenseType","expenseType"]),
-        costCentre  : pickStr(r, ["CostCentre","costCentre"])
-      };
-    }).filter(function(r){ return r.glCode && r.opexClass; });
-    var matrix = prep(res.matrix).map(function(r){
-      return {
-        scope     : normScope(pick(r, ["Scope","scope"])),
-        appliesTo : pickStr(r, ["AppliesTo","appliesTo","Applies_x0020_To","Applies_x0020_to"]),
-        a1        : person(r.Approver1 || r.approver1 || r.Approver_x0020_1 || r.Approver_x0020_One),
-        a2        : person(r.Approver2 || r.approver2 || r.Approver_x0020_2 || r.Approver_x0020_Two)
-      };
-    }).filter(function(r){ return r.appliesTo; });
-    return { banks: banks, departments: departments, branches: branches, gl: gl, matrix: matrix };
-  }
-  /* Explains exactly why no approver rows could be used */
-  function whyMatrixEmpty(res){
-    var raw = asArray(res && res.matrix);
-    if (!res || !("matrix" in res)) return "the flow response has no 'matrix' property. Add it to the Response body.";
-    if (!raw.length) return "the flow returned 0 rows. Check the Get items filter and that IsActive is Yes on the rows.";
-    if (!raw.filter(isActiveRow).length) return "the flow returned " + raw.length + " row(s) but all are inactive (IsActive = No).";
-    return "the flow returned " + raw.length + " row(s) but none could be read. Columns received: " + Object.keys(raw[0] || {}).join(", ") + ". Expected AppliesTo, Approver1, Approver2.";
-  }
-  function showRefBanner(type, text, withRetry){
-    var b = el("pcRefBanner");
-    if (!text){ b.className = "fa-msg fa-hide"; b.innerHTML = ""; return; }
-    b.className = "fa-msg pc-ref-row fa-msg-" + type;
-    b.innerHTML = "<span></span>" + (withRetry ? '<button type="button" class="fa-link" id="pcRefRetry">Retry</button>' : "");
-    b.firstChild.textContent = text;
-    if (withRetry){
-      el("pcRefRetry").addEventListener("click", function(){
-        loadReferenceData().then(function(ok){ if (ok) resumeSession(); });
-      });
-    }
-  }
-  function loadDepartments(){
-    var sel = el("pcDepartment");
-    var keep = sel.value;
-    sel.innerHTML =
-      '<option value="" selected disabled hidden>&mdash; Select &mdash;</option>' +
-      refData.departments.map(function(d){
-        return '<option value="' + escapeHtml(d.code) + '">' + escapeHtml(d.name) + '</option>';
-      }).join("");
-    if (keep && matchDepartment(keep)) sel.value = keep;
-  }
-  function loadBranches(){
-    var sel = el("pcBranch");
-    var keep = sel.value;
-    sel.innerHTML =
-      '<option value="" selected disabled hidden>&mdash; Select &mdash;</option>' +
-      refData.branches.map(function(b){
-        return '<option value="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</option>';
-      }).join("");
-    if (keep) sel.value = keep;
-  }
-  function loadBanks(){
-    var sel = el("pcBank");
-    var keep = sel.value;
-    sel.innerHTML =
-      '<option value="" selected disabled hidden>&mdash; Select &mdash;</option>' +
-      refData.banks.map(function(b){
-        return '<option value="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</option>';
-      }).join("");
-    if (keep) sel.value = keep;
-  }
-  function isOtherBank(name){ return String(name || "").trim().toLowerCase() === "other"; }
-  function deptName(code){
-    for (var i = 0; i < refData.departments.length; i++){
-      if (refData.departments[i].code === code) return refData.departments[i].name;
-    }
-    return code || "";
-  }
-  function matchDepartment(text){
-    var t = String(text || "").trim().toLowerCase();
-    if (!t) return "";
-    for (var i = 0; i < refData.departments.length; i++){
-      var d = refData.departments[i];
-      if (d.code.toLowerCase() === t || d.name.toLowerCase() === t) return d.code;
-    }
-    return "";
-  }
-  function setRequestEnabled(on){ el("pcBtnRequestOtp").disabled = !on; }
-  /* ---------- Approvers (from PC_ApprovalMatrix, not editable on the page) ---------- */
-  function apLabel(p){
-    if (!p) return "";
-    return p.name && p.name.toLowerCase() !== p.email ? p.name + " (" + p.email + ")" : p.email;
-  }
-  function apEmail(n){ return approvers["a" + n] ? approvers["a" + n].email : ""; }
-  function showApprovers(){
-    var t1 = apLabel(approvers.a1), t2 = apLabel(approvers.a2);
-    el("pcApprover1").value = t1;  el("pcApprover2").value = t2;
-    el("pcVerifier").value  = t1;  el("pcBranchMgmt").value = t2;
-  }
-  /* HQ is matched on the department, Branch on the branch name. Branch never uses a department. */
-  function resolveApprovers(){
-    approvers.a1 = null; approvers.a2 = null;
-    var key = location === "HQ" ? val("pcDepartment") : (location === "Branch" ? branch : "");
-    if (key){
-      var k = key.toLowerCase();
-      var kn = location === "HQ" ? deptName(key).toLowerCase() : "";
-      var found = null;
-      var rows = refData.matrix || [];
-      for (var i = 0; i < rows.length; i++){
-        var r = rows[i];
-        if (r.scope !== location && r.scope !== "Both") continue;
-        var at = r.appliesTo.toLowerCase();
-        if (at === k || (kn && at === kn)){
-          found = r;
-          if (r.a1 && r.a2) break;
-        }
-      }
-      if (found){ approvers.a1 = found.a1; approvers.a2 = found.a2; }
-    }
-    showApprovers();
-    return !!(approvers.a1 && approvers.a2);
-  }
-  function checkApprovers(ids){
-    resolveApprovers();
-    var p1 = approvers.a1, p2 = approvers.a2;
-    if (!p1 || !p2){
-      markBad(ids[!p1 ? 0 : 1]);
-      return "No approvers are configured for your selection. Please contact Finance.";
-    }
-    if (p1.email === currentEmail || p2.email === currentEmail){
-      markBad(ids[p1.email === currentEmail ? 0 : 1]);
-      return "You are listed as an approver for your own request. Please contact Finance.";
-    }
-    if (p1.email === p2.email){
-      markBad(ids[1]);
-      return "The same person is set as both approvers. Please contact Finance.";
-    }
-    return null;
-  }
-  async function loadReferenceData(){
-    if (refLoading) return false;
-    if (!PC_CONFIG.referenceDataUrl){
-      refLoaded = false;
-      showRefBanner("warn", "The configuration service is not connected yet. Paste the PC_GetReferenceData URL into referenceDataUrl near the top of this page.", false);
-      setRequestEnabled(false);
-      return false;
-    }
-    refLoading = true;
-    showRefBanner("info", "Loading configuration\u2026", false);
-    setRequestEnabled(false);
-    try {
-      var res = await post(PC_CONFIG.referenceDataUrl, { moduleCode: PC_CONFIG.moduleCode }, PC_CONFIG.referenceTimeoutMs);
-      var st = statusOf(res);
-      if (st && ["OK","SUCCESS"].indexOf(st) === -1) throw new Error(res.message || "The configuration service returned an error.");
-      var data = normalizeRef(res);
-      /* Banks, departments, branches and GL are required to open the form */
-      var empty = [];
-      if (!data.banks.length)       empty.push("banks");
-      if (!data.departments.length) empty.push("departments");
-      if (!data.branches.length)    empty.push("branches");
-      if (!data.gl.length)          empty.push("GL codes");
-      if (empty.length) throw new Error("No active " + empty.join(", ") + " found in SharePoint. Please contact the Automation team.");
-      refData = data;
-      refLoaded = true;
-      loadDepartments();
-      loadBranches();
-      loadBanks();
-      setRequestEnabled(true);
-      console.log("Reference data loaded:", { banks: data.banks.length, departments: data.departments.length, branches: data.branches.length, gl: data.gl.length, approverRows: data.matrix.length });
-      /* The approval matrix does not block sign-in. Requests cannot be submitted until it is fixed. */
-      if (!data.matrix.length){
-        showRefBanner("warn", "Approvers could not be loaded: " + whyMatrixEmpty(res) + " Requests cannot be submitted until this is fixed.", true);
-      } else {
-        showRefBanner(null);
-      }
-      return true;
-    } catch (e) {
-      refLoaded = false;
-      showRefBanner("error", "Unable to load configuration. " + e.message, true);
-      setRequestEnabled(false);
-      return false;
-    } finally {
-      refLoading = false;
-    }
-  }
-  /* Brings a still-valid session straight to the form once configuration is available */
-  function resumeSession(){
-    if (!refLoaded) return;
-    var s = getSession();
-    if (s && !el("pcScreenEmail").classList.contains("fa-hide")){
-      currentEmail = s.email; location = s.location; branch = s.branch || "";
-      enterApp(null);
-    }
-  }
-  function renderHero(){
-    var first = firstName(userName);
-    var h = new Date().getHours();
-    el("pcGreetIcon").innerHTML = h >= 17 ? ICON_MOON : ICON_SUN;
-    el("pcGreeting").innerHTML = escapeHtml(greetingWord()) + (first ? ', <span>' + escapeHtml(first) + '</span>' : "");
-    el("pcHeroDate").textContent = new Date().toLocaleDateString("en-GB", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
-    el("pcUserLocation").textContent = location === "Branch" ? "Branch \u00b7 " + branch : "Headquarters";
-  }
-  function fillProfile(){
-    el("pcFullName").value = userName;
-    el("pcEmailLocked").value = currentEmail;
-    el("pcRequestDate").value = displayDate(todayIso());
-    el("pcBranchLocked").value = branch;
-    var dept = el("pcDepartment");
-    if (location === "HQ" && userDept) dept.value = userDept; else dept.selectedIndex = 0;
-    resolveApprovers();
-  }
-  async function post(url, payload, timeoutMs){
-    if (!url) throw new Error("This service is not configured yet. Please contact the Automation team.");
-    var controller = (typeof AbortController !== "undefined") ? new AbortController() : null;
-    var timer = (controller && timeoutMs) ? setTimeout(function(){ controller.abort(); }, timeoutMs) : null;
-    var response;
-    try {
-      response = await fetch(url, {
-        method  : "POST",
-        headers : { "Content-Type": "application/json" },
-        body    : JSON.stringify(payload || {}),
-        signal  : controller ? controller.signal : undefined
-      });
-    } catch (e) {
-      if (e && e.name === "AbortError") throw new Error("The request timed out. Please try again.");
-      throw new Error("Network error. Please check your connection and try again.");
-    } finally {
-      if (timer) clearTimeout(timer);
-    }
-    var text = await response.text();
-    var data;
-    try { data = text ? JSON.parse(text) : {}; }
-    catch (e) { throw new Error(response.ok ? "Unexpected response received from the server." : "The server returned an error (" + response.status + "). Please check the flow run history."); }
-    if (!response.ok && !data.status) throw new Error(data.message || (data.error && data.error.message) || "Request failed (" + response.status + ")");
-    return data;
-  }
-  function saveSession(){
-    store(PC_CONFIG.sessionKey, JSON.stringify({
-      verified:true, email:currentEmail, location:location, branch:branch,
-      expires: Date.now() + PC_CONFIG.sessionMinutes * 60000
-    }));
-  }
-  function getSession(){
-    try {
-      var s = JSON.parse(fetchStore(PC_CONFIG.sessionKey) || "null");
-      if (!s || s.verified !== true || Date.now() > s.expires){ dropStore(PC_CONFIG.sessionKey); return null; }
-      return s;
-    } catch (e) { dropStore(PC_CONFIG.sessionKey); return null; }
-  }
-  function bindChoiceGroup(groupId, onChange){
-    var group = el(groupId);
-    group.querySelectorAll("input[type=radio]").forEach(function(radio){
-      radio.addEventListener("change", function(){
-        group.querySelectorAll(".pc-choice").forEach(function(c){
-          c.classList.toggle("pc-checked", c.querySelector("input").checked);
-        });
-        group.classList.remove("fa-bad");
-        onChange(radio.value);
-      });
-    });
-  }
-  function resetChoiceGroup(groupId){
-    var group = el(groupId);
-    group.querySelectorAll("input").forEach(function(i){ i.checked = false; });
-    group.querySelectorAll(".pc-choice").forEach(function(c){ c.classList.remove("pc-checked"); });
-  }
-  async function requestOtp(isResend){
-    var target = isResend ? "pcOtpMsg" : "pcEmailMsg";
-    var email  = isResend ? currentEmail : val("pcEmail").toLowerCase();
-    if (!isResend){
-      clearBad();
-      if (!refLoaded) return message(target, "error", "The configuration has not loaded yet. Please wait or use Retry above.");
-      if (!location){ el("pcLocationGroup").classList.add("fa-bad"); return message(target, "error", "Please select the origination location."); }
-      if (location === "Branch" && !val("pcBranch")){ markBad("pcBranch"); return message(target, "error", "Please select your branch."); }
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ markBad("pcEmail"); return message(target, "error", "Please enter a valid email address."); }
-      if (email.slice(-("@" + PC_CONFIG.allowedDomain).length) !== "@" + PC_CONFIG.allowedDomain){ markBad("pcEmail"); return message(target, "error", "Only @" + PC_CONFIG.allowedDomain + " email addresses are permitted."); }
-      currentEmail = email;
-      branch = location === "Branch" ? val("pcBranch") : "";
-    }
-    message("pcEmailMsg", null, null);
-    message("pcOtpMsg", null, null);
-    loader(true, "Sending verification code\u2026");
-    try {
-      var res = await post(PC_CONFIG.requestOtpUrl, { moduleCode: PC_CONFIG.moduleCode, email: currentEmail });
-      if (["SENT","SUCCESS","OK"].indexOf(statusOf(res)) === -1){
-        return message(target, "error", res.message || "Unable to send the verification code. Please try again.");
-      }
-      if (res.name) store("pc_profile_name", res.name);
-      var dept = res.department || (res.user && res.user.department);
-      if (dept) store("pc_profile_dept", dept);
-      el("pcMaskedEmail").textContent = maskEmail(currentEmail);
-      clearBoxes(false);
-      el("pcBtnVerify").disabled = false;
-      startExpiry();
-      startResendCooldown();
-      showScreen("pcScreenOtp");
-      setTimeout(function(){ if (boxes[0]) boxes[0].focus(); }, 260);
-      if (isResend) message("pcOtpMsg", "ok", "A new verification code has been sent to your inbox.");
-    } catch (e) {
-      message(target, "error", e.message);
-    } finally {
-      loader(false);
-    }
-  }
-  async function verifyOtp(){
-    if (busy) return;
-    var code = boxes.map(function(b){ return b.value; }).join("");
-    if (code.length !== PC_CONFIG.otpLength){
-      return message("pcOtpMsg", "error", "Please enter all " + PC_CONFIG.otpLength + " digits.");
-    }
-    busy = true;
-    message("pcOtpMsg", null, null);
-    loader(true, "Verifying\u2026");
-    try {
-      var res = await post(PC_CONFIG.verifyOtpUrl, { moduleCode: PC_CONFIG.moduleCode, email: currentEmail, code: code });
-      var s = statusOf(res);
-      if (s === "VERIFIED" || s === "VALID"){
-        stopTimers();
-        saveSession();
-        enterApp(res);
-      } else if (s === "LOCKED"){
-        stopTimers();
-        clearBoxes(true);
-        el("pcBtnVerify").disabled = true;
-        el("pcBtnResend").disabled = false;
-        el("pcBtnResend").textContent = "Resend code";
-        message("pcOtpMsg", "error", res.message || "Too many incorrect attempts. Please request a new code.");
-      } else if (s === "EXPIRED" || s === "NO_CODE"){
-        clearBoxes(true);
-        el("pcBtnResend").disabled = false;
-        el("pcBtnResend").textContent = "Resend code";
-        message("pcOtpMsg", "warn", res.message || "This code is no longer valid. Please request a new one.");
-      } else {
-        clearBoxes(true);
-        message("pcOtpMsg", "error", res.message || "Incorrect verification code.");
-      }
-    } catch (e) {
-      message("pcOtpMsg", "error", e.message);
-    } finally {
-      busy = false;
-      loader(false);
-    }
-  }
-  function bindBoxes(){
-    boxes = Array.prototype.slice.call(document.querySelectorAll(".fa-otp-box"));
-    boxes.forEach(function(box, i){
-      box.addEventListener("input", function(){
-        box.value = box.value.replace(/\D/g, "").slice(0,1);
-        box.classList.toggle("fa-filled", box.value !== "");
-        if (box.value && i < boxes.length - 1) boxes[i+1].focus();
-        if (boxes.map(function(b){ return b.value; }).join("").length === PC_CONFIG.otpLength) verifyOtp();
-      });
-      box.addEventListener("keydown", function(e){
-        if (e.key === "Backspace" && !box.value && i > 0) boxes[i-1].focus();
-        if (e.key === "ArrowLeft" && i > 0) boxes[i-1].focus();
-        if (e.key === "ArrowRight" && i < boxes.length - 1) boxes[i+1].focus();
-      });
-      box.addEventListener("focus", function(){ box.select(); });
-      box.addEventListener("paste", function(e){
-        e.preventDefault();
-        var digits = ((e.clipboardData || window.clipboardData).getData("text") || "").replace(/\D/g, "").slice(0, boxes.length);
-        digits.split("").forEach(function(d, k){ boxes[k].value = d; boxes[k].classList.add("fa-filled"); });
-        if (digits.length) boxes[Math.min(digits.length, boxes.length) - 1].focus();
-        if (digits.length === PC_CONFIG.otpLength) verifyOtp();
-      });
-    });
-  }
-  function clearBoxes(flash){
-    boxes.forEach(function(b){
-      b.value = "";
-      b.classList.remove("fa-filled");
-      if (flash){ b.classList.add("fa-bad"); setTimeout(function(){ b.classList.remove("fa-bad"); }, 520); }
-    });
-    if (boxes[0]) boxes[0].focus();
-  }
-  function startExpiry(){
-    clearInterval(expiryTimer);
-    var left = PC_CONFIG.otpValidSeconds;
-    function tick(){
-      el("pcTimer").textContent = String(Math.floor(left / 60)).padStart(2,"0") + ":" + String(left % 60).padStart(2,"0");
-      if (left <= 0){
-        clearInterval(expiryTimer);
-        message("pcOtpMsg", "warn", "Your code has expired. Please request a new one.");
-        return;
-      }
-      left--;
-    }
-    tick();
-    expiryTimer = setInterval(tick, 1000);
-  }
-  function startResendCooldown(){
-    clearInterval(resendTimer);
-    var left = PC_CONFIG.resendCooldown;
-    var btn = el("pcBtnResend");
-    btn.disabled = true;
-    btn.textContent = "Resend code (" + left + "s)";
-    resendTimer = setInterval(function(){
-      left--;
-      btn.textContent = "Resend code (" + left + "s)";
-      if (left <= 0){
-        clearInterval(resendTimer);
-        btn.disabled = false;
-        btn.textContent = "Resend code";
-      }
-    }, 1000);
-  }
-  function stopTimers(){ clearInterval(expiryTimer); clearInterval(resendTimer); }
-  function enterApp(res){
-    var name = (res && res.name) || fetchStore("pc_profile_name") || "";
-    var dept = (res && (res.department || (res.user && res.user.department))) || fetchStore("pc_profile_dept") || "";
-    userName = tidyName(name) || deriveName(currentEmail);
-    userDeptRaw = dept;
-    userDept = matchDepartment(dept);
-    var isBranch = location === "Branch";
-    hide("pcTypeBlock", isBranch);
-    requestType = isBranch ? "Branch" : "";
-    hide("pcHqApprovers", isBranch);
-    hide("pcBranchApprovers", !isBranch);
-    /* Department applies to Headquarters only. Branch shows its locked branch name instead. */
-    hide("pcDeptField", isBranch);
-    hide("pcBranchLockField", !isBranch);
-    el("pcReqLead").textContent = isBranch
-      ? "Your name, email and branch come from your verified sign-in and cannot be edited."
-      : "Your name and email come from your verified sign-in and cannot be edited. Select your department to continue.";
-    applyRequestType();
-    el("pcDateRequired").min = todayIso();
-    fillProfile();
-    renderHero();
-    loadOpex();
-    hide("pcBtnSignOut", false);
-    showScreen("pcScreenForm");
-    goToSection(1);
-  }
-  function applyRequestType(){ hide("pcClaimBlock", requestType !== "Claim"); }
-  function goToSection(n){
-    section = n;
-    document.querySelectorAll(".pc-section").forEach(function(s){
-      s.classList.toggle("fa-hide", Number(s.getAttribute("data-section")) !== n);
-    });
-    el("pcSecCounter").textContent = "Section " + n + " of " + SECTIONS.length;
-    el("pcSecName").textContent = SECTIONS[n-1];
-    el("pcSecBar").querySelectorAll("i").forEach(function(bar, i){
-      bar.classList.toggle("pc-on", i + 1 === n);
-      bar.classList.toggle("pc-done", i + 1 < n);
-    });
-    el("pcBtnBack").disabled = n === 1;
-    el("pcBtnNext").textContent = n === SECTIONS.length ? "Submit request" : "Continue";
-    message("pcFormMsg", null, null);
-    if (n === 5) resolveApprovers();
-    if (n === SECTIONS.length) buildReview();
-    window.scrollTo({ top:0, behavior:"smooth" });
-  }
-  function next(){
-    if (section === SECTIONS.length){ submit(); return; }
-    var problem = validate(section);
-    if (problem){ message("pcFormMsg", "error", problem); return; }
-    goToSection(section + 1);
-  }
-  function back(){ if (section > 1) goToSection(section - 1); }
-  function validate(n){
-    clearBad();
-    var rules = [];
-    if (n === 1){
-      var isHQ = location === "HQ";
-      rules = [
-        ["pcTypeGroup",  isHQ && !requestType, "Please select the request type."],
-        ["pcFullName",   !val("pcFullName"),   "Your name could not be retrieved. Please sign out and verify again."],
-        ["pcDepartment", isHQ && !val("pcDepartment"), "Please select your department."],
-        ["pcDepartment", isHQ && !!val("pcDepartment") && !resolveApprovers(), "No approvers are configured for this department. Please contact Finance."],
-        ["pcBranchLocked", !isHQ && !branch, "Your branch could not be determined. Please sign out and verify again."],
-        ["pcBranchLocked", !isHQ && !!branch && !resolveApprovers(), "No approvers are configured for this branch. Please contact Finance."]
-      ];
-    }
-    if (n === 2){
-      var amt = parseFloat(val("pcAmount"));
-      var req = val("pcDateRequired");
-      rules = [
-        ["pcOrigRef",      requestType === "Claim" && !val("pcOrigRef"), "Please enter the original request reference."],
-        ["pcOrigAmount",   requestType === "Claim" && !(parseFloat(val("pcOrigAmount")) > 0), "Please enter the original amount."],
-        ["pcAmount",       isNaN(amt) || amt <= 0, "Please enter an amount greater than zero."],
-        ["pcDateRequired", !req, "Please select the date the funds are required."],
-        ["pcDateRequired", !!req && req < todayIso(), "The date required cannot be in the past."],
-        ["pcPurpose",      val("pcPurpose").length < 10, "Please describe the purpose in at least 10 characters."]
-      ];
-    }
-    if (n === 3){
-      rules = [
-        ["pcOpex", !val("pcOpex"), "Please select the class of OPEX."],
-        ["pcGl",   !selectedGl,    "Please select an SAP GL code."]
-      ];
-    }
-    if (n === 4){
-      var acc = val("pcAccount").replace(/[\s-]/g, "");
-      rules = [
-        ["pcBank",      !val("pcBank"), "Please select the recipient bank."],
-        ["pcOtherBank", isOtherBank(val("pcBank")) && !val("pcOtherBank"), "Please enter the bank name."],
-        ["pcAccount",   !acc, "Please enter the account number."],
-        ["pcAccount",   !!acc && !/^\d{6,20}$/.test(acc), "The account number must contain 6 to 20 digits."]
-      ];
-    }
-    if (n === 5){
-      var ids = location === "HQ" ? ["pcApprover1","pcApprover2"] : ["pcVerifier","pcBranchMgmt"];
-      var apErr = checkApprovers(ids);
-      if (apErr) return apErr;
-    }
-    if (n === 6){
-      rules = [
-        ["pcZone", files.length === 0, "Please upload at least one supporting document."],
-        ["pcZone", totalSize() > PC_CONFIG.maxUploadMB * 1048576, "The total upload size exceeds " + PC_CONFIG.maxUploadMB + " MB."]
-      ];
-    }
-    if (n === 7){
-      rules = [["pcDeclare", !el("pcDeclare").checked, "Please accept the declaration before submitting."]];
-    }
-    for (var i = 0; i < rules.length; i++){
-      if (rules[i][1]){ markBad(rules[i][0]); return rules[i][2]; }
-    }
-    return null;
-  }
-  /* ---------- GL dropdowns (data comes from SharePoint) ---------- */
-  function placeholder(text){ return '<option value="" selected disabled hidden>' + text + '</option>'; }
-  function availableGl(){ return refData.gl.filter(function(r){ return r.scope === "Both" || r.scope === location; }); }
-  function loadOpex(){
-    var seen = {}, classes = [];
-    availableGl().forEach(function(r){ if (!seen[r.opexClass]){ seen[r.opexClass] = 1; classes.push(r.opexClass); } });
-    el("pcOpex").innerHTML = placeholder("\u2014 Select \u2014") +
-      classes.map(function(c){ return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join("");
-    filterGl();
-  }
-  function filterGl(){
-    var cls = val("pcOpex");
-    var sel = el("pcGl");
-    glRows = cls ? availableGl().filter(function(r){ return r.opexClass === cls; }) : [];
-    sel.innerHTML = placeholder(cls ? "\u2014 Select \u2014" : "Select a class of OPEX first") +
-      glRows.map(function(r, i){ return '<option value="' + i + '">' + escapeHtml(r.glCode) + ' \u2014 ' + escapeHtml(r.expenseType || r.description) + '</option>'; }).join("");
-    sel.disabled = !cls;
-    applyGl();
-  }
-  function applyGl(){
-    var idx = el("pcGl").value;
-    selectedGl = idx === "" ? null : glRows[Number(idx)];
-    hide("pcGlCard", !selectedGl);
-    if (!selectedGl) return;
-    el("pcGlCode").textContent = selectedGl.glCode;
-    el("pcGlCostCentre").textContent = costCentre(selectedGl);
-    el("pcGlDesc").textContent = selectedGl.description;
-    el("pcGlType").textContent = selectedGl.expenseType;
-  }
-  function branchCostCentre(){
-    for (var i = 0; i < refData.branches.length; i++){
-      if (refData.branches[i].name === branch) return refData.branches[i].costCentre || "";
-    }
-    return "";
-  }
-  function resolvedCostCentre(r){
-    if (r && r.costCentre) return r.costCentre;
-    return location === "Branch" ? branchCostCentre() : "";
-  }
-  function costCentre(r){
-    var c = resolvedCostCentre(r);
-    if (c) return c;
-    return location === "Branch" ? "To be confirmed by Finance" : "\u2014";
-  }
-  function ext(name){ var m = String(name).match(/\.([^.]+)$/); return m ? m[1].toLowerCase() : ""; }
-  function size(b){ return b < 1024 ? b + " B" : b < 1048576 ? (b / 1024).toFixed(1) + " KB" : (b / 1048576).toFixed(2) + " MB"; }
-  function totalSize(){ return files.reduce(function(s, f){ return s + f.size; }, 0); }
-  function addFiles(list){
-    var errors = [];
-    Array.prototype.slice.call(list || []).forEach(function(f){
-      if (PC_CONFIG.allowedExtensions.indexOf(ext(f.name)) === -1){ errors.push('"' + f.name + '" is not a supported file type.'); return; }
-      if (!f.size){ errors.push('"' + f.name + '" is empty.'); return; }
-      if (files.some(function(x){ return x.name === f.name && x.size === f.size; })){ errors.push('"' + f.name + '" is already in the list.'); return; }
-      files.push(f);
-    });
-    el("pcZone").classList.remove("fa-bad");
-    if (errors.length) message("pcFormMsg", "warn", "Some files were not added: " + errors.join(" "));
-    else message("pcFormMsg", null, null);
-    renderFiles();
-  }
-  function renderFiles(){
-    var has = files.length > 0;
-    hide("pcZoneEmpty", has);
-    hide("pcZoneSelected", !has);
-    el("pcZone").classList.toggle("fa-has-file", has);
-    el("pcFileCount").textContent = files.length + " file" + (files.length === 1 ? "" : "s") + " selected";
-    el("pcFileSize").textContent = size(totalSize()) + " total of " + PC_CONFIG.maxUploadMB + " MB";
-    var list = el("pcFileList");
-    list.innerHTML = files.map(function(f, i){
-      return '<div class="fa-upload-file-row">' +
-        '<div class="fa-file-icon">' + escapeHtml((ext(f.name) || "FILE").toUpperCase()) + '</div>' +
-        '<div class="fa-file-info"><strong title="' + escapeHtml(f.name) + '">' + escapeHtml(f.name) + '</strong><small>' + size(f.size) + '</small></div>' +
-        '<button type="button" class="fa-file-remove-one" data-i="' + i + '" aria-label="Remove">&times;</button>' +
-      '</div>';
-    }).join("");
-    list.querySelectorAll("[data-i]").forEach(function(b){
-      b.addEventListener("click", function(){ files.splice(Number(b.getAttribute("data-i")), 1); renderFiles(); });
-    });
-  }
-  function readBase64(file){
-    return new Promise(function(resolve, reject){
-      var r = new FileReader();
-      r.onload = function(){ var s = String(r.result || ""); resolve(s.substring(s.indexOf(",") + 1)); };
-      r.onerror = function(){ reject(new Error('Unable to read "' + file.name + '".')); };
-      r.readAsDataURL(file);
-    });
-  }
-  function bankName(){ return isOtherBank(val("pcBank")) ? val("pcOtherBank") : val("pcBank"); }
-  function typeLabel(){
-    return requestType === "Branch" ? "Branch Petty Cash" : requestType === "Claim" ? "Petty Cash Claim" : "Petty Cash Advance";
-  }
-  /* Branch requests carry the department value "Branch"; HQ carries the selected department */
-  function requestDepartment(){ return location === "Branch" ? "Branch" : deptName(val("pcDepartment")); }
-  function requestDepartmentCode(){ return location === "Branch" ? "Branch" : val("pcDepartment"); }
-  function buildReview(){
-    var isHQ = location === "HQ";
-    var gl = selectedGl || {};
-    var requestRows = [];
-    if (requestType === "Claim"){
-      requestRows.push(["Original reference", val("pcOrigRef")]);
-      requestRows.push(["Original amount", money(val("pcOrigAmount"))]);
-    }
-    requestRows.push(["Amount requested", money(val("pcAmount"))]);
-    requestRows.push(["Date required", displayDate(val("pcDateRequired"))]);
-    requestRows.push(["Purpose", val("pcPurpose"), true]);
-    var requestorRows = [
-      ["Request type", typeLabel()], ["Location", isHQ ? "Headquarters" : "Branch \u00b7 " + branch],
-      ["Full name", val("pcFullName")], ["Email", currentEmail]
-    ];
-    if (isHQ) requestorRows.push(["Department", deptName(val("pcDepartment"))]);
-    else      requestorRows.push(["Branch", branch]);
-    requestorRows.push(["Request date", val("pcRequestDate")]);
-    var blocks = [
-      [1, "Requestor", requestorRows],
-      [2, "Request", requestRows],
-      [3, "Budget & GL", [
-        ["Class of OPEX", gl.opexClass], ["SAP GL code", gl.glCode],
-        ["Cost centre", costCentre(gl)], ["GL description", gl.description],
-        ["Type of expense", gl.expenseType, true]
-      ]],
-      [4, "Payment", [["Bank", bankName()], ["Account number", val("pcAccount")]]],
-      [5, "Approvals", isHQ
-        ? [["First approver", apLabel(approvers.a1)], ["Second approver", apLabel(approvers.a2)]]
-        : [["Branch verifier", apLabel(approvers.a1)], ["Branch Management approver", apLabel(approvers.a2)]]],
-      [6, "Documents", [["Attachments", files.map(function(f){ return f.name; }).join(", "), true]]]
-    ];
-    el("pcReview").innerHTML =
-      '<div class="fa-summary" style="margin:0 0 14px"><span>Amount requested</span><strong>' + money(val("pcAmount")) + '</strong></div>' +
-      blocks.map(function(blk){
-        return '<div class="pc-review"><div class="pc-review-head"><strong>' + blk[1] + '</strong>' +
-          '<button type="button" class="fa-link" data-goto="' + blk[0] + '">Edit</button></div><div class="pc-meta">' +
-          blk[2].map(function(r){
-            return '<div' + (r[2] ? ' class="pc-full"' : '') + '><small>' + escapeHtml(r[0]) + '</small><b>' + escapeHtml(r[1] || "\u2014") + '</b></div>';
-          }).join("") + '</div></div>';
-      }).join("");
-    el("pcReview").querySelectorAll("[data-goto]").forEach(function(b){
-      b.addEventListener("click", function(){ goToSection(Number(b.getAttribute("data-goto"))); });
-    });
-  }
-  async function buildPayload(){
-    var gl = selectedGl || {};
-    var isHQ = location === "HQ";
-    var docs = [];
-    for (var i = 0; i < files.length; i++){
-      docs.push({ name:files[i].name, size:files[i].size, contentType:files[i].type || "application/octet-stream", contentBytes: await readBase64(files[i]) });
-    }
-    return {
-      moduleCode               : PC_CONFIG.moduleCode,
-      requestType              : requestType,
-      originationLocation      : location,
-      branch                   : branch,
-      requestorEmail           : currentEmail,
-      requestorName            : val("pcFullName"),
-      department               : requestDepartment(),
-      departmentCode           : requestDepartmentCode(),
-      dateRequired             : val("pcDateRequired"),
-      amountRequested          : parseFloat(val("pcAmount")),
-      purpose                  : val("pcPurpose"),
-      originalRequestReference : requestType === "Claim" ? val("pcOrigRef") : "",
-      originalAmount           : requestType === "Claim" ? parseFloat(val("pcOrigAmount")) : 0,
-      classOfOpex              : gl.opexClass || "",
-      glDepartment             : gl.department || "",
-      sapGlCode                : gl.glCode || "",
-      sapGlDescription         : gl.description || "",
-      costCentre               : resolvedCostCentre(gl),
-      expenseType              : gl.expenseType || "",
-      bankName                 : bankName(),
-      bankAccountNumber        : val("pcAccount").replace(/[\s-]/g, ""),
-      departmentApprover1      : isHQ ? apEmail(1) : "",
-      departmentApprover2      : isHQ ? apEmail(2) : "",
-      branchVerifier           : isHQ ? "" : apEmail(1),
-      branchManagementApprover : isHQ ? "" : apEmail(2),
-      requestDocuments         : docs,
-      declarationAccepted      : true,
-      submittedAt              : new Date().toISOString()
-    };
-  }
-  async function submit(){
-    for (var n = 1; n <= SECTIONS.length; n++){
-      var problem = validate(n);
-      if (problem){
-        if (n !== section) goToSection(n);
-        validate(n);
-        message("pcFormMsg", "error", problem);
-        return;
-      }
-    }
-    if (!getSession()){
-      message("pcFormMsg", "error", "Your session has expired. Please verify your email again.");
-      return setTimeout(signOut, 2000);
-    }
-    if (!PC_CONFIG.submitUrl){
-      var preview = await buildPayload();
-      preview.requestDocuments = preview.requestDocuments.map(function(f){ return { name:f.name, size:f.size }; });
-      console.log("Payload preview (not sent):", preview);
-      return message("pcFormMsg", "info", "All checks passed. Submission is not connected yet. Paste the PC_SubmitRequest URL into submitUrl at the top of the script. A payload preview is in the browser console (F12).");
-    }
-    el("pcBtnNext").disabled = true;
-    el("pcBtnBack").disabled = true;
-    loader(true, "Submitting your request\u2026");
-    try {
-      var res = await post(PC_CONFIG.submitUrl, await buildPayload(), PC_CONFIG.submitTimeoutMs);
-      if (statusOf(res) !== "SUBMITTED") throw new Error(res.message || "Submission failed. Please try again.");
-      el("pcRefNo").textContent = res.requestReference || res.requestId || "(pending)";
-      showScreen("pcScreenDone");
-    } catch (e) {
-      message("pcFormMsg", "error", e.message);
-    } finally {
-      el("pcBtnNext").disabled = false;
-      el("pcBtnBack").disabled = section === 1;
-      loader(false);
-    }
-  }
-  function resetForm(){
-    el("pcForm").reset();
-    resetChoiceGroup("pcTypeGroup");
-    requestType = location === "Branch" ? "Branch" : "";
-    files = [];
-    renderFiles();
-    selectedGl = null;
-    loadOpex();
-    hide("pcOtherBankField", true);
-    applyRequestType();
-    el("pcCharCount").textContent = "0";
-    el("pcTotal").textContent = "RM 0.00";
-    fillProfile();
-    clearBad();
-  }
-  function signOut(){
-    stopTimers();
-    dropStore(PC_CONFIG.sessionKey);
-    dropStore("pc_profile_name");
-    dropStore("pc_profile_dept");
-    currentEmail = ""; location = ""; branch = ""; requestType = "";
-    userName = ""; userDept = ""; userDeptRaw = "";
-    resetForm();
-    resetChoiceGroup("pcLocationGroup");
-    hide("pcBranchField", true);
-    hide("pcDeptField", false);
-    hide("pcBranchLockField", true);
-    el("pcBranch").selectedIndex = 0;
-    el("pcEmail").value = "";
-    el("pcBtnVerify").disabled = false;
-    hide("pcBtnSignOut", true);
-    message("pcEmailMsg", null, null);
-    message("pcOtpMsg", null, null);
-    message("pcFormMsg", null, null);
-    showScreen("pcScreenEmail");
-  }
-  function init(){
-    el("pcVersion").textContent = PC_CONFIG.appVersion;
-    el("pcZoneHint").textContent = "PDF, Word, Excel, JPG or PNG \u00b7 up to " + PC_CONFIG.maxUploadMB + " MB in total";
-    el("pcFile").setAttribute("accept", PC_CONFIG.allowedExtensions.map(function(x){ return "." + x; }).join(","));
-    bindBoxes();
-    bindChoiceGroup("pcLocationGroup", function(v){
-      location = v;
-      hide("pcBranchField", v !== "Branch");
-      message("pcEmailMsg", null, null);
-    });
-    bindChoiceGroup("pcTypeGroup", function(v){
-      requestType = v;
-      applyRequestType();
-      message("pcFormMsg", null, null);
-    });
-    el("pcBtnRequestOtp").addEventListener("click", function(){ requestOtp(false); });
-    el("pcEmail").addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); if (!el("pcBtnRequestOtp").disabled) requestOtp(false); } });
-    el("pcBtnVerify").addEventListener("click", verifyOtp);
-    el("pcBtnResend").addEventListener("click", function(){ requestOtp(true); });
-    el("pcBtnChangeEmail").addEventListener("click", signOut);
-    el("pcBtnSignOut").addEventListener("click", signOut);
-    el("pcBtnNext").addEventListener("click", next);
-    el("pcBtnBack").addEventListener("click", back);
-    el("pcBtnAnother").addEventListener("click", function(){ resetForm(); renderHero(); showScreen("pcScreenForm"); goToSection(1); });
-    el("pcDepartment").addEventListener("change", resolveApprovers);
-    el("pcOpex").addEventListener("change", filterGl);
-    el("pcGl").addEventListener("change", applyGl);
-    el("pcBank").addEventListener("change", function(){ hide("pcOtherBankField", !isOtherBank(val("pcBank"))); });
-    el("pcPurpose").addEventListener("input", function(){ el("pcCharCount").textContent = el("pcPurpose").value.length; });
-    el("pcAmount").addEventListener("input", function(){ el("pcTotal").textContent = money(val("pcAmount")); });
-    ["pcAmount","pcOrigAmount"].forEach(function(id){
-      el(id).addEventListener("blur", function(){ var n = parseFloat(val(id)); if (n > 0) el(id).value = n.toFixed(2); });
-    });
-    document.addEventListener("input", function(e){
-      if (e.target.classList && e.target.classList.contains("fa-bad")){
-        e.target.classList.remove("fa-bad");
-        message("pcFormMsg", null, null);
-      }
-    });
-    document.addEventListener("change", function(e){
-      if (e.target.classList && e.target.classList.contains("fa-bad")){
-        e.target.classList.remove("fa-bad");
-        message("pcFormMsg", null, null);
-      }
-    });
-    var input = el("pcFile");
-    input.addEventListener("change", function(){ addFiles(input.files); input.value = ""; });
-    var zone = el("pcZone");
-    ["dragenter","dragover"].forEach(function(ev){ zone.addEventListener(ev, function(e){ e.preventDefault(); zone.classList.add("fa-drag"); }); });
-    ["dragleave","drop"].forEach(function(ev){ zone.addEventListener(ev, function(e){ e.preventDefault(); zone.classList.remove("fa-drag"); }); });
-    zone.addEventListener("drop", function(e){ addFiles(e.dataTransfer && e.dataTransfer.files); });
-    el("pcRemoveAll").addEventListener("click", function(){ files = []; renderFiles(); });
-    renderFiles();
-    showScreen("pcScreenEmail");
-    /* Load banks, departments, branches, the GL master and the approval matrix from SharePoint, then resume any valid session */
-    if (PC_CONFIG.referenceDataUrl) loader(true, "Loading configuration\u2026");
-    loadReferenceData().then(function(ok){
-      loader(false);
-      if (ok) resumeSession();
-    });
-  }
-  return { init: init };
+var SECTIONS = ["Requestor","Request","Budget & GL","Payment","Approvals","Documents","Review"];
+var SCREENS = ["pcScreenEmail","pcScreenOtp","pcScreenForm","pcScreenDone"];
+var STEP_MAP = { pcScreenEmail:1, pcScreenOtp:1, pcScreenForm:2, pcScreenDone:3 };
+var ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>';
+var currentEmail = "", location = "", branch = "", requestType = "";
+var userName = "", userDept = "", userDeptRaw = "";
+var refData = { banks: [], departments: [], branches: [], gl: [], matrix: [] };
+var approvers = { a1: null, a2: null };
+var refLoaded = false, refLoading = false;
+var section = 1, glRows = [], selectedGl = null, files = [], boxes = [];
+var expiryTimer = null, resendTimer = null, busy = false;
+function el(id){ return document.getElementById(id); }
+function val(id){ var n = el(id); return String((n && n.value) || "").trim(); }
+function hide(id, on){ var n = el(id); if (n) n.classList.toggle("fa-hide", on); }
+function store(k, v){ try { sessionStorage.setItem(k, v); } catch(e){} }
+function fetchStore(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
+function dropStore(k){ try { sessionStorage.removeItem(k); } catch(e){} }
+function loader(show, text){
+el("pcLoaderText").textContent = text || "Processing\u2026";
+hide("pcLoader", !show);
+}
+function message(id, type, text){
+var box = el(id);
+if (!box) return;
+if (!text){ box.className = "fa-msg fa-hide"; box.textContent = ""; return; }
+box.className = "fa-msg fa-msg-" + type;
+box.textContent = text;
+}
+function showScreen(name){
+SCREENS.forEach(function(id){ hide(id, id !== name); });
+var active = STEP_MAP[name] || 1;
+document.querySelectorAll(".fa-step").forEach(function(step){
+var n = parseInt(step.getAttribute("data-step"), 10);
+step.classList.toggle("fa-step-active", n === active);
+step.classList.toggle("fa-step-done", n < active);
+});
+window.scrollTo({ top:0, behavior:"smooth" });
+}
+function markBad(id){ var n = el(id); if (n){ n.classList.add("fa-bad"); if (n.focus) n.focus(); } }
+function clearBad(){ document.querySelectorAll(".fa-bad").forEach(function(n){ n.classList.remove("fa-bad"); }); }
+function money(v){
+var n = Number(v);
+return "RM " + (isNaN(n) ? 0 : n).toLocaleString("en-MY", { minimumFractionDigits:2, maximumFractionDigits:2 });
+}
+function maskEmail(email){
+var p = String(email).split("@");
+if (p.length !== 2) return email;
+return p[0].slice(0,2) + new Array(Math.max(p[0].length - 2, 2) + 1).join("*") + "@" + p[1];
+}
+function escapeHtml(v){
+return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){
+return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+});
+}
+function todayIso(){
+var d = new Date();
+return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0,10);
+}
+function displayDate(iso){
+if (!iso) return "\u2014";
+var p = iso.split("-").map(Number);
+return new Date(p[0], p[1]-1, p[2]).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
+}
+function statusOf(res){ return String((res && res.status) || "").toUpperCase(); }
+function cleanStr(v){ return String(v == null ? "" : v).replace(/\s+/g, " ").trim(); }
+function titleCase(s){
+return String(s).toLowerCase().replace(/(^|[\s'-])([a-z])/g, function(m, a, b){ return a + b.toUpperCase(); });
+}
+function tidyName(name){
+var n = String(name || "").trim().replace(/\s+/g, " ");
+if (!n) return "";
+return (n === n.toUpperCase() || n === n.toLowerCase()) ? titleCase(n) : n;
+}
+function deriveName(email){
+var local = String(email || "").split("@")[0];
+var parts = local.split(/[._\-]+/).filter(Boolean);
+return parts.length ? titleCase(parts.join(" ")) : "";
+}
+function firstName(full){ return String(full || "").trim().split(" ")[0] || ""; }
+function greetingWord(){
+var h = new Date().getHours();
+return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+}
+/* ============================================================
+REFERENCE DATA (SharePoint lists through PC_GetReferenceData)
+The flow returns the raw SharePoint rows, so the column names are read directly:
+PC_Banks BankName
+PC_Departments DeptCode, DeptName
+PC_Branches BranchName, CostCentre
+PC_GLMaster Scope, Department, CostCentre, GLCode, GLDescription, ExpenseType, OpexClass
+PC_ApprovalMatrix Scope, AppliesTo, Approver1, Approver2 (Person columns)
+All lists also use IsActive and SortOrder.
+============================================================ */
+function asArray(v){ return Array.isArray(v) ? v : []; }
+function pick(o, keys){
+if (o == null || typeof o !== "object") return "";
+for (var i = 0; i < keys.length; i++){
+var v = o[keys[i]];
+if (v !== undefined && v !== null && cleanStr(typeof v === "object" ? (v.Value || "") : v) !== "") return v;
+}
+return "";
+}
+function pickStr(o, keys){
+var v = pick(o, keys);
+return cleanStr(v && typeof v === "object" ? v.Value : v);
+}
+function isActiveRow(o){
+if (o == null || typeof o !== "object") return true;
+var v = o.IsActive;
+if (v === undefined) v = o.isActive;
+if (v === undefined || v === null) return true;
+if (typeof v === "object") v = v.Value;
+if (typeof v === "string") return ["yes","true","1"].indexOf(v.toLowerCase()) !== -1;
+return !!v;
+}
+function sortRows(rows){
+return rows.map(function(r, i){
+var raw = pickStr(r, ["SortOrder","sortOrder"]);
+return { r:r, i:i, s: raw === "" ? 1e9 : Number(raw) };
+}).sort(function(a, b){
+var as = isNaN(a.s) ? 1e9 : a.s, bs = isNaN(b.s) ? 1e9 : b.s;
+return (as - bs) || (a.i - b.i);
+}).map(function(x){ return x.r; });
+}
+function prep(list){ return sortRows(asArray(list).filter(isActiveRow)); }
+function normScope(v){
+var s = cleanStr(v && typeof v === "object" ? v.Value : v).toLowerCase();
+if (s === "hq" || s === "headquarters") return "HQ";
+if (s === "branch" || s === "branches") return "Branch";
+return "Both";
+}
+/* Reads a SharePoint Person column: { DisplayName, Email, Claims } */
+function person(p){
+if (Array.isArray(p)) p = p[0];
+if (!p) return null;
+if (typeof p === "string"){
+var s = cleanStr(p);
+return /@/.test(s) ? { name: s, email: s.toLowerCase() } : null;
+}
+var email = cleanStr(p.Email || p.email || p.EMail || "");
+if (!email){
+var claims = cleanStr(p.Claims || p.claims || "");
+var m = claims.match(/([^|\s]+@[^|\s]+)$/);
+if (m) email = m[1];
+}
+if (!email) return null;
+return { name: cleanStr(p.DisplayName || p.displayName || p.Title || "") || email, email: email.toLowerCase() };
+}
+function normalizeRef(res){
+var banks = prep(res.banks).map(function(b){
+if (typeof b === "string") b = { BankName: b };
+return { name: pickStr(b, ["BankName","name"]) };
+}).filter(function(b){ return b.name; });
+var departments = prep(res.departments).map(function(d){
+if (typeof d === "string") d = { DeptName: d, DeptCode: d };
+var name = pickStr(d, ["DeptName","name"]);
+var code = pickStr(d, ["DeptCode","code"]) || name;
+return { code: code, name: name || code };
+}).filter(function(d){ return d.code; });
+var branches = prep(res.branches).map(function(b){
+if (typeof b === "string") b = { BranchName: b };
+return { name: pickStr(b, ["BranchName","name"]), costCentre: pickStr(b, ["CostCentre","costCentre"]) };
+}).filter(function(b){ return b.name; });
+var gl = prep(res.gl).map(function(r){
+return {
+scope : normScope(pick(r, ["Scope","scope"])),
+department : pickStr(r, ["Department","department"]),
+opexClass : pickStr(r, ["OpexClass","opexClass"]),
+glCode : pickStr(r, ["GLCode","glCode"]),
+description : pickStr(r, ["GLDescription","description"]),
+expenseType : pickStr(r, ["ExpenseType","expenseType"]),
+costCentre : pickStr(r, ["CostCentre","costCentre"])
+};
+}).filter(function(r){ return r.glCode && r.opexClass; });
+var matrix = prep(res.matrix).map(function(r){
+return {
+scope : normScope(pick(r, ["Scope","scope"])),
+appliesTo : pickStr(r, ["AppliesTo","appliesTo","Applies_x0020_To","Applies_x0020_to"]),
+a1 : person(r.Approver1 || r.approver1 || r.Approver_x0020_1 || r.Approver_x0020_One),
+a2 : person(r.Approver2 || r.approver2 || r.Approver_x0020_2 || r.Approver_x0020_Two)
+};
+}).filter(function(r){ return r.appliesTo; });
+return { banks: banks, departments: departments, branches: branches, gl: gl, matrix: matrix };
+}
+/* Explains exactly why no approver rows could be used */
+function whyMatrixEmpty(res){
+var raw = asArray(res && res.matrix);
+if (!res || !("matrix" in res)) return "the flow response has no 'matrix' property. Add it to the Response body.";
+if (!raw.length) return "the flow returned 0 rows. Check the Get items filter and that IsActive is Yes on the rows.";
+if (!raw.filter(isActiveRow).length) return "the flow returned " + raw.length + " row(s) but all are inactive (IsActive = No).";
+return "the flow returned " + raw.length + " row(s) but none could be read. Columns received: " + Object.keys(raw[0] || {}).join(", ") + ". Expected AppliesTo, Approver1, Approver2.";
+}
+function showRefBanner(type, text, withRetry){
+var b = el("pcRefBanner");
+if (!text){ b.className = "fa-msg fa-hide"; b.innerHTML = ""; return; }
+b.className = "fa-msg pc-ref-row fa-msg-" + type;
+b.innerHTML = "<span></span>" + (withRetry ? '<button type="button" class="fa-link" id="pcRefRetry">Retry</button>' : "");
+b.firstChild.textContent = text;
+if (withRetry){
+el("pcRefRetry").addEventListener("click", function(){
+loadReferenceData().then(function(ok){ if (ok) resumeSession(); });
+});
+}
+}
+function loadDepartments(){
+var sel = el("pcDepartment");
+var keep = sel.value;
+sel.innerHTML =
+'<option value="" selected disabled hidden>&mdash; Select &mdash;</option>' +
+refData.departments.map(function(d){
+return '<option value="' + escapeHtml(d.code) + '">' + escapeHtml(d.name) + '</option>';
+}).join("");
+if (keep && matchDepartment(keep)) sel.value = keep;
+}
+function loadBranches(){
+var sel = el("pcBranch");
+var keep = sel.value;
+sel.innerHTML =
+'<option value="" selected disabled hidden>&mdash; Select &mdash;</option>' +
+refData.branches.map(function(b){
+return '<option value="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</option>';
+}).join("");
+if (keep) sel.value = keep;
+}
+function loadBanks(){
+var sel = el("pcBank");
+var keep = sel.value;
+sel.innerHTML =
+'<option value="" selected disabled hidden>&mdash; Select &mdash;</option>' +
+refData.banks.map(function(b){
+return '<option value="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</option>';
+}).join("");
+if (keep) sel.value = keep;
+}
+function isOtherBank(name){ return String(name || "").trim().toLowerCase() === "other"; }
+function deptName(code){
+for (var i = 0; i < refData.departments.length; i++){
+if (refData.departments[i].code === code) return refData.departments[i].name;
+}
+return code || "";
+}
+function matchDepartment(text){
+var t = String(text || "").trim().toLowerCase();
+if (!t) return "";
+for (var i = 0; i < refData.departments.length; i++){
+var d = refData.departments[i];
+if (d.code.toLowerCase() === t || d.name.toLowerCase() === t) return d.code;
+}
+return "";
+}
+function setRequestEnabled(on){ el("pcBtnRequestOtp").disabled = !on; }
+/* ---------- Approvers (from PC_ApprovalMatrix, not editable on the page) ---------- */
+function apLabel(p){
+if (!p) return "";
+return p.name && p.name.toLowerCase() !== p.email ? p.name + " (" + p.email + ")" : p.email;
+}
+function apEmail(n){ return approvers["a" + n] ? approvers["a" + n].email : ""; }
+function showApprovers(){
+var t1 = apLabel(approvers.a1), t2 = apLabel(approvers.a2);
+el("pcApprover1").value = t1; el("pcApprover2").value = t2;
+el("pcVerifier").value = t1; el("pcBranchMgmt").value = t2;
+}
+/* HQ is matched on the department, Branch on the branch name. Branch never uses a department. */
+function resolveApprovers(){
+approvers.a1 = null; approvers.a2 = null;
+var key = location === "HQ" ? val("pcDepartment") : (location === "Branch" ? branch : "");
+if (key){
+var k = key.toLowerCase();
+var kn = location === "HQ" ? deptName(key).toLowerCase() : "";
+var found = null;
+var rows = refData.matrix || [];
+for (var i = 0; i < rows.length; i++){
+var r = rows[i];
+if (r.scope !== location && r.scope !== "Both") continue;
+var at = r.appliesTo.toLowerCase();
+if (at === k || (kn && at === kn)){
+found = r;
+if (r.a1 && r.a2) break;
+}
+}
+if (found){ approvers.a1 = found.a1; approvers.a2 = found.a2; }
+}
+showApprovers();
+return !!(approvers.a1 && approvers.a2);
+}
+function checkApprovers(ids){
+resolveApprovers();
+var p1 = approvers.a1, p2 = approvers.a2;
+if (!p1 || !p2){
+markBad(ids[!p1 ? 0 : 1]);
+return "No approvers are configured for your selection. Please contact Finance.";
+}
+if (p1.email === currentEmail || p2.email === currentEmail){
+markBad(ids[p1.email === currentEmail ? 0 : 1]);
+return "You are listed as an approver for your own request. Please contact Finance.";
+}
+if (p1.email === p2.email){
+markBad(ids[1]);
+return "The same person is set as both approvers. Please contact Finance.";
+}
+return null;
+}
+async function loadReferenceData(){
+if (refLoading) return false;
+if (!PC_CONFIG.referenceDataUrl){
+refLoaded = false;
+showRefBanner("warn", "The configuration service is not connected yet. Paste the PC_GetReferenceData URL into referenceDataUrl near the top of this page.", false);
+setRequestEnabled(false);
+return false;
+}
+refLoading = true;
+showRefBanner("info", "Loading configuration\u2026", false);
+setRequestEnabled(false);
+try {
+var res = await post(PC_CONFIG.referenceDataUrl, { moduleCode: PC_CONFIG.moduleCode }, PC_CONFIG.referenceTimeoutMs);
+var st = statusOf(res);
+if (st && ["OK","SUCCESS"].indexOf(st) === -1) throw new Error(res.message || "The configuration service returned an error.");
+var data = normalizeRef(res);
+/* Banks, departments, branches and GL are required to open the form */
+var empty = [];
+if (!data.banks.length) empty.push("banks");
+if (!data.departments.length) empty.push("departments");
+if (!data.branches.length) empty.push("branches");
+if (!data.gl.length) empty.push("GL codes");
+if (empty.length) throw new Error("No active " + empty.join(", ") + " found in SharePoint. Please contact the Automation team.");
+refData = data;
+refLoaded = true;
+loadDepartments();
+loadBranches();
+loadBanks();
+setRequestEnabled(true);
+console.log("Reference data loaded:", { banks: data.banks.length, departments: data.departments.length, branches: data.branches.length, gl: data.gl.length, approverRows: data.matrix.length });
+/* The approval matrix does not block sign-in. Requests cannot be submitted until it is fixed. */
+if (!data.matrix.length){
+showRefBanner("warn", "Approvers could not be loaded: " + whyMatrixEmpty(res) + " Requests cannot be submitted until this is fixed.", true);
+} else {
+showRefBanner(null);
+}
+return true;
+} catch (e) {
+refLoaded = false;
+showRefBanner("error", "Unable to load configuration. " + e.message, true);
+setRequestEnabled(false);
+return false;
+} finally {
+refLoading = false;
+}
+}
+/* Brings a still-valid session straight to the form once configuration is available */
+function resumeSession(){
+if (!refLoaded) return;
+var s = getSession();
+if (s && !el("pcScreenEmail").classList.contains("fa-hide")){
+currentEmail = s.email; location = s.location; branch = s.branch || "";
+enterApp(null);
+}
+}
+function renderHero(){
+var first = firstName(userName);
+var h = new Date().getHours();
+el("pcGreetIcon").innerHTML = h >= 17 ? ICON_MOON : ICON_SUN;
+el("pcGreeting").innerHTML = escapeHtml(greetingWord()) + (first ? ', <span>' + escapeHtml(first) + '</span>' : "");
+el("pcHeroDate").textContent = new Date().toLocaleDateString("en-GB", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+el("pcUserLocation").textContent = location === "Branch" ? "Branch \u00b7 " + branch : "Headquarters";
+}
+function fillProfile(){
+el("pcFullName").value = userName;
+el("pcEmailLocked").value = currentEmail;
+el("pcRequestDate").value = displayDate(todayIso());
+el("pcBranchLocked").value = branch;
+var dept = el("pcDepartment");
+if (location === "HQ" && userDept) dept.value = userDept; else dept.selectedIndex = 0;
+resolveApprovers();
+}
+async function post(url, payload, timeoutMs){
+if (!url) throw new Error("This service is not configured yet. Please contact the Automation team.");
+var controller = (typeof AbortController !== "undefined") ? new AbortController() : null;
+var timer = (controller && timeoutMs) ? setTimeout(function(){ controller.abort(); }, timeoutMs) : null;
+var response;
+try {
+response = await fetch(url, {
+method : "POST",
+headers : { "Content-Type": "application/json" },
+body : JSON.stringify(payload || {}),
+signal : controller ? controller.signal : undefined
+});
+} catch (e) {
+if (e && e.name === "AbortError") throw new Error("The request timed out. Please try again.");
+throw new Error("Network error. Please check your connection and try again.");
+} finally {
+if (timer) clearTimeout(timer);
+}
+var text = await response.text();
+var data;
+try { data = text ? JSON.parse(text) : {}; }
+catch (e) { throw new Error(response.ok ? "Unexpected response received from the server." : "The server returned an error (" + response.status + "). Please check the flow run history."); }
+if (!response.ok && !data.status) throw new Error(data.message || (data.error && data.error.message) || "Request failed (" + response.status + ")");
+return data;
+}
+function saveSession(){
+store(PC_CONFIG.sessionKey, JSON.stringify({
+verified:true, email:currentEmail, location:location, branch:branch,
+expires: Date.now() + PC_CONFIG.sessionMinutes * 60000
+}));
+}
+function getSession(){
+try {
+var s = JSON.parse(fetchStore(PC_CONFIG.sessionKey) || "null");
+if (!s || s.verified !== true || Date.now() > s.expires){ dropStore(PC_CONFIG.sessionKey); return null; }
+return s;
+} catch (e) { dropStore(PC_CONFIG.sessionKey); return null; }
+}
+function bindChoiceGroup(groupId, onChange){
+var group = el(groupId);
+group.querySelectorAll("input[type=radio]").forEach(function(radio){
+radio.addEventListener("change", function(){
+group.querySelectorAll(".pc-choice").forEach(function(c){
+c.classList.toggle("pc-checked", c.querySelector("input").checked);
+});
+group.classList.remove("fa-bad");
+onChange(radio.value);
+});
+});
+}
+function resetChoiceGroup(groupId){
+var group = el(groupId);
+group.querySelectorAll("input").forEach(function(i){ i.checked = false; });
+group.querySelectorAll(".pc-choice").forEach(function(c){ c.classList.remove("pc-checked"); });
+}
+async function requestOtp(isResend){
+var target = isResend ? "pcOtpMsg" : "pcEmailMsg";
+var email = isResend ? currentEmail : val("pcEmail").toLowerCase();
+if (!isResend){
+clearBad();
+if (!refLoaded) return message(target, "error", "The configuration has not loaded yet. Please wait or use Retry above.");
+if (!location){ el("pcLocationGroup").classList.add("fa-bad"); return message(target, "error", "Please select the origination location."); }
+if (location === "Branch" && !val("pcBranch")){ markBad("pcBranch"); return message(target, "error", "Please select your branch."); }
+if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ markBad("pcEmail"); return message(target, "error", "Please enter a valid email address."); }
+if (email.slice(-("@" + PC_CONFIG.allowedDomain).length) !== "@" + PC_CONFIG.allowedDomain){ markBad("pcEmail"); return message(target, "error", "Only @" + PC_CONFIG.allowedDomain + " email addresses are permitted."); }
+currentEmail = email;
+branch = location === "Branch" ? val("pcBranch") : "";
+}
+message("pcEmailMsg", null, null);
+message("pcOtpMsg", null, null);
+loader(true, "Sending verification code\u2026");
+try {
+var res = await post(PC_CONFIG.requestOtpUrl, { moduleCode: PC_CONFIG.moduleCode, email: currentEmail });
+if (["SENT","SUCCESS","OK"].indexOf(statusOf(res)) === -1){
+return message(target, "error", res.message || "Unable to send the verification code. Please try again.");
+}
+if (res.name) store("pc_profile_name", res.name);
+var dept = res.department || (res.user && res.user.department);
+if (dept) store("pc_profile_dept", dept);
+el("pcMaskedEmail").textContent = maskEmail(currentEmail);
+clearBoxes(false);
+el("pcBtnVerify").disabled = false;
+startExpiry();
+startResendCooldown();
+showScreen("pcScreenOtp");
+setTimeout(function(){ if (boxes[0]) boxes[0].focus(); }, 260);
+if (isResend) message("pcOtpMsg", "ok", "A new verification code has been sent to your inbox.");
+} catch (e) {
+message(target, "error", e.message);
+} finally {
+loader(false);
+}
+}
+async function verifyOtp(){
+if (busy) return;
+var code = boxes.map(function(b){ return b.value; }).join("");
+if (code.length !== PC_CONFIG.otpLength){
+return message("pcOtpMsg", "error", "Please enter all " + PC_CONFIG.otpLength + " digits.");
+}
+busy = true;
+message("pcOtpMsg", null, null);
+loader(true, "Verifying\u2026");
+try {
+var res = await post(PC_CONFIG.verifyOtpUrl, { moduleCode: PC_CONFIG.moduleCode, email: currentEmail, code: code });
+var s = statusOf(res);
+if (s === "VERIFIED" || s === "VALID"){
+stopTimers();
+saveSession();
+enterApp(res);
+} else if (s === "LOCKED"){
+stopTimers();
+clearBoxes(true);
+el("pcBtnVerify").disabled = true;
+el("pcBtnResend").disabled = false;
+el("pcBtnResend").textContent = "Resend code";
+message("pcOtpMsg", "error", res.message || "Too many incorrect attempts. Please request a new code.");
+} else if (s === "EXPIRED" || s === "NO_CODE"){
+clearBoxes(true);
+el("pcBtnResend").disabled = false;
+el("pcBtnResend").textContent = "Resend code";
+message("pcOtpMsg", "warn", res.message || "This code is no longer valid. Please request a new one.");
+} else {
+clearBoxes(true);
+message("pcOtpMsg", "error", res.message || "Incorrect verification code.");
+}
+} catch (e) {
+message("pcOtpMsg", "error", e.message);
+} finally {
+busy = false;
+loader(false);
+}
+}
+function bindBoxes(){
+boxes = Array.prototype.slice.call(document.querySelectorAll(".fa-otp-box"));
+boxes.forEach(function(box, i){
+box.addEventListener("input", function(){
+box.value = box.value.replace(/\D/g, "").slice(0,1);
+box.classList.toggle("fa-filled", box.value !== "");
+if (box.value && i < boxes.length - 1) boxes[i+1].focus();
+if (boxes.map(function(b){ return b.value; }).join("").length === PC_CONFIG.otpLength) verifyOtp();
+});
+box.addEventListener("keydown", function(e){
+if (e.key === "Backspace" && !box.value && i > 0) boxes[i-1].focus();
+if (e.key === "ArrowLeft" && i > 0) boxes[i-1].focus();
+if (e.key === "ArrowRight" && i < boxes.length - 1) boxes[i+1].focus();
+});
+box.addEventListener("focus", function(){ box.select(); });
+box.addEventListener("paste", function(e){
+e.preventDefault();
+var digits = ((e.clipboardData || window.clipboardData).getData("text") || "").replace(/\D/g, "").slice(0, boxes.length);
+digits.split("").forEach(function(d, k){ boxes[k].value = d; boxes[k].classList.add("fa-filled"); });
+if (digits.length) boxes[Math.min(digits.length, boxes.length) - 1].focus();
+if (digits.length === PC_CONFIG.otpLength) verifyOtp();
+});
+});
+}
+function clearBoxes(flash){
+boxes.forEach(function(b){
+b.value = "";
+b.classList.remove("fa-filled");
+if (flash){ b.classList.add("fa-bad"); setTimeout(function(){ b.classList.remove("fa-bad"); }, 520); }
+});
+if (boxes[0]) boxes[0].focus();
+}
+function startExpiry(){
+clearInterval(expiryTimer);
+var left = PC_CONFIG.otpValidSeconds;
+function tick(){
+el("pcTimer").textContent = String(Math.floor(left / 60)).padStart(2,"0") + ":" + String(left % 60).padStart(2,"0");
+if (left <= 0){
+clearInterval(expiryTimer);
+message("pcOtpMsg", "warn", "Your code has expired. Please request a new one.");
+return;
+}
+left--;
+}
+tick();
+expiryTimer = setInterval(tick, 1000);
+}
+function startResendCooldown(){
+clearInterval(resendTimer);
+var left = PC_CONFIG.resendCooldown;
+var btn = el("pcBtnResend");
+btn.disabled = true;
+btn.textContent = "Resend code (" + left + "s)";
+resendTimer = setInterval(function(){
+left--;
+btn.textContent = "Resend code (" + left + "s)";
+if (left <= 0){
+clearInterval(resendTimer);
+btn.disabled = false;
+btn.textContent = "Resend code";
+}
+}, 1000);
+}
+function stopTimers(){ clearInterval(expiryTimer); clearInterval(resendTimer); }
+function enterApp(res){
+var name = (res && res.name) || fetchStore("pc_profile_name") || "";
+var dept = (res && (res.department || (res.user && res.user.department))) || fetchStore("pc_profile_dept") || "";
+userName = tidyName(name) || deriveName(currentEmail);
+userDeptRaw = dept;
+userDept = matchDepartment(dept);
+var isBranch = location === "Branch";
+hide("pcTypeBlock", isBranch);
+requestType = isBranch ? "Branch" : "";
+hide("pcHqApprovers", isBranch);
+hide("pcBranchApprovers", !isBranch);
+/* Department applies to Headquarters only. Branch shows its locked branch name instead. */
+hide("pcDeptField", isBranch);
+hide("pcBranchLockField", !isBranch);
+el("pcReqLead").textContent = isBranch
+? "Your name, email and branch come from your verified sign-in and cannot be edited."
+: "Your name and email come from your verified sign-in and cannot be edited. Select your department to continue.";
+applyRequestType();
+el("pcDateRequired").min = todayIso();
+fillProfile();
+renderHero();
+loadOpex();
+hide("pcBtnSignOut", false);
+showScreen("pcScreenForm");
+goToSection(1);
+}
+function applyRequestType(){ hide("pcClaimBlock", requestType !== "Claim"); }
+function goToSection(n){
+section = n;
+document.querySelectorAll(".pc-section").forEach(function(s){
+s.classList.toggle("fa-hide", Number(s.getAttribute("data-section")) !== n);
+});
+el("pcSecCounter").textContent = "Section " + n + " of " + SECTIONS.length;
+el("pcSecName").textContent = SECTIONS[n-1];
+el("pcSecBar").querySelectorAll("i").forEach(function(bar, i){
+bar.classList.toggle("pc-on", i + 1 === n);
+bar.classList.toggle("pc-done", i + 1 < n);
+});
+el("pcBtnBack").disabled = n === 1;
+el("pcBtnNext").textContent = n === SECTIONS.length ? "Submit request" : "Continue";
+message("pcFormMsg", null, null);
+if (n === 5) resolveApprovers();
+if (n === SECTIONS.length) buildReview();
+window.scrollTo({ top:0, behavior:"smooth" });
+}
+function next(){
+if (section === SECTIONS.length){ submit(); return; }
+var problem = validate(section);
+if (problem){ message("pcFormMsg", "error", problem); return; }
+goToSection(section + 1);
+}
+function back(){ if (section > 1) goToSection(section - 1); }
+function validate(n){
+clearBad();
+var rules = [];
+if (n === 1){
+var isHQ = location === "HQ";
+rules = [
+["pcTypeGroup", isHQ && !requestType, "Please select the request type."],
+["pcFullName", !val("pcFullName"), "Your name could not be retrieved. Please sign out and verify again."],
+["pcDepartment", isHQ && !val("pcDepartment"), "Please select your department."],
+["pcDepartment", isHQ && !!val("pcDepartment") && !resolveApprovers(), "No approvers are configured for this department. Please contact Finance."],
+["pcBranchLocked", !isHQ && !branch, "Your branch could not be determined. Please sign out and verify again."],
+["pcBranchLocked", !isHQ && !!branch && !resolveApprovers(), "No approvers are configured for this branch. Please contact Finance."]
+];
+}
+if (n === 2){
+var amt = parseFloat(val("pcAmount"));
+var req = val("pcDateRequired");
+rules = [
+["pcOrigRef", requestType === "Claim" && !val("pcOrigRef"), "Please enter the original request reference."],
+["pcOrigAmount", requestType === "Claim" && !(parseFloat(val("pcOrigAmount")) > 0), "Please enter the original amount."],
+["pcAmount", isNaN(amt) || amt <= 0, "Please enter an amount greater than zero."],
+["pcDateRequired", !req, "Please select the date the funds are required."],
+["pcDateRequired", !!req && req < todayIso(), "The date required cannot be in the past."],
+["pcPurpose", val("pcPurpose").length < 10, "Please describe the purpose in at least 10 characters."]
+];
+}
+if (n === 3){
+rules = [
+["pcOpex", !val("pcOpex"), "Please select the class of OPEX."],
+["pcGl", !selectedGl, "Please select an SAP GL code."]
+];
+}
+if (n === 4){
+var acc = val("pcAccount").replace(/[\s-]/g, "");
+rules = [
+["pcBank", !val("pcBank"), "Please select the recipient bank."],
+["pcOtherBank", isOtherBank(val("pcBank")) && !val("pcOtherBank"), "Please enter the bank name."],
+["pcAccount", !acc, "Please enter the account number."],
+["pcAccount", !!acc && !/^\d{6,20}$/.test(acc), "The account number must contain 6 to 20 digits."]
+];
+}
+if (n === 5){
+var ids = location === "HQ" ? ["pcApprover1","pcApprover2"] : ["pcVerifier","pcBranchMgmt"];
+var apErr = checkApprovers(ids);
+if (apErr) return apErr;
+}
+if (n === 6){
+rules = [
+["pcZone", files.length === 0, "Please upload at least one supporting document."],
+["pcZone", totalSize() > PC_CONFIG.maxUploadMB * 1048576, "The total upload size exceeds " + PC_CONFIG.maxUploadMB + " MB."]
+];
+}
+if (n === 7){
+rules = [["pcDeclare", !el("pcDeclare").checked, "Please accept the declaration before submitting."]];
+}
+for (var i = 0; i < rules.length; i++){
+if (rules[i][1]){ markBad(rules[i][0]); return rules[i][2]; }
+}
+return null;
+}
+/* ---------- GL dropdowns (data comes from SharePoint) ---------- */
+function placeholder(text){ return '<option value="" selected disabled hidden>' + text + '</option>'; }
+function availableGl(){ return refData.gl.filter(function(r){ return r.scope === "Both" || r.scope === location; }); }
+function loadOpex(){
+var seen = {}, classes = [];
+availableGl().forEach(function(r){ if (!seen[r.opexClass]){ seen[r.opexClass] = 1; classes.push(r.opexClass); } });
+el("pcOpex").innerHTML = placeholder("\u2014 Select \u2014") +
+classes.map(function(c){ return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join("");
+filterGl();
+}
+function filterGl(){
+var cls = val("pcOpex");
+var sel = el("pcGl");
+glRows = cls ? availableGl().filter(function(r){ return r.opexClass === cls; }) : [];
+sel.innerHTML = placeholder(cls ? "\u2014 Select \u2014" : "Select a class of OPEX first") +
+glRows.map(function(r, i){ return '<option value="' + i + '">' + escapeHtml(r.glCode) + ' \u2014 ' + escapeHtml(r.expenseType || r.description) + '</option>'; }).join("");
+sel.disabled = !cls;
+applyGl();
+}
+function applyGl(){
+var idx = el("pcGl").value;
+selectedGl = idx === "" ? null : glRows[Number(idx)];
+hide("pcGlCard", !selectedGl);
+if (!selectedGl) return;
+el("pcGlCode").textContent = selectedGl.glCode;
+el("pcGlCostCentre").textContent = costCentre(selectedGl);
+el("pcGlDesc").textContent = selectedGl.description;
+el("pcGlType").textContent = selectedGl.expenseType;
+}
+function branchCostCentre(){
+for (var i = 0; i < refData.branches.length; i++){
+if (refData.branches[i].name === branch) return refData.branches[i].costCentre || "";
+}
+return "";
+}
+function resolvedCostCentre(r){
+if (r && r.costCentre) return r.costCentre;
+return location === "Branch" ? branchCostCentre() : "";
+}
+function costCentre(r){
+var c = resolvedCostCentre(r);
+if (c) return c;
+return location === "Branch" ? "To be confirmed by Finance" : "\u2014";
+}
+function ext(name){ var m = String(name).match(/\.([^.]+)$/); return m ? m[1].toLowerCase() : ""; }
+function size(b){ return b < 1024 ? b + " B" : b < 1048576 ? (b / 1024).toFixed(1) + " KB" : (b / 1048576).toFixed(2) + " MB"; }
+function totalSize(){ return files.reduce(function(s, f){ return s + f.size; }, 0); }
+function addFiles(list){
+var errors = [];
+Array.prototype.slice.call(list || []).forEach(function(f){
+if (PC_CONFIG.allowedExtensions.indexOf(ext(f.name)) === -1){ errors.push('"' + f.name + '" is not a supported file type.'); return; }
+if (!f.size){ errors.push('"' + f.name + '" is empty.'); return; }
+if (files.some(function(x){ return x.name === f.name && x.size === f.size; })){ errors.push('"' + f.name + '" is already in the list.'); return; }
+files.push(f);
+});
+el("pcZone").classList.remove("fa-bad");
+if (errors.length) message("pcFormMsg", "warn", "Some files were not added: " + errors.join(" "));
+else message("pcFormMsg", null, null);
+renderFiles();
+}
+function renderFiles(){
+var has = files.length > 0;
+hide("pcZoneEmpty", has);
+hide("pcZoneSelected", !has);
+el("pcZone").classList.toggle("fa-has-file", has);
+el("pcFileCount").textContent = files.length + " file" + (files.length === 1 ? "" : "s") + " selected";
+el("pcFileSize").textContent = size(totalSize()) + " total of " + PC_CONFIG.maxUploadMB + " MB";
+var list = el("pcFileList");
+list.innerHTML = files.map(function(f, i){
+return '<div class="fa-upload-file-row">' +
+'<div class="fa-file-icon">' + escapeHtml((ext(f.name) || "FILE").toUpperCase()) + '</div>' +
+'<div class="fa-file-info"><strong title="' + escapeHtml(f.name) + '">' + escapeHtml(f.name) + '</strong><small>' + size(f.size) + '</small></div>' +
+'<button type="button" class="fa-file-remove-one" data-i="' + i + '" aria-label="Remove">&times;</button>' +
+'</div>';
+}).join("");
+list.querySelectorAll("[data-i]").forEach(function(b){
+b.addEventListener("click", function(){ files.splice(Number(b.getAttribute("data-i")), 1); renderFiles(); });
+});
+}
+function readBase64(file){
+return new Promise(function(resolve, reject){
+var r = new FileReader();
+r.onload = function(){ var s = String(r.result || ""); resolve(s.substring(s.indexOf(",") + 1)); };
+r.onerror = function(){ reject(new Error('Unable to read "' + file.name + '".')); };
+r.readAsDataURL(file);
+});
+}
+function bankName(){ return isOtherBank(val("pcBank")) ? val("pcOtherBank") : val("pcBank"); }
+function typeLabel(){
+return requestType === "Branch" ? "Branch Petty Cash" : requestType === "Claim" ? "Petty Cash Claim" : "Petty Cash Advance";
+}
+/* Branch requests carry the department value "Branch"; HQ carries the selected department */
+function requestDepartment(){ return location === "Branch" ? "Branch" : deptName(val("pcDepartment")); }
+function requestDepartmentCode(){ return location === "Branch" ? "Branch" : val("pcDepartment"); }
+function buildReview(){
+var isHQ = location === "HQ";
+var gl = selectedGl || {};
+var requestRows = [];
+if (requestType === "Claim"){
+requestRows.push(["Original reference", val("pcOrigRef")]);
+requestRows.push(["Original amount", money(val("pcOrigAmount"))]);
+}
+requestRows.push(["Amount requested", money(val("pcAmount"))]);
+requestRows.push(["Date required", displayDate(val("pcDateRequired"))]);
+requestRows.push(["Purpose", val("pcPurpose"), true]);
+var requestorRows = [
+["Request type", typeLabel()], ["Location", isHQ ? "Headquarters" : "Branch \u00b7 " + branch],
+["Full name", val("pcFullName")], ["Email", currentEmail]
+];
+if (isHQ) requestorRows.push(["Department", deptName(val("pcDepartment"))]);
+else requestorRows.push(["Branch", branch]);
+requestorRows.push(["Request date", val("pcRequestDate")]);
+var blocks = [
+[1, "Requestor", requestorRows],
+[2, "Request", requestRows],
+[3, "Budget & GL", [
+["Class of OPEX", gl.opexClass], ["SAP GL code", gl.glCode],
+["Cost centre", costCentre(gl)], ["GL description", gl.description],
+["Type of expense", gl.expenseType, true]
+]],
+[4, "Payment", [["Bank", bankName()], ["Account number", val("pcAccount")]]],
+[5, "Approvals", isHQ
+? [["First approver", apLabel(approvers.a1)], ["Second approver", apLabel(approvers.a2)]]
+: [["Branch verifier", apLabel(approvers.a1)], ["Branch Management approver", apLabel(approvers.a2)]]],
+[6, "Documents", [["Attachments", files.map(function(f){ return f.name; }).join(", "), true]]]
+];
+el("pcReview").innerHTML =
+'<div class="fa-summary" style="margin:0 0 14px"><span>Amount requested</span><strong>' + money(val("pcAmount")) + '</strong></div>' +
+blocks.map(function(blk){
+return '<div class="pc-review"><div class="pc-review-head"><strong>' + blk[1] + '</strong>' +
+'<button type="button" class="fa-link" data-goto="' + blk[0] + '">Edit</button></div><div class="pc-meta">' +
+blk[2].map(function(r){
+return '<div' + (r[2] ? ' class="pc-full"' : '') + '><small>' + escapeHtml(r[0]) + '</small><b>' + escapeHtml(r[1] || "\u2014") + '</b></div>';
+}).join("") + '</div></div>';
+}).join("");
+el("pcReview").querySelectorAll("[data-goto]").forEach(function(b){
+b.addEventListener("click", function(){ goToSection(Number(b.getAttribute("data-goto"))); });
+});
+}
+async function buildPayload(){
+var gl = selectedGl || {};
+var isHQ = location === "HQ";
+var docs = [];
+for (var i = 0; i < files.length; i++){
+docs.push({ name:files[i].name, size:files[i].size, contentType:files[i].type || "application/octet-stream", contentBytes: await readBase64(files[i]) });
+}
+return {
+moduleCode : PC_CONFIG.moduleCode,
+requestType : requestType,
+originationLocation : location,
+branch : branch,
+requestorEmail : currentEmail,
+requestorName : val("pcFullName"),
+department : requestDepartment(),
+departmentCode : requestDepartmentCode(),
+dateRequired : val("pcDateRequired"),
+amountRequested : parseFloat(val("pcAmount")),
+purpose : val("pcPurpose"),
+originalRequestReference : requestType === "Claim" ? val("pcOrigRef") : "",
+originalAmount : requestType === "Claim" ? parseFloat(val("pcOrigAmount")) : 0,
+classOfOpex : gl.opexClass || "",
+glDepartment : gl.department || "",
+sapGlCode : gl.glCode || "",
+sapGlDescription : gl.description || "",
+costCentre : resolvedCostCentre(gl),
+expenseType : gl.expenseType || "",
+bankName : bankName(),
+bankAccountNumber : val("pcAccount").replace(/[\s-]/g, ""),
+departmentApprover1 : isHQ ? apEmail(1) : "",
+departmentApprover2 : isHQ ? apEmail(2) : "",
+branchVerifier : isHQ ? "" : apEmail(1),
+branchManagementApprover : isHQ ? "" : apEmail(2),
+requestDocuments : docs,
+declarationAccepted : true,
+submittedAt : new Date().toISOString()
+};
+}
+async function submit(){
+for (var n = 1; n <= SECTIONS.length; n++){
+var problem = validate(n);
+if (problem){
+if (n !== section) goToSection(n);
+validate(n);
+message("pcFormMsg", "error", problem);
+return;
+}
+}
+if (!getSession()){
+message("pcFormMsg", "error", "Your session has expired. Please verify your email again.");
+return setTimeout(signOut, 2000);
+}
+if (!PC_CONFIG.submitUrl){
+var preview = await buildPayload();
+preview.requestDocuments = preview.requestDocuments.map(function(f){ return { name:f.name, size:f.size }; });
+console.log("Payload preview (not sent):", preview);
+return message("pcFormMsg", "info", "All checks passed. Submission is not connected yet. Paste the PC_SubmitRequest URL into submitUrl at the top of the script. A payload preview is in the browser console (F12).");
+}
+el("pcBtnNext").disabled = true;
+el("pcBtnBack").disabled = true;
+loader(true, "Submitting your request\u2026");
+try {
+var res = await post(PC_CONFIG.submitUrl, await buildPayload(), PC_CONFIG.submitTimeoutMs);
+if (statusOf(res) !== "SUBMITTED") throw new Error(res.message || "Submission failed. Please try again.");
+el("pcRefNo").textContent = res.requestReference || res.requestId || "(pending)";
+showScreen("pcScreenDone");
+} catch (e) {
+message("pcFormMsg", "error", e.message);
+} finally {
+el("pcBtnNext").disabled = false;
+el("pcBtnBack").disabled = section === 1;
+loader(false);
+}
+}
+function resetForm(){
+el("pcForm").reset();
+resetChoiceGroup("pcTypeGroup");
+requestType = location === "Branch" ? "Branch" : "";
+files = [];
+renderFiles();
+selectedGl = null;
+loadOpex();
+hide("pcOtherBankField", true);
+applyRequestType();
+el("pcCharCount").textContent = "0";
+el("pcTotal").textContent = "RM 0.00";
+fillProfile();
+clearBad();
+}
+function signOut(){
+stopTimers();
+dropStore(PC_CONFIG.sessionKey);
+dropStore("pc_profile_name");
+dropStore("pc_profile_dept");
+currentEmail = ""; location = ""; branch = ""; requestType = "";
+userName = ""; userDept = ""; userDeptRaw = "";
+resetForm();
+resetChoiceGroup("pcLocationGroup");
+hide("pcBranchField", true);
+hide("pcDeptField", false);
+hide("pcBranchLockField", true);
+el("pcBranch").selectedIndex = 0;
+el("pcEmail").value = "";
+el("pcBtnVerify").disabled = false;
+hide("pcBtnSignOut", true);
+message("pcEmailMsg", null, null);
+message("pcOtpMsg", null, null);
+message("pcFormMsg", null, null);
+showScreen("pcScreenEmail");
+}
+/* The logo is added by the script: the image if it loads (tries each path in logoUrls), a CGC wordmark if none does */
+function buildLogo(){
+var box = el("pcLogo");
+if (!box) return;
+var urls = PC_CONFIG.logoUrls || [], i = 0;
+function wordmark(){
+box.innerHTML = "";
+var t = document.createElement("span");
+t.className = "fa-logo-text";
+t.textContent = "CGC";
+box.appendChild(t);
+}
+function tryNext(){
+if (i >= urls.length){ wordmark(); return; }
+var im = document.createElement("img");
+im.alt = "CGC logo";
+im.onload = function(){ if (im.naturalWidth){ box.innerHTML = ""; box.appendChild(im); } else { tryNext(); } };
+im.onerror = tryNext;
+im.src = urls[i++];
+}
+tryNext();
+}
+
+function init(){
+buildLogo();
+el("pcVersion").textContent = PC_CONFIG.appVersion;
+el("pcZoneHint").textContent = "PDF, Word, Excel, JPG or PNG \u00b7 up to " + PC_CONFIG.maxUploadMB + " MB in total";
+el("pcFile").setAttribute("accept", PC_CONFIG.allowedExtensions.map(function(x){ return "." + x; }).join(","));
+bindBoxes();
+bindChoiceGroup("pcLocationGroup", function(v){
+location = v;
+hide("pcBranchField", v !== "Branch");
+message("pcEmailMsg", null, null);
+});
+bindChoiceGroup("pcTypeGroup", function(v){
+requestType = v;
+applyRequestType();
+message("pcFormMsg", null, null);
+});
+el("pcBtnRequestOtp").addEventListener("click", function(){ requestOtp(false); });
+el("pcEmail").addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); if (!el("pcBtnRequestOtp").disabled) requestOtp(false); } });
+el("pcBtnVerify").addEventListener("click", verifyOtp);
+el("pcBtnResend").addEventListener("click", function(){ requestOtp(true); });
+el("pcBtnChangeEmail").addEventListener("click", signOut);
+el("pcBtnSignOut").addEventListener("click", signOut);
+el("pcBtnNext").addEventListener("click", next);
+el("pcBtnBack").addEventListener("click", back);
+el("pcBtnAnother").addEventListener("click", function(){ resetForm(); renderHero(); showScreen("pcScreenForm"); goToSection(1); });
+el("pcDepartment").addEventListener("change", resolveApprovers);
+el("pcOpex").addEventListener("change", filterGl);
+el("pcGl").addEventListener("change", applyGl);
+el("pcBank").addEventListener("change", function(){ hide("pcOtherBankField", !isOtherBank(val("pcBank"))); });
+el("pcPurpose").addEventListener("input", function(){ el("pcCharCount").textContent = el("pcPurpose").value.length; });
+el("pcAmount").addEventListener("input", function(){ el("pcTotal").textContent = money(val("pcAmount")); });
+["pcAmount","pcOrigAmount"].forEach(function(id){
+el(id).addEventListener("blur", function(){ var n = parseFloat(val(id)); if (n > 0) el(id).value = n.toFixed(2); });
+});
+document.addEventListener("input", function(e){
+if (e.target.classList && e.target.classList.contains("fa-bad")){
+e.target.classList.remove("fa-bad");
+message("pcFormMsg", null, null);
+}
+});
+document.addEventListener("change", function(e){
+if (e.target.classList && e.target.classList.contains("fa-bad")){
+e.target.classList.remove("fa-bad");
+message("pcFormMsg", null, null);
+}
+});
+var input = el("pcFile");
+input.addEventListener("change", function(){ addFiles(input.files); input.value = ""; });
+var zone = el("pcZone");
+["dragenter","dragover"].forEach(function(ev){ zone.addEventListener(ev, function(e){ e.preventDefault(); zone.classList.add("fa-drag"); }); });
+["dragleave","drop"].forEach(function(ev){ zone.addEventListener(ev, function(e){ e.preventDefault(); zone.classList.remove("fa-drag"); }); });
+zone.addEventListener("drop", function(e){ addFiles(e.dataTransfer && e.dataTransfer.files); });
+el("pcRemoveAll").addEventListener("click", function(){ files = []; renderFiles(); });
+renderFiles();
+showScreen("pcScreenEmail");
+/* Load banks, departments, branches, the GL master and the approval matrix from SharePoint, then resume any valid session */
+if (PC_CONFIG.referenceDataUrl) loader(true, "Loading configuration\u2026");
+loadReferenceData().then(function(ok){
+loader(false);
+if (ok) resumeSession();
+});
+}
+return { init: init };
 })();
 try {
-  PC.init();
-  window.PC_READY = true;
-  console.log("BUILD v16 | Petty Cash single-file");
+PC.init();
+window.PC_READY = true;
+console.log("BUILD v18 | Petty Cash single-file");
 } catch (err) {
-  console.error("Petty Cash failed to start:", err);
-  alert("Petty Cash failed to start: " + err.message);
+console.error("Petty Cash failed to start:", err);
+alert("Petty Cash failed to start: " + err.message);
 }
 </script>
 </body>
 </html>
-<!-- END OF FILE -->​‌
+<!-- END OF FILE -->
