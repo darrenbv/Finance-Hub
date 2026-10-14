@@ -164,6 +164,18 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 .pc-check{display:flex;align-items:flex-start;gap:10px;margin-top:12px;font-weight:650;cursor:pointer}
 .pc-check input{width:17px;height:17px;margin-top:2px;accent-color:var(--navy)}
 .pc-nav{margin-top:28px;display:flex;justify-content:space-between;gap:12px}
+
+.pc-header-actions{display:flex;align-items:center;gap:9px}
+.pc-history-overlay{position:fixed;inset:0;z-index:10000;padding:24px;background:rgba(13,41,77,.7);overflow:auto}
+.pc-history-panel{width:min(980px,100%);margin:auto;border-radius:20px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.25);overflow:hidden}
+.pc-history-head{display:flex;align-items:center;gap:16px;padding:22px 26px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f8fafc,#eef4fb)}
+.pc-history-head h2{color:var(--navy);font-size:22px}.pc-history-head p{color:var(--muted);font-size:12px}.pc-history-close{margin-left:auto;width:38px;height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--navy);font-size:22px;cursor:pointer}
+.pc-history-body{padding:24px 26px 30px}.pc-history-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:18px}.pc-history-count{color:var(--muted);font-size:12px}.pc-history-refresh{margin-left:auto}
+.pc-history-list{display:grid;gap:12px}.pc-history-item{width:100%;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;cursor:pointer;transition:.18s}.pc-history-item:hover{border-color:var(--blue);box-shadow:0 9px 24px rgba(23,59,108,.1);transform:translateY(-1px)}
+.pc-history-item-top{display:flex;align-items:center;gap:12px}.pc-history-ref{color:var(--navy);font-weight:750}.pc-history-status{margin-left:auto;padding:5px 9px;border-radius:999px;background:#eef4fb;color:var(--navy);font-size:10px;font-weight:700}.pc-history-meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:8px;color:var(--muted);font-size:11px}.pc-history-amount{color:var(--text);font-weight:700}
+.pc-history-empty{padding:44px 18px;border:1px dashed var(--line);border-radius:14px;background:var(--soft);color:var(--muted);text-align:center}.pc-history-detail{margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}.pc-history-detail-title{display:flex;align-items:center;gap:12px;margin-bottom:14px}.pc-history-detail-title h3{color:var(--navy);font-size:17px}.pc-history-back{margin-left:auto}
+.pc-detail-section{margin-bottom:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden}.pc-detail-section h4{padding:10px 14px;background:var(--soft);color:var(--navy);font-size:12px}.pc-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px;padding:14px}.pc-detail-grid div{min-width:0}.pc-detail-grid small{display:block;color:var(--muted);font-size:9px;font-weight:700;text-transform:uppercase}.pc-detail-grid b{display:block;margin-top:3px;font-size:12px;word-break:break-word}.pc-detail-full{grid-column:1/-1}
+@media(max-width:640px){.pc-header-actions{gap:5px}.pc-header-actions .fa-signout{padding:8px 9px;font-size:10px}.pc-history-overlay{padding:0}.pc-history-panel{min-height:100vh;border-radius:0}.pc-history-head,.pc-history-body{padding:18px}.pc-detail-grid{grid-template-columns:1fr}.pc-detail-full{grid-column:auto}}
 @media(max-width:940px){.fa-page{padding:0}.fa-shell{min-height:100vh;border:0;border-radius:0;box-shadow:none;grid-template-columns:1fr}.fa-brand{min-height:auto;padding:24px}.fa-brand-content{margin:35px 0 28px;padding:0}.fa-brand h1{font-size:34px}.fa-features,.fa-security,.fa-brand-footer{display:none}}
 @media(max-width:640px){.fa-brand{padding:20px}.fa-logo{width:108px;height:66px}.fa-brand h1{font-size:29px}.fa-app-header{min-height:72px;padding:18px 20px}.fa-progress{padding:22px 20px 0}.fa-content{padding:34px 20px 36px}.fa-title{font-size:23px}.fa-grid,.pc-choices,.pc-meta{grid-template-columns:1fr}.fa-grid{gap:0}.fa-otp-group{grid-template-columns:repeat(6,minmax(34px,1fr));gap:6px}.fa-otp-box{height:54px;font-size:21px}.pc-nav,.fa-actions{flex-direction:column-reverse}.pc-nav .fa-btn,.fa-actions .fa-btn{width:100%}.fa-footer{padding:15px 20px;flex-direction:column;text-align:center}.pc-hero{padding:20px 20px 24px}.pc-hero h2{font-size:25px;margin-top:14px}}
 </style>
@@ -193,7 +205,10 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 <section class="fa-app">
 <header class="fa-app-header">
 <div><small>Current module</small><strong>Petty Cash Request</strong></div>
+<div class="pc-header-actions">
+<button type="button" id="pcBtnHistory" class="fa-signout fa-hide">My Request History</button>
 <button type="button" id="pcBtnSignOut" class="fa-signout fa-hide">Sign out</button>
+</div>
 </header>
 <div class="fa-progress">
 <nav class="fa-stepper">
@@ -416,6 +431,16 @@ I confirm that the information submitted is complete and accurate, and that this
 <footer class="fa-footer"><span>CGC Finance Hub &middot; Internal Use Only</span><span>Petty Cash Module &middot; <span id="pcVersion"></span></span></footer>
 </section>
 </div></div>
+
+<div id="pcHistoryOverlay" class="pc-history-overlay fa-hide" role="dialog" aria-modal="true" aria-labelledby="pcHistoryTitle">
+<div class="pc-history-panel">
+<div class="pc-history-head"><div><h2 id="pcHistoryTitle">My Request History</h2><p>All Petty Cash requests submitted using your verified email.</p></div><button type="button" id="pcHistoryClose" class="pc-history-close" aria-label="Close">&times;</button></div>
+<div class="pc-history-body">
+<div class="pc-history-toolbar"><span id="pcHistoryCount" class="pc-history-count"></span><button type="button" id="pcHistoryRefresh" class="fa-btn fa-btn-secondary pc-history-refresh">Refresh</button></div>
+<div id="pcHistoryMsg" class="fa-msg fa-hide"></div>
+<div id="pcHistoryList" class="pc-history-list"></div>
+<div id="pcHistoryDetail" class="pc-history-detail fa-hide"></div>
+</div></div></div>
 <div id="pcLoader" class="fa-loader fa-hide"><div class="fa-loader-card"><div class="fa-spinner"></div><span id="pcLoaderText">Processing...</span></div></div>
 <script>
 /* Layout guard: removes invisible text (non-breaking or zero-width spaces) that can sneak in when code is copied from a chat window.
@@ -451,7 +476,8 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
 <script>
 var PC_CONFIG = {
 moduleCode : "PC",
-appVersion : "v1.11.0",
+appVersion : "v1.12.0",
+getMyRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/01/workflows/58cc81b438314d83915ccc766082f4b0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=eTsMhJgrax_an56OyGy4TYS0qAFwsndvb79B9dcXlWw",
 logoUrls : ["../assets/images/cgc-logo.jpg","/Finance-Hub/assets/images/cgc-logo.jpg","../assets/images/cgc-logo.png","assets/images/cgc-logo.jpg","../../assets/images/cgc-logo.jpg"],
 requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
 verifyOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f6be59a13d4945efb46def390e9c78ca/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z9sOqNYNyFxnlBceUtloiMg0xCEHqFTh5EX1Pm3RYGQ",
@@ -1064,6 +1090,7 @@ el("pcDateRequired").min = todayIso();
 fillProfile();
 renderHero();
 loadOpex();
+hide("pcBtnHistory", false);
 hide("pcBtnSignOut", false);
 showScreen("pcScreenForm");
 goToSection(1);
@@ -1221,7 +1248,7 @@ sourceRows: rows
 }
 sel.innerHTML = placeholder(selectedOpex ? "\u2014 Select SAP GL code \u2014" : "Select a Class of OPEX first") +
 glRows.map(function(r, i){
-var label = r.glCode + " \u2014 " + r.opexClass;
+var label = r.glCode;
 return '<option value="' + i + '">' + escapeHtml(label) + '</option>';
 }).join("");
 sel.disabled = !selectedOpex;
@@ -1468,12 +1495,62 @@ hide("pcBranchLockField", true);
 el("pcBranch").selectedIndex = 0;
 el("pcEmail").value = "";
 el("pcBtnVerify").disabled = false;
+hide("pcBtnHistory", true);
 hide("pcBtnSignOut", true);
+closeHistory();
 message("pcEmailMsg", null, null);
 message("pcOtpMsg", null, null);
 message("pcFormMsg", null, null);
 showScreen("pcScreenEmail");
 }
+
+function historyDate(v){
+if (!v) return "-";
+var d = new Date(v);
+return isNaN(d.getTime()) ? String(v) : d.toLocaleDateString("en-MY", { day:"2-digit", month:"short", year:"numeric" });
+}
+function maskAccount(v){
+var x=String(v||"").replace(/\s/g,"");
+return x.length > 4 ? new Array(x.length-3).join("*") + x.slice(-4) : x || "-";
+}
+function hvalue(v){ return v === undefined || v === null || String(v).trim() === "" ? "-" : String(v); }
+function closeHistory(){ hide("pcHistoryOverlay", true); document.body.style.overflow=""; }
+function openHistory(){
+hide("pcHistoryOverlay", false); document.body.style.overflow="hidden"; loadMyRequests();
+}
+function historyField(label,value,full){ return '<div'+(full?' class="pc-detail-full"':'')+'><small>'+escapeHtml(label)+'</small><b>'+escapeHtml(hvalue(value))+'</b></div>'; }
+function historySection(title,rows){ return '<section class="pc-detail-section"><h4>'+escapeHtml(title)+'</h4><div class="pc-detail-grid">'+rows.join("")+'</div></section>'; }
+function showHistoryDetail(r){
+var isHQ=String(r.originationLocation||"").toLowerCase()==="hq";
+var rows1=[historyField("Request ID",r.requestId),historyField("Status",r.status),historyField("Request type",r.requestType),historyField("Submitted",historyDate(r.submittedAt)),historyField("Location",isHQ?"Headquarters":"Branch"),historyField(isHQ?"Department":"Branch",isHQ?r.department:r.branch),historyField("Request date",historyDate(r.requestDate)),historyField("Date required",historyDate(r.dateRequired))];
+var rows2=[historyField("Amount requested",money(r.amountRequested)),historyField("Class of OPEX",r.classOfOpex),historyField("SAP GL code",r.sapGlCode),historyField("SAP GL description",r.sapGlDescription,true),historyField("Type of expense",r.expenseType,true)];
+if(isHQ) rows2.splice(3,0,historyField("Cost centre",r.costCentre));
+var rows3=[historyField("Purpose",r.purpose,true),historyField("Bank",r.bankName),historyField("Bank account",maskAccount(r.bankAccountNumber))];
+var rows4=isHQ?[historyField("Approver 1",r.approver1Name),historyField("Approver 2",r.approver2Name)]:[historyField("Branch verifier",r.branchVerifierName),historyField("Branch Management approver",r.branchManagementApproverName)];
+el("pcHistoryDetail").innerHTML='<div class="pc-history-detail-title"><h3>'+escapeHtml(hvalue(r.requestId))+'</h3><button type="button" id="pcHistoryBack" class="fa-btn fa-btn-secondary pc-history-back">Back to list</button></div>'+historySection("Request",rows1)+historySection("Budget & GL",rows2)+historySection("Purpose & Payment",rows3)+historySection("Approval Routing",rows4);
+hide("pcHistoryList",true); hide("pcHistoryDetail",false); el("pcHistoryBack").addEventListener("click",function(){ hide("pcHistoryDetail",true); hide("pcHistoryList",false); });
+}
+function renderHistory(requests){
+requests=Array.isArray(requests)?requests:[];
+el("pcHistoryCount").textContent=requests.length+" request"+(requests.length===1?"":"s"); hide("pcHistoryDetail",true); hide("pcHistoryList",false);
+if(!requests.length){ el("pcHistoryList").innerHTML='<div class="pc-history-empty"><strong>No request history found</strong><br><span>Requests submitted with '+escapeHtml(currentEmail)+' will appear here.</span></div>'; return; }
+el("pcHistoryList").innerHTML=requests.map(function(r,i){
+return '<button type="button" class="pc-history-item" data-history-index="'+i+'"><div class="pc-history-item-top"><span class="pc-history-ref">'+escapeHtml(hvalue(r.requestId))+'</span><span class="pc-history-status">'+escapeHtml(hvalue(r.status))+'</span></div><div class="pc-history-meta"><span>'+escapeHtml(historyDate(r.submittedAt))+'</span><span>'+escapeHtml(hvalue(r.requestType))+'</span><span>'+escapeHtml(hvalue(r.originationLocation))+'</span><span class="pc-history-amount">'+escapeHtml(money(r.amountRequested))+'</span></div></button>';
+}).join("");
+el("pcHistoryList").querySelectorAll("[data-history-index]").forEach(function(b){ b.addEventListener("click",function(){ showHistoryDetail(requests[Number(b.getAttribute("data-history-index"))]); }); });
+}
+async function loadMyRequests(){
+message("pcHistoryMsg",null,null);
+if(!PC_CONFIG.getMyRequestsUrl || PC_CONFIG.getMyRequestsUrl.indexOf("PASTE_")===0){ message("pcHistoryMsg","warn","Add the FIN_PC_GetMyRequests HTTP URL to getMyRequestsUrl in PC_CONFIG."); renderHistory([]); return; }
+loader(true,"Loading request history...");
+try{
+var res=await post(PC_CONFIG.getMyRequestsUrl,{moduleCode:PC_CONFIG.moduleCode,requestorEmail:currentEmail},PC_CONFIG.referenceTimeoutMs);
+if(statusOf(res)!=="OK") throw new Error(res.message||"Unable to retrieve request history.");
+renderHistory(Array.isArray(res.requests)?res.requests:[]);
+}catch(e){ message("pcHistoryMsg","error",e.message); renderHistory([]); }
+finally{ loader(false); }
+}
+
 /* The logo is added by the script: the image if it loads (tries each path in logoUrls), a CGC wordmark if none does */
 function buildLogo(){
 var box = el("pcLogo");
@@ -1518,6 +1595,10 @@ el("pcEmail").addEventListener("keydown", function(e){ if (e.key === "Enter"){ e
 el("pcBtnVerify").addEventListener("click", verifyOtp);
 el("pcBtnResend").addEventListener("click", function(){ requestOtp(true); });
 el("pcBtnChangeEmail").addEventListener("click", signOut);
+el("pcBtnHistory").addEventListener("click", openHistory);
+el("pcHistoryClose").addEventListener("click", closeHistory);
+el("pcHistoryRefresh").addEventListener("click", loadMyRequests);
+el("pcHistoryOverlay").addEventListener("click", function(e){ if(e.target===el("pcHistoryOverlay")) closeHistory(); });
 el("pcBtnSignOut").addEventListener("click", signOut);
 el("pcBtnNext").addEventListener("click", next);
 el("pcBtnBack").addEventListener("click", back);
@@ -1564,7 +1645,7 @@ return { init: init };
 try {
 PC.init();
 window.PC_READY = true;
-console.log("BUILD v19 | Petty Cash single-file");
+console.log("BUILD v20 | Petty Cash single-file");
 } catch (err) {
 console.error("Petty Cash failed to start:", err);
 alert("Petty Cash failed to start: " + err.message);
