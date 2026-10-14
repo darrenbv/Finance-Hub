@@ -166,7 +166,6 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 .pc-nav{margin-top:28px;display:flex;justify-content:space-between;gap:12px}
 
 .pc-header-actions{display:flex;align-items:center;gap:9px}
-.pc-hist-card{display:flex;align-items:center;gap:14px;margin:-12px 0 26px;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;background:var(--soft)}.pc-hist-card div{flex:1;min-width:0}.pc-hist-card strong{display:block;color:var(--navy);font-size:13px}.pc-hist-card span{display:block;color:var(--muted);font-size:11.5px}.pc-hist-card .fa-btn{min-height:40px;padding:9px 16px}
 .pc-history-overlay{position:fixed;inset:0;z-index:10000;padding:24px;background:rgba(13,41,77,.7);overflow:auto}
 .pc-history-panel{width:min(980px,100%);margin:auto;border-radius:20px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.25);overflow:hidden}
 .pc-history-head{display:flex;align-items:center;gap:16px;padding:22px 26px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f8fafc,#eef4fb)}
@@ -281,10 +280,6 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 </div>
 <h2 id="pcGreeting"></h2>
 <p>Complete the seven short sections below to submit your petty cash request.</p>
-</div>
-<div class="pc-hist-card" id="pcHistCard">
-<div><strong>My Request History</strong><span id="pcHistSummary">Loading your previous requests...</span></div>
-<button type="button" id="pcBtnHistoryInline" class="fa-btn fa-btn-secondary">View history</button>
 </div>
 <div class="pc-sechead"><span id="pcSecCounter">Section 1 of 7</span><strong id="pcSecName">Requestor</strong></div>
 <div class="pc-secbar" id="pcSecBar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -481,7 +476,7 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
 <script>
 var PC_CONFIG = {
 moduleCode : "PC",
-appVersion : "v1.13.0",
+appVersion : "v1.13.1",
 getMyRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/01/workflows/58cc81b438314d83915ccc766082f4b0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=eTsMhJgrax_an56OyGy4TYS0qAFwsndvb79B9dcXlWw",
 logoUrls : ["../assets/images/cgc-logo.jpg","/Finance-Hub/assets/images/cgc-logo.jpg","../assets/images/cgc-logo.png","assets/images/cgc-logo.jpg","../../assets/images/cgc-logo.jpg"],
 requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
@@ -1539,8 +1534,7 @@ hide("pcHistoryList",true); hide("pcHistoryDetail",false); el("pcHistoryBack").a
 }
 function renderHistory(requests){
 requests=Array.isArray(requests)?requests:[];
-el("pcHistoryCount").textContent=requests.length+" request"+(requests.length===1?"":"s");
-if(el("pcHistSummary")) el("pcHistSummary").textContent = requests.length ? (requests.length+" request"+(requests.length===1?"":"s")+" found for "+currentEmail) : ("No previous requests found for "+currentEmail); hide("pcHistoryDetail",true); hide("pcHistoryList",false);
+el("pcHistoryCount").textContent=requests.length+" request"+(requests.length===1?"":"s"); hide("pcHistoryDetail",true); hide("pcHistoryList",false);
 if(!requests.length){ el("pcHistoryList").innerHTML='<div class="pc-history-empty"><strong>No request history found</strong><br><span>Requests submitted with '+escapeHtml(currentEmail)+' will appear here.</span></div>'; return; }
 el("pcHistoryList").innerHTML=requests.map(function(r,i){
 return '<button type="button" class="pc-history-item" data-history-index="'+i+'"><div class="pc-history-item-top"><span class="pc-history-ref">'+escapeHtml(hvalue(r.requestId))+'</span><span class="pc-history-status">'+escapeHtml(hvalue(r.status))+'</span></div><div class="pc-history-meta"><span>'+escapeHtml(historyDate(r.submittedAt))+'</span><span>'+escapeHtml(hvalue(r.requestType))+'</span><span>'+escapeHtml(hvalue(r.originationLocation))+'</span><span class="pc-history-amount">'+escapeHtml(money(r.amountRequested))+'</span></div></button>';
@@ -1556,7 +1550,7 @@ console.log("Calling FIN_PC_GetMyRequests for", currentEmail);
 var res=await post(PC_CONFIG.getMyRequestsUrl,{moduleCode:PC_CONFIG.moduleCode,requestorEmail:currentEmail},PC_CONFIG.referenceTimeoutMs);
 if(statusOf(res)!=="OK") throw new Error(res.message||"Unable to retrieve request history.");
 renderHistory(Array.isArray(res.requests)?res.requests:[]);
-}catch(e){ message("pcHistoryMsg","error",e.message); renderHistory([]); if(el("pcHistSummary")) el("pcHistSummary").textContent="Unable to load history: "+e.message; console.error("GetMyRequests failed:", e); }
+}catch(e){ message("pcHistoryMsg","error",e.message); renderHistory([]); console.error("GetMyRequests failed:", e); }
 finally{ if (!silent) loader(false); }
 }
 
@@ -1605,7 +1599,6 @@ el("pcBtnVerify").addEventListener("click", verifyOtp);
 el("pcBtnResend").addEventListener("click", function(){ requestOtp(true); });
 el("pcBtnChangeEmail").addEventListener("click", signOut);
 el("pcBtnHistory").addEventListener("click", openHistory);
-el("pcBtnHistoryInline").addEventListener("click", openHistory);
 el("pcHistoryClose").addEventListener("click", closeHistory);
 el("pcHistoryRefresh").addEventListener("click", function(){ loadMyRequests(false); });
 el("pcHistoryOverlay").addEventListener("click", function(e){ if(e.target===el("pcHistoryOverlay")) closeHistory(); });
@@ -1655,7 +1648,7 @@ return { init: init };
 try {
 PC.init();
 window.PC_READY = true;
-console.log("BUILD v22 | Petty Cash single-file");
+console.log("BUILD v23 | Petty Cash single-file");
 } catch (err) {
 console.error("Petty Cash failed to start:", err);
 alert("Petty Cash failed to start: " + err.message);
