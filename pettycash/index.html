@@ -44,7 +44,7 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 .fa-app-header{min-height:88px;padding:24px 38px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
 .fa-app-header small{display:block;color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.fa-app-header strong{color:var(--navy);font-size:17px}
 .fa-signout{padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--navy);font-size:12px;font-weight:650;cursor:pointer;transition:border-color .2s,background .2s}
-.fa-signout:hover{border-color:var(--navy);background:var(--soft)}
+.fa-signout:hover:not(:disabled){border-color:var(--navy);background:var(--soft)}.fa-signout:disabled{opacity:.45;cursor:not-allowed}
 .fa-progress{padding:26px 38px 0}
 .fa-stepper{position:relative;display:grid;grid-template-columns:repeat(3,1fr)}
 .fa-stepper:before{content:"";position:absolute;top:18px;left:calc(16.66% + 18px);right:calc(16.66% + 18px);height:2px;background:var(--line)}
@@ -206,7 +206,7 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 <header class="fa-app-header">
 <div><small>Current module</small><strong>Petty Cash Request</strong></div>
 <div class="pc-header-actions">
-<button type="button" id="pcBtnHistory" class="fa-signout fa-hide">My Request History</button>
+<button type="button" id="pcBtnHistory" class="fa-signout" disabled>My Request History</button>
 <button type="button" id="pcBtnSignOut" class="fa-signout fa-hide">Sign out</button>
 </div>
 </header>
@@ -476,7 +476,7 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
 <script>
 var PC_CONFIG = {
 moduleCode : "PC",
-appVersion : "v1.12.0",
+appVersion : "v1.12.1",
 getMyRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/01/workflows/58cc81b438314d83915ccc766082f4b0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=eTsMhJgrax_an56OyGy4TYS0qAFwsndvb79B9dcXlWw",
 logoUrls : ["../assets/images/cgc-logo.jpg","/Finance-Hub/assets/images/cgc-logo.jpg","../assets/images/cgc-logo.png","assets/images/cgc-logo.jpg","../../assets/images/cgc-logo.jpg"],
 requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
@@ -1091,9 +1091,11 @@ fillProfile();
 renderHero();
 loadOpex();
 hide("pcBtnHistory", false);
+el("pcBtnHistory").disabled = false;
 hide("pcBtnSignOut", false);
 showScreen("pcScreenForm");
 goToSection(1);
+setTimeout(function(){ loadMyRequests(true); }, 250);
 }
 function applyRequestType(){ hide("pcClaimBlock", requestType !== "Claim"); }
 function goToSection(n){
@@ -1495,7 +1497,7 @@ hide("pcBranchLockField", true);
 el("pcBranch").selectedIndex = 0;
 el("pcEmail").value = "";
 el("pcBtnVerify").disabled = false;
-hide("pcBtnHistory", true);
+el("pcBtnHistory").disabled = true;
 hide("pcBtnSignOut", true);
 closeHistory();
 message("pcEmailMsg", null, null);
@@ -1516,7 +1518,7 @@ return x.length > 4 ? new Array(x.length-3).join("*") + x.slice(-4) : x || "-";
 function hvalue(v){ return v === undefined || v === null || String(v).trim() === "" ? "-" : String(v); }
 function closeHistory(){ hide("pcHistoryOverlay", true); document.body.style.overflow=""; }
 function openHistory(){
-hide("pcHistoryOverlay", false); document.body.style.overflow="hidden"; loadMyRequests();
+hide("pcHistoryOverlay", false); document.body.style.overflow="hidden"; loadMyRequests(false);
 }
 function historyField(label,value,full){ return '<div'+(full?' class="pc-detail-full"':'')+'><small>'+escapeHtml(label)+'</small><b>'+escapeHtml(hvalue(value))+'</b></div>'; }
 function historySection(title,rows){ return '<section class="pc-detail-section"><h4>'+escapeHtml(title)+'</h4><div class="pc-detail-grid">'+rows.join("")+'</div></section>'; }
@@ -1539,16 +1541,16 @@ return '<button type="button" class="pc-history-item" data-history-index="'+i+'"
 }).join("");
 el("pcHistoryList").querySelectorAll("[data-history-index]").forEach(function(b){ b.addEventListener("click",function(){ showHistoryDetail(requests[Number(b.getAttribute("data-history-index"))]); }); });
 }
-async function loadMyRequests(){
+async function loadMyRequests(silent){
 message("pcHistoryMsg",null,null);
 if(!PC_CONFIG.getMyRequestsUrl || PC_CONFIG.getMyRequestsUrl.indexOf("PASTE_")===0){ message("pcHistoryMsg","warn","Add the FIN_PC_GetMyRequests HTTP URL to getMyRequestsUrl in PC_CONFIG."); renderHistory([]); return; }
-loader(true,"Loading request history...");
+if (!silent) loader(true,"Loading request history...");
 try{
 var res=await post(PC_CONFIG.getMyRequestsUrl,{moduleCode:PC_CONFIG.moduleCode,requestorEmail:currentEmail},PC_CONFIG.referenceTimeoutMs);
 if(statusOf(res)!=="OK") throw new Error(res.message||"Unable to retrieve request history.");
 renderHistory(Array.isArray(res.requests)?res.requests:[]);
 }catch(e){ message("pcHistoryMsg","error",e.message); renderHistory([]); }
-finally{ loader(false); }
+finally{ if (!silent) loader(false); }
 }
 
 /* The logo is added by the script: the image if it loads (tries each path in logoUrls), a CGC wordmark if none does */
@@ -1597,7 +1599,7 @@ el("pcBtnResend").addEventListener("click", function(){ requestOtp(true); });
 el("pcBtnChangeEmail").addEventListener("click", signOut);
 el("pcBtnHistory").addEventListener("click", openHistory);
 el("pcHistoryClose").addEventListener("click", closeHistory);
-el("pcHistoryRefresh").addEventListener("click", loadMyRequests);
+el("pcHistoryRefresh").addEventListener("click", function(){ loadMyRequests(false); });
 el("pcHistoryOverlay").addEventListener("click", function(e){ if(e.target===el("pcHistoryOverlay")) closeHistory(); });
 el("pcBtnSignOut").addEventListener("click", signOut);
 el("pcBtnNext").addEventListener("click", next);
@@ -1645,7 +1647,7 @@ return { init: init };
 try {
 PC.init();
 window.PC_READY = true;
-console.log("BUILD v20 | Petty Cash single-file");
+console.log("BUILD v21 | Petty Cash single-file");
 } catch (err) {
 console.error("Petty Cash failed to start:", err);
 alert("Petty Cash failed to start: " + err.message);
