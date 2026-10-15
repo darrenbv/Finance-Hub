@@ -44,7 +44,7 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 .fa-app-header{min-height:88px;padding:24px 38px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
 .fa-app-header small{display:block;color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.fa-app-header strong{color:var(--navy);font-size:17px}
 .fa-signout{padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--navy);font-size:12px;font-weight:650;cursor:pointer;transition:border-color .2s,background .2s}
-.fa-signout:hover:not(:disabled){border-color:var(--navy);background:var(--soft)}.fa-signout:disabled{opacity:.45;cursor:not-allowed}
+.fa-signout:hover{border-color:var(--navy);background:var(--soft)}
 .fa-progress{padding:26px 38px 0}
 .fa-stepper{position:relative;display:grid;grid-template-columns:repeat(3,1fr)}
 .fa-stepper:before{content:"";position:absolute;top:18px;left:calc(16.66% + 18px);right:calc(16.66% + 18px);height:2px;background:var(--line)}
@@ -206,7 +206,7 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 <header class="fa-app-header">
 <div><small>Current module</small><strong>Petty Cash Request</strong></div>
 <div class="pc-header-actions">
-<button type="button" id="pcBtnHistory" class="fa-signout fa-hide" disabled>My Request History</button>
+<button type="button" id="pcBtnHistory" class="fa-signout fa-hide">My Request History</button>
 <button type="button" id="pcBtnSignOut" class="fa-signout fa-hide">Sign out</button>
 </div>
 </header>
@@ -318,11 +318,11 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 <div id="pcClaimBlock" class="fa-hide">
 <div class="fa-grid">
 <div class="fa-field"><label for="pcOrigRef">Original request reference <span class="fa-required">*</span></label><input id="pcOrigRef" placeholder="YYYY/MM/DD/DEPT/0001"></div>
-<div class="fa-field"><label for="pcOrigAmount">Original amount (RM) <span class="fa-required">*</span></label><input type="number" id="pcOrigAmount" min="0" step="0.01" placeholder="0.00"></div>
+<div class="fa-field"><label for="pcOrigAmount">Original amount (RM) <span class="fa-required">*</span></label><input type="text" id="pcOrigAmount" inputmode="decimal" autocomplete="off" placeholder="0.00"></div>
 </div>
 </div>
 <div class="fa-grid">
-<div class="fa-field"><label for="pcAmount">Amount requested (RM) <span class="fa-required">*</span></label><input type="number" id="pcAmount" min="0" step="0.01" placeholder="0.00"></div>
+<div class="fa-field"><label for="pcAmount">Amount requested (RM) <span class="fa-required">*</span></label><input type="text" id="pcAmount" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-describedby="pcAmountLimit"><div class="fa-hint" id="pcAmountLimit"><span>Maximum allowed: RM 4,000.00</span></div></div>
 <div class="fa-field"><label for="pcDateRequired">Date required <span class="fa-required">*</span></label><input type="date" id="pcDateRequired"></div>
 </div>
 <div class="fa-field">
@@ -476,7 +476,8 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
 <script>
 var PC_CONFIG = {
 moduleCode : "PC",
-appVersion : "v1.13.2",
+appVersion : "v1.14.0",
+maxRequestAmount : 4000,
 getMyRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/01/workflows/58cc81b438314d83915ccc766082f4b0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=eTsMhJgrax_an56OyGy4TYS0qAFwsndvb79B9dcXlWw",
 logoUrls : ["../assets/images/cgc-logo.jpg","/Finance-Hub/assets/images/cgc-logo.jpg","../assets/images/cgc-logo.png","assets/images/cgc-logo.jpg","../../assets/images/cgc-logo.jpg"],
 requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
@@ -538,8 +539,27 @@ window.scrollTo({ top:0, behavior:"smooth" });
 }
 function markBad(id){ var n = el(id); if (n){ n.classList.add("fa-bad"); if (n.focus) n.focus(); } }
 function clearBad(){ document.querySelectorAll(".fa-bad").forEach(function(n){ n.classList.remove("fa-bad"); }); }
+function amountNumber(v){
+var cleaned = String(v == null ? "" : v).replace(/,/g, "").replace(/[^0-9.]/g, "");
+var firstDot = cleaned.indexOf(".");
+if (firstDot !== -1) cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, "");
+var n = parseFloat(cleaned);
+return isNaN(n) ? 0 : n;
+}
+function formatAmountInput(node, fixed){
+if (!node) return;
+var raw = String(node.value || "").replace(/,/g, "").replace(/[^0-9.]/g, "");
+var parts = raw.split(".");
+var whole = (parts.shift() || "").replace(/^0+(?=\d)/, "");
+var decimals = parts.join("").slice(0, 2);
+if (!whole && (raw || fixed)) whole = "0";
+var n = parseInt(whole || "0", 10);
+var grouped = isNaN(n) ? "" : n.toLocaleString("en-MY");
+if (fixed && grouped) decimals = (decimals + "00").slice(0, 2);
+node.value = grouped + ((raw.indexOf(".") !== -1 || fixed) ? "." + decimals : "");
+}
 function money(v){
-var n = Number(v);
+var n = amountNumber(v);
 return "RM " + (isNaN(n) ? 0 : n).toLocaleString("en-MY", { minimumFractionDigits:2, maximumFractionDigits:2 });
 }
 function maskEmail(email){
@@ -1091,7 +1111,6 @@ fillProfile();
 renderHero();
 loadOpex();
 hide("pcBtnHistory", false);
-el("pcBtnHistory").disabled = false;
 hide("pcBtnSignOut", false);
 showScreen("pcScreenForm");
 goToSection(1);
@@ -1138,12 +1157,13 @@ rules = [
 ];
 }
 if (n === 2){
-var amt = parseFloat(val("pcAmount"));
+var amt = amountNumber(val("pcAmount"));
 var req = val("pcDateRequired");
 rules = [
 ["pcOrigRef", requestType === "Claim" && !val("pcOrigRef"), "Please enter the original request reference."],
-["pcOrigAmount", requestType === "Claim" && !(parseFloat(val("pcOrigAmount")) > 0), "Please enter the original amount."],
-["pcAmount", isNaN(amt) || amt <= 0, "Please enter an amount greater than zero."],
+["pcOrigAmount", requestType === "Claim" && !(amountNumber(val("pcOrigAmount")) > 0), "Please enter the original amount."],
+["pcAmount", !(amt > 0), "Please enter an amount greater than zero."],
+["pcAmount", amt > PC_CONFIG.maxRequestAmount, "The maximum Petty Cash request amount is RM " + PC_CONFIG.maxRequestAmount.toLocaleString("en-MY", {minimumFractionDigits:2, maximumFractionDigits:2}) + ". Please reduce the amount to continue."],
 ["pcDateRequired", !req, "Please select the date the funds are required."],
 ["pcDateRequired", !!req && req < todayIso(), "The date required cannot be in the past."],
 ["pcPurpose", val("pcPurpose").length < 10, "Please describe the purpose in at least 10 characters."]
@@ -1410,10 +1430,10 @@ requestorName : val("pcFullName"),
 department : requestDepartment(),
 departmentCode : requestDepartmentCode(),
 dateRequired : val("pcDateRequired"),
-amountRequested : parseFloat(val("pcAmount")),
+amountRequested : amountNumber(val("pcAmount")),
 purpose : val("pcPurpose"),
 originalRequestReference : requestType === "Claim" ? val("pcOrigRef") : "",
-originalAmount : requestType === "Claim" ? parseFloat(val("pcOrigAmount")) : 0,
+originalAmount : requestType === "Claim" ? amountNumber(val("pcOrigAmount")) : 0,
 classOfOpex : gl.opexClass || "",
 glDepartment : gl.department || "",
 sapGlCode : gl.glCode || "",
@@ -1497,8 +1517,8 @@ hide("pcBranchLockField", true);
 el("pcBranch").selectedIndex = 0;
 el("pcEmail").value = "";
 el("pcBtnVerify").disabled = false;
-el("pcBtnHistory").disabled = true;
 hide("pcBtnHistory", true);
+hide("pcBtnSignOut", true);
 closeHistory();
 message("pcEmailMsg", null, null);
 message("pcOtpMsg", null, null);
@@ -1546,11 +1566,10 @@ message("pcHistoryMsg",null,null);
 if(!PC_CONFIG.getMyRequestsUrl || PC_CONFIG.getMyRequestsUrl.indexOf("PASTE_")===0){ message("pcHistoryMsg","warn","Add the FIN_PC_GetMyRequests HTTP URL to getMyRequestsUrl in PC_CONFIG."); renderHistory([]); return; }
 if (!silent) loader(true,"Loading request history...");
 try{
-console.log("Calling FIN_PC_GetMyRequests for", currentEmail);
 var res=await post(PC_CONFIG.getMyRequestsUrl,{moduleCode:PC_CONFIG.moduleCode,requestorEmail:currentEmail},PC_CONFIG.referenceTimeoutMs);
 if(statusOf(res)!=="OK") throw new Error(res.message||"Unable to retrieve request history.");
 renderHistory(Array.isArray(res.requests)?res.requests:[]);
-}catch(e){ message("pcHistoryMsg","error",e.message); renderHistory([]); console.error("GetMyRequests failed:", e); }
+}catch(e){ message("pcHistoryMsg","error",e.message); renderHistory([]); }
 finally{ if (!silent) loader(false); }
 }
 
@@ -1611,9 +1630,15 @@ el("pcOpex").addEventListener("change", filterGl);
 el("pcGl").addEventListener("change", applyGl);
 el("pcBank").addEventListener("change", function(){ hide("pcOtherBankField", !isOtherBank(val("pcBank"))); });
 el("pcPurpose").addEventListener("input", function(){ el("pcCharCount").textContent = el("pcPurpose").value.length; });
-el("pcAmount").addEventListener("input", function(){ el("pcTotal").textContent = money(val("pcAmount")); });
 ["pcAmount","pcOrigAmount"].forEach(function(id){
-el(id).addEventListener("blur", function(){ var n = parseFloat(val(id)); if (n > 0) el(id).value = n.toFixed(2); });
+el(id).addEventListener("input", function(){
+formatAmountInput(el(id), false);
+if (id === "pcAmount") el("pcTotal").textContent = money(val("pcAmount"));
+});
+el(id).addEventListener("blur", function(){
+if (amountNumber(val(id)) > 0) formatAmountInput(el(id), true);
+if (id === "pcAmount") el("pcTotal").textContent = money(val("pcAmount"));
+});
 });
 document.addEventListener("input", function(e){
 if (e.target.classList && e.target.classList.contains("fa-bad")){
@@ -1648,7 +1673,7 @@ return { init: init };
 try {
 PC.init();
 window.PC_READY = true;
-console.log("BUILD v23 | Petty Cash single-file");
+console.log("BUILD v24 | Petty Cash single-file");
 } catch (err) {
 console.error("Petty Cash failed to start:", err);
 alert("Petty Cash failed to start: " + err.message);
