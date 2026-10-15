@@ -206,7 +206,7 @@ button,input,select,textarea{font:inherit}.fa-hide{display:none!important}
 <header class="fa-app-header">
 <div><small>Current module</small><strong>Petty Cash Request</strong></div>
 <div class="pc-header-actions">
-<button type="button" id="pcBtnHistory" class="fa-signout" disabled>My Request History</button>
+<button type="button" id="pcBtnHistory" class="fa-signout fa-hide" disabled>My Request History</button>
 <button type="button" id="pcBtnSignOut" class="fa-signout fa-hide">Sign out</button>
 </div>
 </header>
@@ -476,7 +476,7 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
 <script>
 var PC_CONFIG = {
 moduleCode : "PC",
-appVersion : "v1.13.1",
+appVersion : "v1.13.2",
 getMyRequestsUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/01/workflows/58cc81b438314d83915ccc766082f4b0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=eTsMhJgrax_an56OyGy4TYS0qAFwsndvb79B9dcXlWw",
 logoUrls : ["../assets/images/cgc-logo.jpg","/Finance-Hub/assets/images/cgc-logo.jpg","../assets/images/cgc-logo.png","assets/images/cgc-logo.jpg","../../assets/images/cgc-logo.jpg"],
 requestOtpUrl : "https://ca5fc5190790e573a9eafd8b611366.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/33f0420df9d24fa581047ade11d2030b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2oMHnIsXj9_3fZjUGbxUx8Urya24YvMGQsZgeVdiMZ4",
@@ -1498,7 +1498,7 @@ el("pcBranch").selectedIndex = 0;
 el("pcEmail").value = "";
 el("pcBtnVerify").disabled = false;
 el("pcBtnHistory").disabled = true;
-hide("pcBtnSignOut", true);
+hide("pcBtnHistory", true);
 closeHistory();
 message("pcEmailMsg", null, null);
 message("pcOtpMsg", null, null);
